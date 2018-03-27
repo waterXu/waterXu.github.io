@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Grand Central Dispatch (GCD) 是异步执行任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发者只需要定义想执行的任务并追加到适当的Disptach Queue中，GCD就能生成必要的线程并计划执行任务。由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可执行任务，这样就">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Objective 2.0 读书笔记 之 GCD">
+<meta property="og:url" content="http://yoursite.com/2017/02/24/EffectiveObjective-GCD/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Grand Central Dispatch (GCD) 是异步执行任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发者只需要定义想执行的任务并追加到适当的Disptach Queue中，GCD就能生成必要的线程并计划执行任务。由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可执行任务，这样就">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-18T11:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Objective 2.0 读书笔记 之 GCD">
+<meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Grand Central Dispatch (GCD) 是异步执行任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发者只需要定义想执行的任务并追加到适当的Disptach Queue中，GCD就能生成必要的线程并计划执行任务。由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可执行任务，这样就">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/24/EffectiveObjective-GCD/"/>
+
+
+
+
+
+  <title>Effective Objective 2.0 读书笔记 之 GCD | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/24/EffectiveObjective-GCD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Effective Objective 2.0 读书笔记 之 GCD</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-24T19:48:59+08:00">
+                2017-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grand Central Dispatch (GCD) 是异步执行任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发者只需要定义想执行的任务并追加到适当的Disptach Queue中，GCD就能生成必要的线程并计划执行任务。由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可执行任务，这样就比以前的线程更有效率。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GCD用我们难以置信的非常简洁的记述方法，实现了极为复杂繁琐的多线程编程。下面列出几点关于GCD使用的高效方法。</p>
+<h3 id="一：使用Dispatch-once来执行只需运行一次的线程安全代码（单例）"><a href="#一：使用Dispatch-once来执行只需运行一次的线程安全代码（单例）" class="headerlink" title="一：使用Dispatch_once来执行只需运行一次的线程安全代码（单例）"></a>一：使用Dispatch_once来执行只需运行一次的线程安全代码（单例）</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单例模式大家都不陌生，常见的实现方式为：在类中编写名为sharedInstance的类方法，该方法只会返回全类共用的单例实例，而不会每次调用时都创建新的实例。例如：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">+(void)sharedInstance&#123;</div><div class="line">    static DemoClass *sharedInstance = nil;</div><div class="line">    @synchronized(self)&#123;</div><div class="line">        if(!sharedInstance)&#123;</div><div class="line">            sharedInstance = [[self alloc]init];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return sharedInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure><br><a id="more"></a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这种单例模式在线程安全的问题下引起激烈争论。不过，GCD引入了一项特性dispatch_once，此函数采用“原子访问（atomic access）来查询标记”，能使单例实现起来更为容易，而且完全是线程安全的。并且dispatch_once更高效(速度是synchronized的两倍)，没必要使用synchronized这种重量级的同步机制。改写后：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">+(void)sharedInstance&#123;</div><div class="line">    static DemoClass *sharedInstance = nil;</div><div class="line">    //对于只需要执行一次的单例来说每次调用函数时传入的标记必须完全相同，通常声明在static或者global作用域</div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        sharedInstance = [[self alloc]init];</div><div class="line">    &#125;);</div><div class="line">    return sharedInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="二：不要使用dispatch-get-current-queue"><a href="#二：不要使用dispatch-get-current-queue" class="headerlink" title="二：不要使用dispatch_get_current_queue"></a>二：不要使用dispatch_get_current_queue</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该函数有个典型的错误用法，就是用它检测当前队列是不是某个特定的队列，视图以此来避免执行同步派发时可能遭遇的死锁问题。如下面这个代码，用队列来保证对实例变量的访问操作是同步的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (NSString)someString&#123;</div><div class="line">    __block NSString *localSomeString;</div><div class="line">    dispatch_sync(_syncQueue,^&#123;</div><div class="line">        localSomeString = _someString;</div><div class="line">    &#125;);</div><div class="line">    return localSomeString;</div><div class="line">&#125;</div></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这种写法的问题在于可能会死锁，假如调用获取方法的队列恰好是同步操作锁针对的队列_syncQueue,那么dispatch_syncdispatch_sync就会一直不返回，直到块执行完毕，可应该执行块的目标队列确实当前队列，当前队列又在阻塞着。someString方法就变成“不可重入的”。<br>    利用dispatch_get_current_queue可让方法“可重入”:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (NSString)someString&#123;</div><div class="line">    __block NSString *localSomeString;</div><div class="line">    dispatch_block_t block = ^&#123;</div><div class="line">        localSomeString = _someString;</div><div class="line">    &#125;;</div><div class="line">    if(dispatch_get_current_queue() == _syncQueue)&#123;</div><div class="line">        block();</div><div class="line">    &#125;else&#123;</div><div class="line">        dispatch_sync(_syncQueue,block);</div><div class="line">    &#125;</div><div class="line">    return localSomeString;</div><div class="line">&#125;</div></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上写法确实能解决一些简单情况，但仍然有死锁的危险。考虑下面这两个串行队列：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queueA = dispatch_queue_create(&quot;com.test.queueA&quot;, NULL);</div><div class="line">dispatch_queue_t queueB = dispatch_queue_create(&quot;com.test.queueB&quot;, NULL);</div><div class="line">dispatch_sync(queueA, ^&#123;</div><div class="line">    dispatch_sync(queueB, ^&#123;</div><div class="line">        dispatch_sync(queueA, ^&#123;</div><div class="line">            //这里会死锁</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;若使用dispatch_get_current_queue方法解决：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queueA = dispatch_queue_create(&quot;com.test.queueA&quot;, NULL);</div><div class="line">dispatch_queue_t queueB = dispatch_queue_create(&quot;com.test.queueB&quot;, NULL);</div><div class="line">dispatch_sync(queueA, ^&#123;</div><div class="line">    dispatch_sync(queueB, ^&#123;</div><div class="line">       dispatch_block_t block = ^&#123;&#125;;</div><div class="line">        if(dispatch_get_current_queue() == queueA)&#123;</div><div class="line">            block();</div><div class="line">        &#125;else&#123;</div><div class="line">            dispatch_sync(queueA, block);//命中，但是最外层还是queueA，仍然造成死锁</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;然而这样仍然造成死锁，因为dispatch_get_current_queue返回的是当前队列，还是会执行queueA，还是死锁。这种例子其实并非不常见，比如有的API可令开发者指定运行回调块时所用的队列（队列A），但实际上却会把回调块安排在内部的串行同步队列上（队列B），而内部的目标队列又是开发者所提供的那个队列，这种情况下就出现上面所说的问题了。开发者可能会误认为在回调块中调用dispatch_get_current_queue返回的队列是调用API时指定的那个队列（队列A），但是实际上返回的却是内部的那个同步队列（队列B，因为前面说了回调被安排在内部串行同步队列上了，而开发者并不知道）。解决这个问题可以通过GCD所提供的功能来设定“队列特有数据”，此数据以键值对的形式关联到队列里。关键在于，假如根据指定的建获取不到关联数据，那么系统就会沿着层级体系向上查找，直至找到数据或到达根队列为止。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queueA = dispatch_queue_create(&quot;com.test.queueA&quot;, NULL);</div><div class="line">dispatch_queue_t queueB = dispatch_queue_create(&quot;com.test.queueB&quot;, NULL);</div><div class="line">//将队列B的目标队列设为队列A，而A的目标队列仍是默认优先级的全局并发队列</div><div class="line">dispatch_set_target_queue(queueB, queueA);</div><div class="line">static int kQueueSpecific;</div><div class="line">CFStringRef queueSpecificValue = CFSTR(&quot;queueA&quot;);</div><div class="line">//在队列A上设置“队列特定值”，队列参数后两个参数分别是键值，都是不透明void指针</div><div class="line">//必须管理该对象的内存，所以这里适合使用CoreFoundation字符作为值，</div><div class="line">//并用最后一个参数析构函数CFRelease来清理旧值。也可以用自定义函数，在其中调用CFRelease清理旧值。</div><div class="line">dispatch_queue_set_specific(queueA, </div><div class="line">                            &amp;kQueueSpecific, </div><div class="line">                            (void*)queueSpecificValue, </div><div class="line">                            (dispatch_function_t)CFRelease);</div><div class="line">dispatch_sync(queueB, ^&#123;</div><div class="line">    dispatch_block_t block = ^&#123;</div><div class="line">        NSLog(@&quot;没有死锁哦~&quot;);</div><div class="line">    &#125;;</div><div class="line">    CFStringRef retrievedValue = dispatch_get_specific(&amp;kQueueSpecific);</div><div class="line">    if(retrievedValue)&#123;</div><div class="line">        block();</div><div class="line">    &#125;else&#123;</div><div class="line">        dispatch_sync(queueA, block);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div></pre></td></tr></table></figure> </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note：函数是按指针值来比较键的，不是按照内容。所以“队列特定数据”与NSDictionary对象不同，后者是比较键的“对象等同性”。“队列特定数据”更新是“关联引用”，关联引用简单例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">static void *AlertAssociateKey = @&quot;AlertAssociateKey&quot;;</div><div class="line">- (void)testAssociated &#123;</div><div class="line">    UIAlertView *alert = [[UIAlertView alloc]</div><div class="line">                        initWithTitle:@&quot;test&quot;</div><div class="line">                        message:@&quot;associated&quot;</div><div class="line">                        delegate:self</div><div class="line">                        cancelButtonTitle:@&quot;cancel&quot;</div><div class="line">                        otherButtonTitles:@&quot;ok&quot;, nil];</div><div class="line">    void (^block)(NSInteger) = ^(NSInteger index)&#123;</div><div class="line">        if(index == 0)&#123;</div><div class="line">            NSLog(@&quot;cancel&quot;);</div><div class="line">        &#125;else&#123;</div><div class="line">            NSLog(@&quot;ok&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    objc_setAssociatedObject(alert, AlertAssociateKey, block, OBJC_ASSOCIATION_COPY);</div><div class="line">    [alert show];</div><div class="line">&#125;</div><div class="line">- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex&#123;</div><div class="line">    void (^block)(NSInteger) = objc_getAssociatedObject(alertView, AlertAssociateKey);</div><div class="line">    block(buttonIndex);</div><div class="line">&#125;</div></pre></td></tr></table></figure> 
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“队列特定数据”所提供的这套简单易用的机制，避免了使用dispatch_get_current_queue经常遭遇的一个陷阱。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/06/reactnative-image/" rel="next" title="React-Native 之 Image加载本地图片的坑">
+                <i class="fa fa-chevron-left"></i> React-Native 之 Image加载本地图片的坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/17/XcodeServer/" rel="prev" title="Xcode9 之 Xcode Server 持续集成">
+                Xcode9 之 Xcode Server 持续集成 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="纳兰若水" />
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：使用Dispatch-once来执行只需运行一次的线程安全代码（单例）"><span class="nav-number">1.</span> <span class="nav-text">一：使用Dispatch_once来执行只需运行一次的线程安全代码（单例）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二：不要使用dispatch-get-current-queue"><span class="nav-number">2.</span> <span class="nav-text">二：不要使用dispatch_get_current_queue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
