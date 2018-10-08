@@ -101,7 +101,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step12.jpg">
 <meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step13.jpg">
 <meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step14.jpg">
-<meta property="og:updated_time" content="2018-02-08T04:07:43.000Z">
+<meta property="og:updated_time" content="2018-09-19T09:15:44.994Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode9 之 Xcode Server 持续集成">
 <meta name="twitter:description" content="前言：Xcode9之前使用Xcode Server 步骤比较繁琐，还需要单独的macOS Server app，Xcode9之后preferences新增了Server &amp;amp; Bots 选项, 将Xcode Server内置在了Xcode中。下面将介绍在Xcode9中如何设置和使用Xcode Server。 开启Server &amp;amp; Bots 选择设置Xcode Server的用户，我选">
@@ -519,7 +519,7 @@
 <img src="/2017/08/17/XcodeServer/step13.jpg" alt="Post-Integration Scripts 结果Log" title="Post-Integration Scripts 结果Log">
 <blockquote>
 <p>/Library/Developer/XcodeServer/IntegrationAssets/$XCS_BOT_ID-$XCS_BOT_NAME/$XCS_INTEGRATION_NUMBER/   该路径中的是integration的结果集合。在XcodeServer Website中Download下来的就是该目录压缩包。有的时候可能要对结果进行后续分析<br><img src="/2017/08/17/XcodeServer/step14.jpg" alt="Xcode Server Website" title="Xcode Server Website"></p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>1：Integration 每次都会去拉取和更新代码仓库的最新代码，所以是以仓库代码为准，本地未提交的不生效。在路径~/Library/Caches/XCSBuilder/Bots下可以找到拉取的代码。<br>2：依赖于Scheme</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>1：Integration 每次都会去拉取和更新代码仓库的最新代码，所以是以仓库代码为准，本地未提交的不生效。在路径~/Library/Caches/XCSBuilder/Bots下可以找到拉取的代码。<br>2：依赖于Scheme<br>3:终端启动integration —&gt; 执行 curl -k -X POST -u “username:password” “<a href="https://XCS_IP:20343/api/bots/BOT_ID/integrations" target="_blank" rel="external">https://XCS_IP:20343/api/bots/BOT_ID/integrations</a>“ -i</p>
 </blockquote>
 
       
