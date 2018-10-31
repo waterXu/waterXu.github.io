@@ -87,25 +87,25 @@
 <meta property="og:site_name" content="纳兰若水">
 <meta property="og:description" content="前言：Xcode9之前使用Xcode Server 步骤比较繁琐，还需要单独的macOS Server app，Xcode9之后preferences新增了Server &amp;amp; Bots 选项, 将Xcode Server内置在了Xcode中。下面将介绍在Xcode9中如何设置和使用Xcode Server。 开启Server &amp;amp; Bots 选择设置Xcode Server的用户，我选">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step1.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step2.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step1.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step2.jpg">
 <meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step3.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step4.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step5.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step6.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step7.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step8.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step9.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step10.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step11.gif">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step12.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step13.jpg">
-<meta property="og:image" content="http://yoursite.com/2017/08/17/XcodeServer/step14.jpg">
-<meta property="og:updated_time" content="2018-09-19T09:15:44.994Z">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step4.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step5.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step6.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step7.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step8.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step9.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step10.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step11.gif">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step12.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step13.jpg">
+<meta property="og:image" content="http://qiniu.xuyanlan.com/XcodeServer/step14.jpg">
+<meta property="og:updated_time" content="2018-10-31T12:06:57.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode9 之 Xcode Server 持续集成">
 <meta name="twitter:description" content="前言：Xcode9之前使用Xcode Server 步骤比较繁琐，还需要单独的macOS Server app，Xcode9之后preferences新增了Server &amp;amp; Bots 选项, 将Xcode Server内置在了Xcode中。下面将介绍在Xcode9中如何设置和使用Xcode Server。 开启Server &amp;amp; Bots 选择设置Xcode Server的用户，我选">
-<meta name="twitter:image" content="http://yoursite.com/2017/08/17/XcodeServer/step1.jpg">
+<meta name="twitter:image" content="http://qiniu.xuyanlan.com/XcodeServer/step1.jpg">
 
 
 
@@ -358,10 +358,9 @@
 
       
         <p>前言：Xcode9之前使用Xcode Server 步骤比较繁琐，还需要单独的macOS Server app，Xcode9之后preferences新增了Server &amp; Bots 选项, 将Xcode Server内置在了Xcode中。<br>下面将介绍在Xcode9中如何设置和使用Xcode Server。</p>
-<h4 id="开启Server-amp-Bots"><a href="#开启Server-amp-Bots" class="headerlink" title="开启Server &amp; Bots"></a>开启Server &amp; Bots</h4><img src="/2017/08/17/XcodeServer/step1.jpg" alt="&nbsp;" title="&nbsp;">
-<p>选择设置Xcode Server的用户，我选择的是自己，也可以选择其他用户。<br><a id="more"></a></p>
-<img src="/2017/08/17/XcodeServer/step2.jpg" alt="设置过程loading" title="设置过程loading">
-<h4 id="Create-Bots"><a href="#Create-Bots" class="headerlink" title="Create Bots"></a>Create Bots</h4><p>为什么不能创建Bot ？？因为需要在服务器建立代码仓库，否则不能创建，会出现以下提示<br><img src="/2017/08/17/XcodeServer/step3.jpg" alt="Tip：需要在服务器建立代码仓库，否则不能创建" title="Tip：需要在服务器建立代码仓库，否则不能创建"><br>可以创建macOS和iOS的APP，这里只介绍iOS，代码使用Git做版本控制。<br>选择Product-&gt; Create Bot开始创建。<br><img src="/2017/08/17/XcodeServer/step4.jpg" alt="Tip：给Bot取个名字" title="Tip：给Bot取个名字"><br><img src="/2017/08/17/XcodeServer/step5.jpg" alt="Sign In 需要trust, 使用SSH即可" title="Sign In 需要trust, 使用SSH即可"><br><img src="/2017/08/17/XcodeServer/step6.jpg" alt="Scheme, Actions - Analyse, Test, Archive Configurations 设置" title="Scheme, Actions - Analyse, Test, Archive Configurations 设置"><br><img src="/2017/08/17/XcodeServer/step7.jpg" alt="step7.jpg" title=""><br><img src="/2017/08/17/XcodeServer/step8.jpg" alt="设备选择1" title="设备选择1"><br><img src="/2017/08/17/XcodeServer/step9.jpg" alt="设备选择2" title="设备选择2"><br><img src="/2017/08/17/XcodeServer/step10.jpg" alt="Triggers" title="Triggers"></p>
+<h4 id="开启Server-amp-Bots"><a href="#开启Server-amp-Bots" class="headerlink" title="开启Server &amp; Bots"></a>开启Server &amp; Bots</h4><p><img src="http://qiniu.xuyanlan.com/XcodeServer/step1.jpg" alt=""></p>
+<p>选择设置Xcode Server的用户，我选择的是自己，也可以选择其他用户。<br><a id="more"></a><br>设置过程loading<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step2.jpg" alt=""></p>
+<h4 id="Create-Bots"><a href="#Create-Bots" class="headerlink" title="Create Bots"></a>Create Bots</h4><p>为什么不能创建Bot ？？因为需要在服务器建立代码仓库，否则不能创建，会出现以下提示<br><img src="/2017/08/17/XcodeServer/step3.jpg" alt="Tip：需要在服务器建立代码仓库，否则不能创建" title="Tip：需要在服务器建立代码仓库，否则不能创建"><br>可以创建macOS和iOS的APP，这里只介绍iOS，代码使用Git做版本控制。<br>选择Product-&gt; Create Bot开始创建。<br>给Bot取个名字<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step4.jpg" alt=""><br>Sign In 需要trust, 使用SSH即可<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step5.jpg" alt=""><br>Scheme Actions -  Analyse, Test, Archive<br>Configurations 设置<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step6.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/XcodeServer/step7.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/XcodeServer/step8.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/XcodeServer/step9.jpg" alt=""><br>Triggers<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step10.jpg" alt=""></p>
 <h4 id="Triggers"><a href="#Triggers" class="headerlink" title="Triggers"></a>Triggers</h4><blockquote>
 <p>一：Pre-Integration Scripts: 设置在构建之前执行的Script（在代码checkout/update执行完，构建开始前执行）。<br>二：Post-Integration Scripts： 设置在构建完成之后执行的Script，Integration失败则不会触发，可以选择在什么结果下执行，见图Run On项，这个Script在执行时可以获取到执行后的结果，可查看下面这张对照表。<br>三：Email Notifications ：发送邮件通知类型有两种<br>1：New Issue Email ，当出现issue,waring 时，可以给提交者发送邮件通知告知详细情况。<br>2：Periodic Email Report</p>
 </blockquote>
@@ -514,11 +513,10 @@
 <blockquote>
 <p>路径 /Library/Developer/XcodeServer/IntegrationAssets/${XCS_BOT_ID}-${XCS_BOT_NAME}/ 是存储bot结果的路径<br>值得注意： 在 Trigger 里操作路径<br>/Library/Developer/XcodeServer/IntegrationAssets/${XCS_BOT_ID}-${XCS_BOT_NAME}/${XCS_INTEGRATION_NUMBER}<br>无效，因为该路径在trigger跑完之后才由upload统一生成，从loading过程可以看到。</p>
 </blockquote>
-<h4 id="整个过程Gif"><a href="#整个过程Gif" class="headerlink" title="整个过程Gif"></a>整个过程Gif</h4><img src="/2017/08/17/XcodeServer/step11.gif" alt="创建Bot过程gif" title="创建Bot过程gif">
-<h4 id="Integration-结果"><a href="#Integration-结果" class="headerlink" title="Integration 结果"></a>Integration 结果</h4><img src="/2017/08/17/XcodeServer/step12.jpg" alt="集成概要" title="集成概要">
-<img src="/2017/08/17/XcodeServer/step13.jpg" alt="Post-Integration Scripts 结果Log" title="Post-Integration Scripts 结果Log">
+<h4 id="整个过程Gif"><a href="#整个过程Gif" class="headerlink" title="整个过程Gif"></a>整个过程Gif</h4><p><img src="http://qiniu.xuyanlan.com/XcodeServer/step11.gif" alt=""></p>
+<h4 id="Integration-结果"><a href="#Integration-结果" class="headerlink" title="Integration 结果"></a>Integration 结果</h4><p>集成概要<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step12.jpg" alt=""><br>结果Log<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step13.jpg" alt=""></p>
 <blockquote>
-<p>/Library/Developer/XcodeServer/IntegrationAssets/$XCS_BOT_ID-$XCS_BOT_NAME/$XCS_INTEGRATION_NUMBER/   该路径中的是integration的结果集合。在XcodeServer Website中Download下来的就是该目录压缩包。有的时候可能要对结果进行后续分析<br><img src="/2017/08/17/XcodeServer/step14.jpg" alt="Xcode Server Website" title="Xcode Server Website"></p>
+<p>/Library/Developer/XcodeServer/IntegrationAssets/$XCS_BOT_ID-$XCS_BOT_NAME/$XCS_INTEGRATION_NUMBER/   该路径中的是integration的结果集合。在XcodeServer Website中Download下来的就是该目录压缩包。有的时候可能要对结果进行后续分析<br> Xcode Server Website<br><img src="http://qiniu.xuyanlan.com/XcodeServer/step14.jpg" alt=""></p>
 <h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>1：Integration 每次都会去拉取和更新代码仓库的最新代码，所以是以仓库代码为准，本地未提交的不生效。在路径~/Library/Caches/XCSBuilder/Bots下可以找到拉取的代码。<br>2：依赖于Scheme<br>3:终端启动integration —&gt; 执行 curl -k -X POST -u “username:password” “<a href="https://XCS_IP:20343/api/bots/BOT_ID/integrations" target="_blank" rel="external">https://XCS_IP:20343/api/bots/BOT_ID/integrations</a>“ -i</p>
 </blockquote>
 
@@ -649,7 +647,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -660,7 +658,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
