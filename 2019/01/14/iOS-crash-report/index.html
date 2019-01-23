@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/01/14/iOS-crash-report/symbollist.png">
 <meta property="og:image" content="http://yoursite.com/2019/01/14/iOS-crash-report/dsym.png">
-<meta property="og:updated_time" content="2019-01-23T06:48:01.230Z">
+<meta property="og:updated_time" content="2019-01-23T07:00:17.091Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS crash report">
 <meta name="twitter:description" content="【译】Symbolicating an iOS Crash Report 通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。 在这种情况下，您必须通过将回溯堆栈地址">
@@ -383,7 +383,7 @@
 <li>执行如下脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework/Versions/A/Resources/symbolicatecrash -v ApteligentExampleApp.crash ApteligentExampleApp.app.dSYM/</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>如果一切顺利，脚本应该符号化整个崩溃文件并将结果输出到终端窗口。 此脚本不会执行任何您无法使用 ATOS 或其他工具手动执行的操作，但它可以更快地为您提供所需的内容。<br><a href="">测试脚本</a> cd 到 test 目录执行命令：python Symbolicating.py BICrashAnalyzeDemo.crash  BICrashAnalyzeDemo.app.dSYM</p>
+<p>如果一切顺利，脚本应该符号化整个崩溃文件并将结果输出到终端窗口。 此脚本不会执行任何您无法使用 ATOS 或其他工具手动执行的操作，但它可以更快地为您提供所需的内容。<br><a href="http://qiniu.xuyanlan.com/test.zip" target="_blank" rel="external">测试脚本</a> cd 到 test 目录执行命令：python Symbolicating.py BICrashAnalyzeDemo.crash  BICrashAnalyzeDemo.app.dSYM</p>
 
       
     </div>
