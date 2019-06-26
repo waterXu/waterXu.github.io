@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-26T09:43:59.741Z</updated>
+  <updated>2019-06-26T09:48:06.556Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,11 +19,12 @@
     <link href="http://yoursite.com/2019/06/26/mvvm%E3%80%90%E8%AF%91%E3%80%91/"/>
     <id>http://yoursite.com/2019/06/26/mvvm【译】/</id>
     <published>2019-06-26T15:48:03.000Z</published>
-    <updated>2019-06-26T09:43:59.741Z</updated>
+    <updated>2019-06-26T09:48:06.556Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>Medium 原文 <a href="https://medium.com/flawless-app-stories/a-taste-of-mvvm-and-reactive-paradigm-5288a819cca1" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a><br> 原文博客 <a href="https://flawlessapp.io/blog/a-taste-of-mvvm-and-reactive-paradigm/" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a> </p>
 </blockquote>
-<h4 id="我喜欢-Swift，就像许多其他面向对象的编程语言一样。-Swift-允许你表示具有某些特点和执行一些操作的真实世界对象。"><a href="#我喜欢-Swift，就像许多其他面向对象的编程语言一样。-Swift-允许你表示具有某些特点和执行一些操作的真实世界对象。" class="headerlink" title="我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。"></a>我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。</h4><p>我倾向于认为 App 是一个每个对象都是一个人的世界。他们工作和沟通。如果一个人不能独自完成工作，他需要寻求帮助。举一个项目，例如，如果经理必须自己完成所有的工作，他会发疯的。因此需要组织和委派任务，并且需要许多人在项目上进行协作：设计师，测试人员，Scrum 主管，开发人员。任务完成后，需要通知经理。</p>
+<p>我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。</p>
+<p>我倾向于认为 App 是一个每个对象都是一个人的世界。他们工作和沟通。如果一个人不能独自完成工作，他需要寻求帮助。举一个项目，例如，如果经理必须自己完成所有的工作，他会发疯的。因此需要组织和委派任务，并且需要许多人在项目上进行协作：设计师，测试人员，Scrum 主管，开发人员。任务完成后，需要通知经理。</p>
 <p>这可能不是一个好例子。但至少你了解 OOP 中沟通和授权的重要性。当我开始 iOS 编程时，我对“架构”一词非常感兴趣。但在做了一段时间后，这一切都归结为识别和分担责任。本文讲述了 MVC 和 MVVM 的简单 Extract 类重构，以及如何进一步研究 Rx。您可以自由地创建自己的架构，但无论您做什么，一致性都是关键，不要让您的队友感到困惑或惊讶。</p>
 <h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><p>看看你最熟悉的架构 - MVC，模型视图控制器的简称。 在新建一个 iOS 项目时总是会得到一个这样的架构。 View 是您使用 <code>UIView</code>，<code>UIButton</code>，<code>UILabel</code> 呈现数据的位置。 模型只是数据的一个奇特的词。 它可以是您的实体，来自网络的数据，来自数据库的对象或来自缓存。 controller 是在 model 和 view 间进行调解的东西。<br><img src="/2019/06/26/mvvm【译】/1.jpg"></p>
 <h3 id="宇宙中心-UIViewController"><a href="#宇宙中心-UIViewController" class="headerlink" title="宇宙中心 - UIViewController"></a>宇宙中心 - UIViewController</h3><p> <code>ViewController</code> 的问题在于它往往是巨大的。 Apple 把它作为宇宙的中心，它拥有许多属性和责任。你可以用 <code>UIViewController</code> 做很多事情。诸如与故事板交互，管理视图，配置视图轮换，状态恢复等事情。 <code>UIViewController</code> 设计有很多钩子，可以覆盖和自定义。<br><a id="more"></a></p>
@@ -121,7 +122,8 @@
     <![CDATA[<blockquote>
 <p>Medium 原文 <a href="https://medium.com/flawless-app-stories/a-taste-of-mvvm-and-reactive-paradigm-5288a819cca1" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a><br> 原文博客 <a href="https://flawlessapp.io/blog/a-taste-of-mvvm-and-reactive-paradigm/" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a> </p>
 </blockquote>
-<h4 id="我喜欢-Swift，就像许多其他面向对象的编程语言一样。-Swift-允许你表示具有某些特点和执行一些操作的真实世界对象。"><a href="#我喜欢-Swift，就像许多其他面向对象的编程语言一样。-Swift-允许你表示具有某些特点和执行一些操作的真实世界对象。" class="headerlink" title="我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。"></a>我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。</h4><p>我倾向于认为 App 是一个每个对象都是一个人的世界。他们工作和沟通。如果一个人不能独自完成工作，他需要寻求帮助。举一个项目，例如，如果经理必须自己完成所有的工作，他会发疯的。因此需要组织和委派任务，并且需要许多人在项目上进行协作：设计师，测试人员，Scrum 主管，开发人员。任务完成后，需要通知经理。</p>
+<p>我喜欢 Swift，就像许多其他面向对象的编程语言一样。 Swift 允许你表示具有某些特点和执行一些操作的真实世界对象。</p>
+<p>我倾向于认为 App 是一个每个对象都是一个人的世界。他们工作和沟通。如果一个人不能独自完成工作，他需要寻求帮助。举一个项目，例如，如果经理必须自己完成所有的工作，他会发疯的。因此需要组织和委派任务，并且需要许多人在项目上进行协作：设计师，测试人员，Scrum 主管，开发人员。任务完成后，需要通知经理。</p>
 <p>这可能不是一个好例子。但至少你了解 OOP 中沟通和授权的重要性。当我开始 iOS 编程时，我对“架构”一词非常感兴趣。但在做了一段时间后，这一切都归结为识别和分担责任。本文讲述了 MVC 和 MVVM 的简单 Extract 类重构，以及如何进一步研究 Rx。您可以自由地创建自己的架构，但无论您做什么，一致性都是关键，不要让您的队友感到困惑或惊讶。</p>
 <h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><p>看看你最熟悉的架构 - MVC，模型视图控制器的简称。 在新建一个 iOS 项目时总是会得到一个这样的架构。 View 是您使用 <code>UIView</code>，<code>UIButton</code>，<code>UILabel</code> 呈现数据的位置。 模型只是数据的一个奇特的词。 它可以是您的实体，来自网络的数据，来自数据库的对象或来自缓存。 controller 是在 model 和 view 间进行调解的东西。<br><img src="/2019/06/26/mvvm【译】/1.jpg"></p>
 <h3 id="宇宙中心-UIViewController"><a href="#宇宙中心-UIViewController" class="headerlink" title="宇宙中心 - UIViewController"></a>宇宙中心 - UIViewController</h3><p> <code>ViewController</code> 的问题在于它往往是巨大的。 Apple 把它作为宇宙的中心，它拥有许多属性和责任。你可以用 <code>UIViewController</code> 做很多事情。诸如与故事板交互，管理视图，配置视图轮换，状态恢复等事情。 <code>UIViewController</code> 设计有很多钩子，可以覆盖和自定义。<br></p>]]>
