@@ -350,7 +350,7 @@
             <p>记录算法学习的进度和一些实现代码（Objective-C）<br>开始算法的学习</p>
 <h4 id="求p和q的最大公约数"><a href="#求p和q的最大公约数" class="headerlink" title="求p和q的最大公约数"></a>求p和q的最大公约数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//计算两个非负整数p和q的最大公约数，若q是0，则最大公约数为p,否则将p除以q的余数为r，则p和q的最大公约数为q的和r的最大公约数</span><br><span class="line">- (int)maxDivisorP:(int)p q:(int) q &#123;</span><br><span class="line">    if(q == 0) &#123;</span><br><span class="line">        return p;</span><br><span class="line">    &#125;</span><br><span class="line">    int r = p % q;</span><br><span class="line">    NSLog(@&quot;p is %d, q is %d&quot;,p,q);</span><br><span class="line">    return [self maxDivisorP:q q:r];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>牛顿迭代法：<a href="https://www.matongxue.com/madocs/205.html" target="_blank" rel="noopener">通俗易懂的讲解</a></p>
-
+<h4 id="letcode"><a href="#letcode" class="headerlink" title="letcode"></a>letcode</h4>
           
         
       

@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-26T11:25:48.154Z</updated>
+  <updated>2019-06-26T11:25:48.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yoursite.com/2019/06/26/mvvm%E3%80%90%E8%AF%91%E3%80%91/"/>
     <id>http://yoursite.com/2019/06/26/mvvm【译】/</id>
     <published>2019-06-26T15:48:03.000Z</published>
-    <updated>2019-06-26T11:25:48.154Z</updated>
+    <updated>2019-06-26T11:25:48.000Z</updated>
     <content type="html"><![CDATA[<p>【译】A taste of MVVM and Reactive paradigm</p>
 <blockquote>
 <p>Medium 原文 <a href="https://medium.com/flawless-app-stories/a-taste-of-mvvm-and-reactive-paradigm-5288a819cca1" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a><br> 原文博客 <a href="https://flawlessapp.io/blog/a-taste-of-mvvm-and-reactive-paradigm/" target="_blank" rel="noopener">A taste of MVVM and Reactive paradigm</a> </p>
@@ -139,7 +139,7 @@
     <link href="http://yoursite.com/2019/02/20/iOS-crash-report/"/>
     <id>http://yoursite.com/2019/02/20/iOS-crash-report/</id>
     <published>2019-02-20T14:54:15.000Z</published>
-    <updated>2019-05-22T03:06:48.085Z</updated>
+    <updated>2019-05-22T03:06:48.000Z</updated>
     <content type="html"><![CDATA[<p>【译】<a href="https://www.apteligent.com/technical-resource/symbolicating-an-ios-crash-report/?partner_code=GDC_so_symbolicateios" target="_blank" rel="noopener">Symbolicating an iOS Crash Report</a></p>
 <p>通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。</p>
 <p>在这种情况下，您必须通过将回溯堆栈地址解析为符号来对崩溃报告进行符号化，以获取有关崩溃的有用信息。</p>
@@ -219,7 +219,7 @@
     <link href="http://yoursite.com/2019/01/01/wugongshan/"/>
     <id>http://yoursite.com/2019/01/01/wugongshan/</id>
     <published>2018-12-31T18:14:59.000Z</published>
-    <updated>2019-06-26T12:07:32.943Z</updated>
+    <updated>2019-06-26T12:07:32.000Z</updated>
     <content type="html"><![CDATA[<h2 id="续：2018年12月31日，雪后，不一样的武功山"><a href="#续：2018年12月31日，雪后，不一样的武功山" class="headerlink" title="续：2018年12月31日，雪后，不一样的武功山~"></a>续：2018年12月31日，雪后，不一样的武功山~</h2><p>一直想去看冬季的武功山，期待满山白雪皑皑，雪景连接云海。何等壮观。我提出冬季上武功山露营，一家人心痒痒，但是担心大雪封山，临回家才确定上山。但是考虑到露营太冷，改为山脚景区泡温泉，次日上山。抵达景区温泉还下着雪，就着雪泡温泉的感觉真是冰火两重天。泡够时间就 “落荒而逃” ~</p>
 <p>次日9点到达武功山脚下，买好门票缆车票。得知山中 -6℃ ，又买好口罩手套等。脚踩防滑链，踏着积雪，向着被白雪覆盖的武功山前进。<br><a id="more"></a></p>
 <p><img src="http://qiniu.xuyanlan.com/wugongshan/123101.jpg" alt=""></p>
@@ -260,7 +260,7 @@
     <link href="http://yoursite.com/2018/12/07/%E8%B5%84%E6%BA%90%E4%B8%8B%E5%8F%91/"/>
     <id>http://yoursite.com/2018/12/07/资源下发/</id>
     <published>2018-12-06T20:44:10.000Z</published>
-    <updated>2019-02-15T09:51:31.009Z</updated>
+    <updated>2019-02-15T09:51:31.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Apple-On-Demand-Resource"><a href="#Apple-On-Demand-Resource" class="headerlink" title="Apple On-Demand Resource"></a>Apple On-Demand Resource</h2><p> Xcode 可以给资源打 tag，被打 tag 的资源在打包时不会打到包内。需要时下载，测试时可以使用自己的服务器，但是发布到 AppStore 时需要托管到苹果的服务器。<br><a href="https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/On_Demand_Resources_Guide/index.html#//apple_ref/doc/uid/TP40015083-CH2-SW1" target="_blank" rel="noopener">苹果的 On-Demand Resource 文档</a></p>
 <img src="/2018/12/07/资源下发/1.png" title="Xcode 设置tag">
 <img src="/2018/12/07/资源下发/2.png" title="也可以直接点击资源设置 tag">
@@ -292,7 +292,7 @@
     <link href="http://yoursite.com/2018/11/30/xcodeproj/"/>
     <id>http://yoursite.com/2018/11/30/xcodeproj/</id>
     <published>2018-11-30T14:53:20.000Z</published>
-    <updated>2018-12-07T02:59:38.269Z</updated>
+    <updated>2018-12-07T02:59:38.000Z</updated>
     <content type="html"><![CDATA[<p>xcodeproj</p>
 <p>xcodeproj 实际上是一个文件夹，打开后可以看到 project.pbxproj, xcuserdata, project.xcworkspace. </p>
 <ul>
@@ -372,7 +372,7 @@
     <link href="http://yoursite.com/2018/09/12/%E5%86%B2%E7%BB%B3%E5%9B%9B%E6%97%A5%E4%B8%89%E6%99%9A%E6%B8%B8%E8%AE%B0/"/>
     <id>http://yoursite.com/2018/09/12/冲绳四日三晚游记/</id>
     <published>2018-09-11T18:06:30.000Z</published>
-    <updated>2019-01-07T06:58:34.910Z</updated>
+    <updated>2019-01-07T06:58:34.000Z</updated>
     <content type="html"><![CDATA[<p>行程时间： 9月7日 - 9月10日<br>提前一个月的时间定了吉祥航空的往返航班，2700左右/人。出发时下午5点，回程是下午7点。<br>行程酒店：美国村门巴公寓酒店，酒店外就是沙滩。<br>冲绳9月份是台风季，天气说不准，最好提前做下攻略。</p>
 <h3 id="Day-1"><a href="#Day-1" class="headerlink" title="Day 1"></a>Day 1</h3><p>启程，第一天出发的时间是北京时间5点，到冲绳大概2个小时，不过因为冲绳是早一个小时的，所以到冲绳是当地时间晚上8点了。预订的接机去美国村的酒店，400RMB。<br>抵达冲绳从机场出来就感觉非常干净，各种建筑街道啥的都非常干净，各种基础设施做的也很贴心。约的日本的司机来接机的，人很有礼貌，会一点英语, 大概花了50分钟左右到美国村。入住之后就去觅食，找到了上一波推荐去的一家叫 xx食堂的店，吃了猪豚骨饭，另外在冲绳大众点评也挺好用(<em>^__^</em>)。<br>美国村夜景<br><img src="http://qiniu.xuyanlan.com/chongSheng/9701.JPG" alt=""></p>
 <a id="more"></a>
@@ -422,7 +422,7 @@
     <link href="http://yoursite.com/2018/08/23/Recording-Animation/"/>
     <id>http://yoursite.com/2018/08/23/Recording-Animation/</id>
     <published>2018-08-22T18:34:37.000Z</published>
-    <updated>2018-08-22T10:43:42.554Z</updated>
+    <updated>2018-08-22T10:43:42.000Z</updated>
     <content type="html"><![CDATA[<h3 id="记录一次录音动画实现"><a href="#记录一次录音动画实现" class="headerlink" title="记录一次录音动画实现"></a>记录一次录音动画实现</h3><p>需求：根据音量大小实现一个录音波形动画，因为拿到的音量大小在10-30之间，所以会已30为最大值。其实未录音和录音之后会有另外的lottie动画，再此记录的只是录音中的动画。</p>
 <img src="/2018/08/23/Recording-Animation/test.gif" title="效果图">
 <p><a href="https://github.com/waterXu/RecordingAnimation" target="_blank" rel="noopener">demo 地址</a></p>
@@ -442,7 +442,7 @@
     <link href="http://yoursite.com/2018/07/03/%E6%B8%90%E5%8F%98%E5%9C%86%E7%8E%AF%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/"/>
     <id>http://yoursite.com/2018/07/03/渐变圆环实现记录/</id>
     <published>2018-07-02T16:55:36.000Z</published>
-    <updated>2018-08-06T11:25:45.357Z</updated>
+    <updated>2018-08-06T11:25:45.000Z</updated>
     <content type="html"><![CDATA[<p>先了解下坐标系<br><img src="/2018/07/03/渐变圆环实现记录/gradient-point.png" title="iOS layer坐标系"><br>position属性是决定子layer在父layer上的位置，默认为（0，0）。其次，anchorPoint属性是决定子layer上的哪个点会在position所指定的位置。<br><a id="more"></a><br>最近需求里实现一个灯光亮度、开关效果<br><img src="/2018/07/03/渐变圆环实现记录/off-ring.png" title="关灯状态"><br><img src="/2018/07/03/渐变圆环实现记录/on-rings.png" title="开灯状态，5级亮度（环个数代表亮度级数）"></p>
 <p>代码示例：VSColorWithHexString为16进制颜色值转UIColor的宏。<br>.h文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">typedef NS_ENUM(NSInteger, VSSceneControlViewType)&#123;</span><br><span class="line">    VSSceneControlViewTypeOn = 1,</span><br><span class="line">    VSSceneControlViewTypeOff = 2</span><br><span class="line">&#125;;</span><br><span class="line">@interface VSSceneControlView : UIView</span><br><span class="line">@property (nonatomic, strong) UIColor *offColor;</span><br><span class="line">@property (nonatomic, strong) UIColor *startColor;</span><br><span class="line">@property (nonatomic, strong) UIColor *endColor;</span><br><span class="line">@property (nonatomic, assign) NSInteger layerCount; //光圈个数，用于计算渐变等级,默认为5</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithRadius:(CGFloat)radius borderWidth:(CGFloat)borderWidth;</span><br><span class="line">- (void)controlOnWithRingCount:(NSInteger)ringCount; //开灯亮度</span><br><span class="line">- (void)controlOff; //关闭</span><br><span class="line">@end</span><br></pre></td></tr></table></figure><br>.m实现文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;VSSceneControlView.h&quot;</span><br><span class="line"></span><br><span class="line">@interface VSSceneControlView()</span><br><span class="line">@property (nonatomic, strong) UIImageView *centerIcon;</span><br><span class="line">@property (nonatomic, assign) CGFloat radius;</span><br><span class="line">@property (nonatomic, assign) CGFloat borderWidth;</span><br><span class="line">@property (nonatomic, assign) VSSceneControlViewType type;</span><br><span class="line">@property (nonatomic, strong) NSArray *layerArray;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation VSSceneControlView</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithRadius:(CGFloat)radius borderWidth:(CGFloat)borderWidth &#123;</span><br><span class="line">    if(self = [super init]) &#123;</span><br><span class="line">        _radius = radius;</span><br><span class="line">        _type = VSSceneControlViewTypeOff;</span><br><span class="line">        _borderWidth = borderWidth;</span><br><span class="line">        _layerCount = 5;</span><br><span class="line">        _startColor = VSColorWithHexString(@&quot;FA9D24&quot;);</span><br><span class="line">        _endColor = VSColorWithHexString(@&quot;FCD96A&quot;);</span><br><span class="line">        _offColor = VSColorWithHexString(@&quot;F4F4F4&quot;);</span><br><span class="line">        [self commonInit];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line">- (void)commonInit&#123;</span><br><span class="line">    _centerIcon = [[UIImageView alloc] init];</span><br><span class="line">    _centerIcon.contentMode = UIViewContentModeScaleAspectFill;</span><br><span class="line">    [self addSubview:_centerIcon];</span><br><span class="line">    [_centerIcon mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.center.equalTo(@0);</span><br><span class="line">        make.width.equalTo(@57);</span><br><span class="line">        make.height.equalTo(@57);</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">- (void)clearLayers &#123;</span><br><span class="line">    for (CALayer *layer in self.layerArray) &#123;</span><br><span class="line">        [layer removeAllAnimations];</span><br><span class="line">        [layer removeFromSuperlayer];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">- (void)controlOnWithRingCount:(NSInteger)ringCount &#123;</span><br><span class="line">    [self clearLayers];</span><br><span class="line">    _centerIcon.image = [UIImage imageNamed:@&quot;scene_on&quot;];</span><br><span class="line">    NSMutableArray *layers = [NSMutableArray array];</span><br><span class="line">    NSInteger count = (ringCount &gt; self.layerCount) ? self.layerCount : ringCount;</span><br><span class="line">    count = (count == 0) ? 1 : count;</span><br><span class="line">    NSArray&lt;NSNumber *&gt; *opacitys = @[@1,@0.5,@0.3,@0.15,@0.06];</span><br><span class="line">    for (int i = 1 ;i &lt;= count; i++) &#123;</span><br><span class="line">        CAShapeLayer *ringLayer = [[CAShapeLayer alloc] init];</span><br><span class="line">        ringLayer.frame = self.bounds;</span><br><span class="line">        ringLayer.fillColor = [UIColor clearColor].CGColor;</span><br><span class="line">        ringLayer.strokeColor = self.offColor.CGColor;</span><br><span class="line">        ringLayer.lineCap = kCALineCapButt;</span><br><span class="line">        ringLayer.lineJoin = kCALineJoinRound;</span><br><span class="line">        ringLayer.lineWidth = self.borderWidth;</span><br><span class="line">        ringLayer.strokeStart = 0;</span><br><span class="line">        ringLayer.strokeEnd = 1;</span><br><span class="line">        CGFloat radius = (self.radius + (i-1) * _borderWidth);</span><br><span class="line">        UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.radius, self.radius) radius:radius startAngle:0 endAngle:2 * M_PI clockwise:NO];</span><br><span class="line">        ringLayer.path = path.CGPath;</span><br><span class="line">        </span><br><span class="line">        CALayer *layer = [[CALayer alloc] init];</span><br><span class="line">        layer.frame = self.bounds;</span><br><span class="line">        [layer setMask:ringLayer];</span><br><span class="line">        </span><br><span class="line">        CAGradientLayer *gradientLayer = [CAGradientLayer layer];</span><br><span class="line">        gradientLayer.frame = CGRectMake(0, 0, (radius + _borderWidth) * 2 , (radius + _borderWidth) * 2);</span><br><span class="line">        gradientLayer.position = CGPointMake(self.radiu, self.radius);</span><br><span class="line">        // 颜色分配</span><br><span class="line">        [gradientLayer setColors:[NSArray arrayWithObjects:(id)self.startColor.CGColor,(id)self.endColor.CGColor, nil]];</span><br><span class="line">        gradientLayer.opacity = [opacitys[i-1] floatValue];</span><br><span class="line">        [gradientLayer setLocations:@[@0.5]]; // 颜色分割线</span><br><span class="line">        [gradientLayer setStartPoint:CGPointMake(0, 0)]; //起点</span><br><span class="line">        [gradientLayer setEndPoint:CGPointMake(0, 1)]; //结束点 该效果从上垂直向下渐变，（0，0）-（1，1）则是左上斜向右下</span><br><span class="line">        [layer addSublayer:gradientLayer];</span><br><span class="line">        </span><br><span class="line">        [self.layer addSublayer:layer];</span><br><span class="line">        [layers addObject:layer];</span><br><span class="line">    &#125;</span><br><span class="line">    self.layerArray = [layers copy];</span><br><span class="line">    _type = VSSceneControlViewTypeOn;</span><br><span class="line">&#125;</span><br><span class="line">- (void)controlOff &#123;</span><br><span class="line">    [self clearLayers];</span><br><span class="line">    _centerIcon.image = [UIImage imageNamed:@&quot;scene_off&quot;];</span><br><span class="line">    CAShapeLayer *offLayer = [[CAShapeLayer alloc] init];</span><br><span class="line">    offLayer.frame = self.bounds;</span><br><span class="line">    offLayer.fillColor = [UIColor clearColor].CGColor;</span><br><span class="line">    offLayer.strokeColor = self.offColor.CGColor;</span><br><span class="line">    offLayer.lineCap = kCALineCapButt;</span><br><span class="line">    offLayer.lineJoin = kCALineJoinRound;</span><br><span class="line">    offLayer.lineWidth = self.borderWidth;</span><br><span class="line">    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.radius, self.radius) radius:self.radius startAngle:0 endAngle:2 * M_PI clockwise:NO];</span><br><span class="line">    offLayer.path = path.CGPath;</span><br><span class="line">    [self.layer addSublayer:offLayer];</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *layers = [NSMutableArray array];</span><br><span class="line">    [layers addObject:offLayer];</span><br><span class="line">    self.layerArray = [layers copy];</span><br><span class="line">    _type = VSSceneControlViewTypeOn;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 ]]></content>
@@ -462,7 +462,7 @@
     <link href="http://yoursite.com/2018/05/19/%E5%BA%A6%E6%88%B7%E5%A4%96%E4%B9%9D%E9%BE%99%E5%A4%A7%E5%B3%A1%E8%B0%B7%E5%BE%92%E6%AD%A5/"/>
     <id>http://yoursite.com/2018/05/19/度户外九龙大峡谷徒步/</id>
     <published>2018-05-19T11:15:55.000Z</published>
-    <updated>2018-05-25T03:19:36.905Z</updated>
+    <updated>2018-05-25T03:19:36.000Z</updated>
     <content type="html"><![CDATA[<p>有其他小伙伴写了游记，这里做个记录~ (<em>^__^</em>) 嘻嘻……<br><a href="https://mp.weixin.qq.com/s/7bYSCwy6hpc5VJdFdLn24Q" target="_blank" rel="noopener">度户外·半满白草畔</a></p>
 ]]></content>
     <summary type="html">
@@ -480,7 +480,7 @@
     <link href="http://yoursite.com/2018/05/14/%E6%95%85%E5%AE%AB-%E9%95%BF%E5%9F%8E%E4%B8%A4%E6%97%A5%E6%B8%B8/"/>
     <id>http://yoursite.com/2018/05/14/故宫-长城两日游/</id>
     <published>2018-05-14T10:33:35.000Z</published>
-    <updated>2018-10-31T11:51:39.394Z</updated>
+    <updated>2018-10-31T11:51:39.000Z</updated>
     <content type="html"><![CDATA[<p>时间： 5月12日、5月13日 （非高峰期）<br>购票方式：<br>   故宫：网上购门票 + 珍宝馆 + 珠宝馆 78元/人，直接刷身份证进入。<br>   八达岭长城：网上购大门票 + 往返直通车 87元/人</p>
 <h4 id="故宫"><a href="#故宫" class="headerlink" title="故宫"></a>故宫</h4><p>特别注意需要提前准备的：<br>    1：下载一个故宫的讲解App（故宫博物馆三毛游）不知道还有没有其他好用的，没有特别去筛选。完了就预先下载好所有的讲解音频文件，这个app解锁所有的讲解需要15元，在到达不同地点会自动播放相应的讲解，还能看见当前的位置，真的是东西南北都分不清的路痴的福音。回来的时候还听到一个妹纸说找不到钟表馆啊，票白买啦！！(<em>^__^</em>) 嘻嘻……，所以下个辅助App还是很方便的。不然得去租故宫的电子讲解器（20元），人比较多，而且走的时候还要还。<br>    2：携带中午的午餐，补充体力<br>    3：充电宝<br><a id="more"></a><br>故宫布局截图：<br><img src="http://qiniu.xuyanlan.com/greatWall/jietu.png" alt=""><br>路线：午门（7）-&gt;珠宝馆（51）-&gt;珍妃井（58）-&gt;钟表馆（48）-&gt;东六宫（34-39）-&gt;御花园（40）-&gt;神武门（59）-&gt;西六宫（28-33）-&gt;坤宁宫-&gt;太和门（最后走中线回到午门26-8）<br>时间：上午9点-&gt;下午两点<br>天气：阴天<br>从午门到天安门，因为不能直接从午门到天安门（只有进场的游客可以，也就是说只能从天安门到午门），所以我们从东华门绕道到天安门都快下午三点了。<br>计划是在8：30开门之前到午门检票口，但是实际上9点才到检票口，因为是非高峰节假日，人不算特别多，基本上检票口都是一队队的旅游团在整队型，有好几个检票口都没人，我们进去都没有排队。<br>进入之后发现大部分人是往太和殿方向走的，所以这条线的人非常多，所以我们进入之后马上去右侧的钟表馆方向，过去就发现人很少的，一路上仔细的走走看看，听听讲解，拍拍照，不需要和其他人挤着。看完珠宝馆和钟表馆之后就可以开始逛东六宫，逛完之后就中午12点了，可以找个地方吃带过来的零食面包啥的当午餐，故宫里面有WiFi，只是不是很稳定，经常掉线，不过速度还是很快的。用完午饭就可以去御花园，然后在神武门的城墙上走一圈再去西六宫，最后走完西六宫之后再从坤宁宫往太和门走，这个时候人没有刚来的时候人多，但是基本上都是只能在门外看着，拍个照，是不能进去的。<br>到天安门、天安门广场走一走逛一逛就到5点了。因为预报会有雷阵雨，所以就先回去了。</p>
 <p>总结：按照这个路线走的话，基本上走遍了故宫，在非大型假日的时候走一走还是很悠闲的，而且还能配合讲解器，有些比较出名的宫殿这个App还会加一些历史的讲解，其他宫殿基本上讲解的就是宫殿内放的介绍碑的内容。因为没有租过故宫的讲解器，所以没有对比。</p>
@@ -506,11 +506,11 @@
     <link href="http://yoursite.com/2018/05/10/algorithms/"/>
     <id>http://yoursite.com/2018/05/10/algorithms/</id>
     <published>2018-05-09T19:52:39.000Z</published>
-    <updated>2018-05-09T11:57:34.294Z</updated>
+    <updated>2019-06-27T08:48:48.243Z</updated>
     <content type="html"><![CDATA[<p>记录算法学习的进度和一些实现代码（Objective-C）<br>开始算法的学习</p>
 <h4 id="求p和q的最大公约数"><a href="#求p和q的最大公约数" class="headerlink" title="求p和q的最大公约数"></a>求p和q的最大公约数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//计算两个非负整数p和q的最大公约数，若q是0，则最大公约数为p,否则将p除以q的余数为r，则p和q的最大公约数为q的和r的最大公约数</span><br><span class="line">- (int)maxDivisorP:(int)p q:(int) q &#123;</span><br><span class="line">    if(q == 0) &#123;</span><br><span class="line">        return p;</span><br><span class="line">    &#125;</span><br><span class="line">    int r = p % q;</span><br><span class="line">    NSLog(@&quot;p is %d, q is %d&quot;,p,q);</span><br><span class="line">    return [self maxDivisorP:q q:r];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>牛顿迭代法：<a href="https://www.matongxue.com/madocs/205.html" target="_blank" rel="noopener">通俗易懂的讲解</a></p>
-]]></content>
+<h4 id="letcode"><a href="#letcode" class="headerlink" title="letcode"></a>letcode</h4>]]></content>
     <summary type="html">
     <![CDATA[<p>记录算法学习的进度和一些实现代码（Objective-C）<br>开始算法的学习</p>
 <h4 id="求p和q的最大公约数"><a href="#求p和q的最大公约数" class="headerlink" title="求p和q的最大公约数"></a>求p和q的最大公]]>
@@ -527,7 +527,7 @@
     <link href="http://yoursite.com/2018/05/06/%E4%BA%94%E6%9C%88%E4%BA%94-%E5%A5%A5%E6%A3%AE%E5%BE%92%E6%AD%A5%E7%8B%BC%E4%BA%BA%E6%9D%80/"/>
     <id>http://yoursite.com/2018/05/06/五月五-奥森徒步狼人杀/</id>
     <published>2018-05-05T18:52:55.000Z</published>
-    <updated>2018-10-31T12:15:00.186Z</updated>
+    <updated>2018-10-31T12:15:00.000Z</updated>
     <content type="html"><![CDATA[<p>时间：2018-05-05<br>地点：北京<br>行程：奥林匹克森林公园 -&gt; 军事博物馆 -&gt; 玉渊潭 -&gt; 北京大学<br>活动类型：休闲、游玩<br>原计划：10位小伙伴8：30在奥森公园地铁站D出口集合，园内稍作徒步然后择一处林荫草地，铺上垫子，放上零食，自我介绍互相认识之后就开始众人期待的狼人杀。<br>突发情况：叮铃铃，叮铃铃…几位小伙伴在出发当天早6点收到处理bug加班电话，无奈工作为先，享乐在后，只能缺席。</p>
 <h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><p>相约8：30在奥森公园集合，由于我是从上海来北京出差，不太熟悉北京的交通，最后集合好的时间到8：50，集合人数：5人，ㄟ( ▔, ▔ )ㄏ 。<br>次日在奥森公园有北马比赛，所以当天就有很多人在预跑，先徒步的计划只能搁置，找了一处草地，铺上垫子，放上零食，各自坐好。<br><a id="more"></a></p>
 <h4 id="自我介绍-amp-分享各自难忘的经历"><a href="#自我介绍-amp-分享各自难忘的经历" class="headerlink" title="自我介绍 &amp; 分享各自难忘的经历"></a>自我介绍 &amp; 分享各自难忘的经历</h4><p>沈汉军：热爱生活，热衷户外，本次活动领队<br>kikyouc：百度地图前端的软妹子一枚，比较宅，喜欢旅游，为狼人杀活动所吸引<br>豆珊珊：金融行业的妹子，喜欢旅游<br>Mr.Y：百度的研发小哥<br>水水：来自百度上研，在北京出差，之前就关注度户外，一直想参加度户外的活动<br>各自难忘的经历就不告诉你们，哼╭(╯^╰)╮。</p>
@@ -555,7 +555,7 @@
     <link href="http://yoursite.com/2018/04/12/iOS%E6%8A%80%E6%9C%AF%E7%82%B9%E5%A4%87%E5%BF%98%E5%BD%95/"/>
     <id>http://yoursite.com/2018/04/12/iOS技术点备忘录/</id>
     <published>2018-04-11T23:52:31.000Z</published>
-    <updated>2018-07-02T08:56:51.200Z</updated>
+    <updated>2018-07-02T08:56:51.000Z</updated>
     <content type="html"><![CDATA[<p>记录一些小技术点，方便使用时查找。</p>
 <h4 id="更改UITabBar-amp-amp-UINavigationBar背景颜色"><a href="#更改UITabBar-amp-amp-UINavigationBar背景颜色" class="headerlink" title="更改UITabBar &amp;&amp; UINavigationBar背景颜色"></a>更改UITabBar &amp;&amp; UINavigationBar背景颜色</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[UITabBar appearance] setBarTintColor:[UIColor redColor]];</span><br><span class="line">[[UINavigationBar appearance] setBarTintColor:[UIColor redColor]];</span><br></pre></td></tr></table></figure>
 <h4 id="更改UITabBar-amp-amp-UINavigationBar字体颜色"><a href="#更改UITabBar-amp-amp-UINavigationBar字体颜色" class="headerlink" title="更改UITabBar &amp;&amp; UINavigationBar字体颜色"></a>更改UITabBar &amp;&amp; UINavigationBar字体颜色</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//改变按钮navigationBar tintColor颜色</span><br><span class="line">self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:102/255.0 green:102/255.0 blue:102/255.0 alpha:1.0];</span><br><span class="line">//改变tabbar 正常颜色，选中色</span><br><span class="line"> NSDictionary *attributeNormal = @&#123;NSForegroundColorAttributeName:[UIColor grayColor]&#125;;</span><br><span class="line">[subVC.tabBarItem setTitleTextAttributes:attributeNormal forState:(UIControlStateNormal)];</span><br><span class="line"> NSDictionary *attributeSelected = @&#123;NSForegroundColorAttributeName:[UIColor redColor]&#125;;</span><br><span class="line">[subVC.tabBarItem setTitleTextAttributes:attributeSelected forState: (UIControlStateSelected)];</span><br></pre></td></tr></table></figure>
@@ -603,7 +603,7 @@
     <link href="http://yoursite.com/2018/04/10/%E8%BF%9C%E5%BE%81%E8%85%BE%E6%A0%BC%E9%87%8C/"/>
     <id>http://yoursite.com/2018/04/10/远征腾格里/</id>
     <published>2018-04-10T13:07:25.000Z</published>
-    <updated>2018-10-31T11:43:29.921Z</updated>
+    <updated>2018-10-31T11:43:29.000Z</updated>
     <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>日期：2018-04-05 ~ 2018-04-07<br>行程特色：领略塞外沙漠风光，体验沙漠徒步，挑战自我<br>全程：53公里<br>装备：防沙鞋、防晒帽、墨镜、轻装<br>温度：-4°C ~ 25°C<br>行程安排：4号飞银川，5号进沙漠，7号出沙漠，8号从银川飞回上海。</p>
 <p><img src="http://qiniu.xuyanlan.com/tengGeLi/host.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/home.jpg" alt=""></p>
 <a id="more"></a>
@@ -635,7 +635,7 @@
     <link href="http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/"/>
     <id>http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/</id>
     <published>2018-02-07T17:29:17.000Z</published>
-    <updated>2018-10-31T11:59:33.283Z</updated>
+    <updated>2018-10-31T11:59:33.000Z</updated>
     <content type="html"><![CDATA[<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！<br><a href="https://www.jianshu.com/p/0a2ff9cd5c23" target="_blank" rel="noopener">iOS 崩溃统计工具-Crashlytics</a><br>了解crash收集：<a href="https://nianxi.net/ios/ios-crash-reporter.html" target="_blank" rel="noopener">漫谈iOS Crash收集框架</a></p>
 <h3 id="customKey-和-customLog"><a href="#customKey-和-customLog" class="headerlink" title="customKey 和 customLog"></a>customKey 和 customLog</h3><p>customKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到崩溃过程中的用户行为路径，方便用户定位crash根源。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//customKey</span><br><span class="line">[CrashlyticsKit setUserIdentifier:@&quot;device&quot;];</span><br><span class="line">[CrashlyticsKit setUserEmail:@&quot;133@qq.com&quot;];</span><br><span class="line">[CrashlyticsKit setUserName:@&quot;xyl&quot;];</span><br><span class="line">[CrashlyticsKit setObjectValue:@&quot;testValue&quot; forKey:@&quot;testKey&quot;];</span><br><span class="line">NSDictionary *dict = @&#123;</span><br><span class="line">                       @&quot;key1&quot;:@&quot;key1&quot;,</span><br><span class="line">                       @&quot;key2&quot;:@&quot;key2&quot;</span><br><span class="line">                       &#125;;</span><br><span class="line">[CrashlyticsKit setObjectValue:dict forKey:@&quot;testKeyDict&quot;];</span><br></pre></td></tr></table></figure><br><img src="http://qiniu.xuyanlan.com/Twitter-Crashlytics-iOS/customKey.png" alt=""><br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//customLog</span><br><span class="line">CLS_LOG(@&quot; testCrashButton3Tapped log1&quot;);</span><br><span class="line">CLS_LOG(@&quot; UncaughtExceptionHandler test&quot;);</span><br><span class="line">//.... more</span><br></pre></td></tr></table></figure><br><img src="http://qiniu.xuyanlan.com/Twitter-Crashlytics-iOS/customLog.png" alt=""></p>
 <h3 id="和NSSetUncaughtExceptionHandler-amp-UncaughtExceptionHandler-不冲突"><a href="#和NSSetUncaughtExceptionHandler-amp-UncaughtExceptionHandler-不冲突" class="headerlink" title="和NSSetUncaughtExceptionHandler (&amp;UncaughtExceptionHandler)不冲突"></a>和NSSetUncaughtExceptionHandler (&amp;UncaughtExceptionHandler)不冲突</h3><p>在监听中使用customKey和customLog添加一些自己想放到崩溃信息中的重要信息，比如当前显示的view之类的。</p>
@@ -683,7 +683,7 @@
     <link href="http://yoursite.com/2017/12/11/TextView-%E9%80%89%E4%B8%AD%E9%AB%98%E4%BA%AE%E5%8A%A8%E6%95%88-iOS/"/>
     <id>http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/</id>
     <published>2017-12-10T23:05:16.000Z</published>
-    <updated>2019-02-15T09:52:05.488Z</updated>
+    <updated>2019-02-15T09:52:05.000Z</updated>
     <content type="html"><![CDATA[<p>最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。<br>解决步骤：</p>
 <blockquote>
 <p>1：覆盖一个一模一样的textView、相同的frame、font。<br>2：设置textView的selectedRange<br>3：拿到textView的selectedTextRange<br>4：根据selectedTextRange通过selectionRectsForRange方法拿到选中的UITextSelectionRect数组，UITextSelectionRect中包含选中的rect信息，选中的首尾位置。<br>5：分析UITextSelectionRect数组给textView的layer添加CABasicAnimation的相关path和opacity等动效</p>
@@ -717,7 +717,7 @@
     <link href="http://yoursite.com/2017/10/18/2017%E5%9B%BD%E5%BA%86%E7%A8%BB%E5%9F%8E%E4%BA%9A%E4%B8%81%E4%B9%8B%E6%97%85/"/>
     <id>http://yoursite.com/2017/10/18/2017国庆稻城亚丁之旅/</id>
     <published>2017-10-18T13:23:03.000Z</published>
-    <updated>2018-10-31T11:35:57.710Z</updated>
+    <updated>2018-10-31T11:35:57.000Z</updated>
     <content type="html"><![CDATA[<p>行程日期：2017/09/29 - 2017/10/08<br>行程路线：成都-&gt;海螺沟-&gt;雅江-&gt;稻城亚丁-&gt;康定县-&gt;丹巴县-&gt;成都<br>行程亮点：美景 美食 </p>
 <h4 id="美好的路途开始啦，逛吃逛吃逛吃，hot-hot-hot！！！—-成都我来了"><a href="#美好的路途开始啦，逛吃逛吃逛吃，hot-hot-hot！！！—-成都我来了" class="headerlink" title="美好的路途开始啦，逛吃逛吃逛吃，hot hot hot！！！— 成都我来了"></a>美好的路途开始啦，逛吃逛吃逛吃，hot hot hot！！！— 成都我来了</h4><p>来成都当然是串串配火锅啦，好吃不贵，满足！作为喜欢吃辣的妹纸这两天可以说是相当开心了O(∩_∩)O~<br>在成都呆了两天，白天逛了锦里和宽窄巷子，晚上在蜀风雅韵看了川剧变脸、戏曲表演，好惬意~~<br>锦里、宽窄巷子、川剧、串串<br><img src="http://qiniu.xuyanlan.com/daoCheng/1792901.jpg" alt=""></p>
 <blockquote>
@@ -817,7 +817,7 @@
     <link href="http://yoursite.com/2017/08/28/travelInEurope/"/>
     <id>http://yoursite.com/2017/08/28/travelInEurope/</id>
     <published>2017-08-27T20:43:28.000Z</published>
-    <updated>2018-10-31T11:18:30.195Z</updated>
+    <updated>2018-10-31T11:18:30.000Z</updated>
     <content type="html"><![CDATA[<p>行程日期：2017/6/29 - 2017/7/10</p>
 <h4 id="出发"><a href="#出发" class="headerlink" title="出发"></a>出发</h4><p>目的地是罗马，上午11点40从上海出发，在阿姆斯特丹转机，历时16小时，到达罗马的酒店当地时间凌晨一点。</p>
 <h4 id="6-29-梵蒂冈-gt-罗马斗兽场"><a href="#6-29-梵蒂冈-gt-罗马斗兽场" class="headerlink" title="6-29 梵蒂冈-&gt;罗马斗兽场"></a>6-29 梵蒂冈-&gt;罗马斗兽场</h4><p>圣彼得堡大教堂，正逢佛朗西斯一世教皇在做礼拜O(∩_∩)O~<br><img src="http://qiniu.xuyanlan.com/travelInEurope/62901.JPG" alt=""><br><img src="http://qiniu.xuyanlan.com/travelInEurope/62903.JPG" alt=""><br>圣彼得堡大教堂<br><img src="http://qiniu.xuyanlan.com/travelInEurope/62904.JPG" alt=""><br><a id="more"></a><br><img src="http://qiniu.xuyanlan.com/travelInEurope/62905.JPG" alt=""><br>圣彼得堡大教堂<br><img src="http://qiniu.xuyanlan.com/travelInEurope/62906.JPG" alt=""><br>许愿池<br><img src="http://qiniu.xuyanlan.com/travelInEurope/62907.JPG" alt=""><br>罗马斗兽场<br><img src="http://qiniu.xuyanlan.com/travelInEurope/62902.JPG" alt=""></p>
