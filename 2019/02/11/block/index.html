@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="block 转 c++ 源码如下代码 .h .m文件1234567891011121314151617181920212223242526272829303132//TestClang.h@interface TestClang : NSObject+ (void)testBlcok;@end//TestClang.m#import &amp;quot;TestClang.h&amp;quot;static in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="block 探索">
+<meta property="og:url" content="http://yoursite.com/2019/02/11/block/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="block 转 c++ 源码如下代码 .h .m文件1234567891011121314151617181920212223242526272829303132//TestClang.h@interface TestClang : NSObject+ (void)testBlcok;@end//TestClang.m#import &amp;quot;TestClang.h&amp;quot;static in">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/02/11/block/block.jpeg">
+<meta property="og:image" content="http://yoursite.com/2019/02/11/block/type.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/11/block/block-store.jpeg">
+<meta property="og:updated_time" content="2019-07-01T16:18:32.045Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="block 探索">
+<meta name="twitter:description" content="block 转 c++ 源码如下代码 .h .m文件1234567891011121314151617181920212223242526272829303132//TestClang.h@interface TestClang : NSObject+ (void)testBlcok;@end//TestClang.m#import &amp;quot;TestClang.h&amp;quot;static in">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/11/block/block.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/11/block/">
+
+
+
+
+
+  <title>block 探索 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/block/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">block 探索</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-10T21:31:14Z">
+                2019-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="block-转-c-源码"><a href="#block-转-c-源码" class="headerlink" title="block 转 c++ 源码"></a>block 转 c++ 源码</h3><p>如下代码 .h .m文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//TestClang.h</span><br><span class="line">@interface TestClang : NSObject</span><br><span class="line">+ (void)testBlcok;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//TestClang.m</span><br><span class="line">#import &quot;TestClang.h&quot;</span><br><span class="line">static int numGlobel = 29;</span><br><span class="line">@implementation TestClang</span><br><span class="line">+ (void)testBlcok &#123;</span><br><span class="line">    //没有截获局部变量 __NSGlobalBlock__</span><br><span class="line">    void(^block1)(void) = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block&quot;);</span><br><span class="line">            &#125;;</span><br><span class="line">    NSLog(@&quot; block1 = %@&quot;, block1);</span><br><span class="line">    block1();</span><br><span class="line">    static int numStatic = 12;</span><br><span class="line">    int num = 10;</span><br><span class="line">    __block int numBlock = 19;</span><br><span class="line">    __block int numBlock2 = 30;</span><br><span class="line">    __block int numBlockTest = 30;</span><br><span class="line">        void(^block2)(void) = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block === %d, numStatic = %d numGlobel = %d  numBlock=%d numBlock2=%d numBlockTest = %d&quot;, num,numStatic,numGlobel,numBlock,numBlock2,numBlockTest);</span><br><span class="line">            &#125;;</span><br><span class="line">    num = 33;</span><br><span class="line">    numStatic = 121;</span><br><span class="line">    numGlobel = 129;</span><br><span class="line">    numBlock = 22222;</span><br><span class="line">    block2();</span><br><span class="line">    NSLog(@&quot;block2 = %@&quot;, block2);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>执行：xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc TestClang.m<br>不要引用其他头文件，以免导出报Error<br>目录下生成了一个TestClang.cpp文件</p>
+</blockquote>
+<ul>
+<li>testBlock 对应的方法变为：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//_C_ 表示为类方法 _I_ 为实例方法</span><br><span class="line">static void _C_TestClang_testBlcok(Class self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">    void(*block1)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_0((void *)__TestClang__testBlcok_block_func_0, &amp;__TestClang__testBlcok_block_desc_0_DATA));</span><br><span class="line">    NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_cf514e_mi_1, block1);</span><br><span class="line">    ((void (*)(__block_impl *))((__block_impl *)block1)-&gt;FuncPtr)((__block_impl *)block1);</span><br><span class="line">    static int numStatic = 12;</span><br><span class="line">    int num = 10;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlock_0 numBlock = &#123;(void*)0,(__Block_byref_numBlock_0 *)&amp;numBlock, 0, sizeof(__Block_byref_numBlock_0), 19&#125;;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlock2_1 numBlock2 = &#123;(void*)0,(__Block_byref_numBlock2_1 *)&amp;numBlock2, 0, sizeof(__Block_byref_numBlock2_1), 30&#125;;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlockTest_2 numBlockTest = &#123;(void*)0,(__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 0, sizeof(__Block_byref_numBlockTest_2), 30&#125;;</span><br><span class="line"></span><br><span class="line">        void(*block2)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_1((void *)__TestClang__testBlcok_block_func_1, &amp;__TestClang__testBlcok_block_desc_1_DATA, num, &amp;numStatic, (__Block_byref_numBlock_0 *)&amp;numBlock, (__Block_byref_numBlock2_1 *)&amp;numBlock2, (__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 570425344));</span><br><span class="line">    num = 33;</span><br><span class="line">    numStatic = 121;</span><br><span class="line">    numGlobel = 129;</span><br><span class="line">    (numBlock.__forwarding-&gt;numBlock) = 22222;</span><br><span class="line">    ((void (*)(__block_impl *))((__block_impl *)block2)-&gt;FuncPtr)((__block_impl *)block2);</span><br><span class="line">    NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_cf514e_mi_3, block2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="block-变量定义"><a href="#block-变量定义" class="headerlink" title="block 变量定义"></a>block 变量定义</h4><p>OC 代码中定义了了block1 和 block2 两个 block 变量，我们看 block1 变量定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void(*block1)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_0((void *)__TestClang__testBlcok_block_func_0, &amp;__TestClang__testBlcok_block_desc_0_DATA));</span><br></pre></td></tr></table></figure></p>
+<p>上述定义代码中，可以发现，block1 定义中调用了 <code>__TestClang__testBlcok_block_impl_0</code> 并且将 <code>__TestClang__testBlcok_block_func_0</code> 函数 和 <code>__TestClang__testBlcok_block_desc_0_DATA</code> 地址赋值给了 block1。（你可能注意到了命名规则 <code>__类名__方法名__block__impl_第几个block</code>，desc 和 func 类似）。</p>
+<p>那么我们来看一下 <code>__TestClang__testBlcok_block_impl_0</code> 结构体的内部结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">struct __TestClang__testBlcok_block_impl_0 &#123;</span><br><span class="line">  struct __block_impl impl;</span><br><span class="line">  struct __TestClang__testBlcok_block_desc_0* Desc;</span><br><span class="line">  __TestClang__testBlcok_block_impl_0(void *fp, struct __TestClang__testBlcok_block_desc_0 *desc, int flags=0) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;</span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br>结构体实现了一个同名的构造函数，也就是说将 <code>__TestClang__testBlcok_block_impl_0</code> 结构体的地址赋值给了 block1 变量；<br><code>__TestClang__testBlcok_block_impl_0</code> 的构造函数参数有 （void*）<code>__TestClang__testBlcok_block_func_0</code> 、<code>__TestClang__testBlcok_block_desc_0_DATA</code> flags=0。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">static void __TestClang__testBlcok_block_func_0(struct __TestClang__testBlcok_block_impl_0 *__cself) &#123;</span><br><span class="line"></span><br><span class="line">        NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_61ed5f_mi_0);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">static struct __TestClang__testBlcok_block_desc_0 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">&#125; __TestClang__testBlcok_block_desc_0_DATA = &#123; 0, sizeof(struct __TestClang__testBlcok_block_impl_0)&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>我们可以看到 <code>__TestClang__testBlcok_block_desc_0</code> 中存储着两个参数，reserved 和 Block_size，并且 reserved 赋值为0而 Block_size 则存储着 <code>__TestClang__testBlcok_block_impl_0</code> 的占用空间大小。最终将 <code>__TestClang__testBlcok_block_desc_0</code> 结构体的地址传入 <code>__TestClang__testBlcok_block_impl_0</code> 中赋值给 Desc。<br>然而 block1 只是一个最简单的 block ，没有截获任何变量。运行时打印 block1 会发现 block1 是 <code>__NSGlobalBlock__</code> 类型（原因：只要block没有引用栈或堆上的数据，编译器则会吧 block1 优化为  <code>__NSGlobalBlock__</code> 类型）。</p>
+<p>下面我们来看下截获了外部值的 block。</p>
+<h4 id="截获局部变量、静态变量、全局静态变量、-block-变量的-block"><a href="#截获局部变量、静态变量、全局静态变量、-block-变量的-block" class="headerlink" title="截获局部变量、静态变量、全局静态变量、__block 变量的 block"></a>截获局部变量、静态变量、全局静态变量、__block 变量的 block</h4><p>block2 变量的定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">        void(*block2)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_1((void *)__TestClang__testBlcok_block_func_1, &amp;__TestClang__testBlcok_block_desc_1_DATA, num, &amp;numStatic, (__Block_byref_numBlock_0 *)&amp;numBlock, (__Block_byref_numBlock2_1 *)&amp;numBlock2, (__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 570425344));</span><br></pre></td></tr></table></figure><br>block2 变量的声明看起来比较复制，对应 OC 源码分析：</p>
+<ul>
+<li>可以看到 <code>__TestClang__testBlcok_block_impl_1</code> 中的结构体成员变多了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct __TestClang__testBlcok_block_impl_1 &#123;</span><br><span class="line">  struct __block_impl impl;</span><br><span class="line">  struct __TestClang__testBlcok_block_desc_1* Desc;</span><br><span class="line">  int num;</span><br><span class="line">  int *numStatic; //静态局部变量地址截获， 对于全局的静态变量，可以直接使用，不需要截获为结构题成员变量</span><br><span class="line">  __Block_byref_numBlock_0 *numBlock; // by ref 声明了 __block 的局部变量 (命名规则：__Block_byref_变量名_第几个ref）</span><br><span class="line">  __Block_byref_numBlock2_1 *numBlock2; // by ref 声明了 __block 的局部变量</span><br><span class="line">  __Block_byref_numBlockTest_2 *numBlockTest; // by ref 声明了 __block 的局部变量</span><br><span class="line">  __TestClang__testBlcok_block_impl_1(void *fp, struct __TestClang__testBlcok_block_desc_1 *desc, int _num, int *_numStatic, __Block_byref_numBlock_0 *_numBlock, __Block_byref_numBlock2_1 *_numBlock2, __Block_byref_numBlockTest_2 *_numBlockTest, int flags=0) : num(_num), numStatic(_numStatic), numBlock(_numBlock-&gt;__forwarding), numBlock2(_numBlock2-&gt;__forwarding), numBlockTest(_numBlockTest-&gt;__forwarding) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;</span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>接下来同样看下<strong>TestClang</strong>testBlcok_block_impl_1 构造函数的参数</p>
+<ul>
+<li><p><code>__TestClang__testBlcok_block_func_1</code> block2 的 FuncPtr</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">static void __TestClang__testBlcok_block_func_1(struct __TestClang__testBlcok_block_impl_1 *__cself) &#123;</span><br><span class="line">  __Block_byref_numBlock_0 *numBlock = __cself-&gt;numBlock; // bound by ref</span><br><span class="line">  __Block_byref_numBlock2_1 *numBlock2 = __cself-&gt;numBlock2; // bound by ref</span><br><span class="line">  __Block_byref_numBlockTest_2 *numBlockTest = __cself-&gt;numBlockTest; // bound by ref</span><br><span class="line">  int num = __cself-&gt;num; // bound by copy</span><br><span class="line">  int *numStatic = __cself-&gt;numStatic; // bound by copy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_d96c9e_mi_2, num,(*numStatic),numGlobel,(numBlock-&gt;__forwarding-&gt;numBlock),(numBlock2-&gt;__forwarding-&gt;numBlock2),(numBlockTest-&gt;__forwarding-&gt;numBlockTest));</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>__TestClang__testBlcok_block_desc_1_DATA</code> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static struct __TestClang__testBlcok_block_desc_1 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">  void (*copy)(struct __TestClang__testBlcok_block_impl_1*, struct __TestClang__testBlcok_block_impl_1*);</span><br><span class="line">  void (*dispose)(struct __TestClang__testBlcok_block_impl_1*);</span><br><span class="line">&#125; __TestClang__testBlcok_block_desc_1_DATA = &#123; 0, sizeof(struct __TestClang__testBlcok_block_impl_1), __TestClang__testBlcok_block_copy_1, __TestClang__testBlcok_block_dispose_1&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新增了<code>__TestClang__testBlcok_block_copy_1</code> 和 <code>__TestClang__testBlcok_block_dispose_1</code>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static void __TestClang__testBlcok_block_copy_1(struct __TestClang__testBlcok_block_impl_1*dst, struct __TestClang__testBlcok_block_impl_1*src) &#123;_Block_object_assign((void*)&amp;dst-&gt;numBlock, (void*)src-&gt;numBlock, 8/*BLOCK_FIELD_IS_BYREF*/);_Block_object_assign((void*)&amp;dst-&gt;numBlock2, (void*)src-&gt;numBlock2, 8/*BLOCK_FIELD_IS_BYREF*/);_Block_object_assign((void*)&amp;dst-&gt;numBlockTest, (void*)src-&gt;numBlockTest, 8/*BLOCK_FIELD_IS_BYREF*/);&#125;</span><br><span class="line"></span><br><span class="line">static void __TestClang__testBlcok_block_dispose_1(struct __TestClang__testBlcok_block_impl_1*src) &#123;_Block_object_dispose((void*)src-&gt;numBlock, 8/*BLOCK_FIELD_IS_BYREF*/);_Block_object_dispose((void*)src-&gt;numBlock2, 8/*BLOCK_FIELD_IS_BYREF*/);_Block_object_dispose((void*)src-&gt;numBlockTest, 8/*BLOCK_FIELD_IS_BYREF*/);&#125;</span><br></pre></td></tr></table></figure>
+<p><code>__TestClang__testBlcok_block_copy_1</code> 函数中所使用的<code>_Block_object_assign</code>函数将对象类型对象复制给 Block 用结构体的成员变量 arc 并持有该对象，调用<code>_Block_object_assign</code>函数相当于retain函数，将对象赋值在对象类型的结构体成员变量中。<br><code>__TestClang__testBlcok_block_dispose_1</code> 函数中使用 <code>_Block_object_dispose</code> 函数释放赋值在 Block 用结构体成员变量 arc 中的对象。调用 <code>_Block_object_dispose</code>函数相当于调用release函数，释放赋值在对象类型结构体中的对象。</p>
+</li>
+<li><p>带<code>__block</code>的局部变量变为了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//查看__Block_byref的定义</span><br><span class="line"></span><br><span class="line">struct __Block_byref_numBlock_0 &#123;</span><br><span class="line">  void *__isa; //(void*)0</span><br><span class="line">__Block_byref_numBlock_0 *__forwarding; //指向结构体地址</span><br><span class="line"> int __flags; //0</span><br><span class="line"> int __size; //byref 大小</span><br><span class="line"> int numBlock; //byref 截获的值</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">__attribute__((__blocks__(byref))) __Block_byref_numBlock_0 numBlock = &#123;(void*)0,(__Block_byref_numBlock_0 *)&amp;numBlock, 0, sizeof(__Block_byref_numBlock_0), 19&#125;;</span><br><span class="line">__attribute__((__blocks__(byref))) __Block_byref_numBlock2_1 numBlock2 = &#123;(void*)0,(__Block_byref_numBlock2_1 *)&amp;numBlock2, 0, sizeof(__Block_byref_numBlock2_1), 30&#125;;</span><br><span class="line">__attribute__((__blocks__(byref))) __Block_byref_numBlockTest_2 numBlockTest = &#123;(void*)0,(__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 0, sizeof(__Block_byref_numBlockTest_2), 30&#125;;</span><br><span class="line">通过上面的拆解，那么改变 __block 修饰的变量的值会变为下面这种形式</span><br><span class="line">(numBlock.__forwarding-&gt;numBlock) = 22222;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="block-底层关系图解"><a href="#block-底层关系图解" class="headerlink" title="block 底层关系图解"></a>block 底层关系图解</h3><p>先拿网络上的图吧，懒得画。<br><img src="/2019/02/11/block/block.jpeg" title="&nbsp;"></p>
+<h3 id="block-的三种类型"><a href="#block-的三种类型" class="headerlink" title="block 的三种类型"></a>block 的三种类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__NSGlobalBlock__ （ _NSConcreteGlobalBlock ）</span><br><span class="line">__NSStackBlock__ （ _NSConcreteStackBlock ）</span><br><span class="line">__NSMallocBlock__ （ _NSConcreteMallocBlock ）</span><br></pre></td></tr></table></figure>
+<p>上面提到block1是 <code>__NSGlobalBlock__</code>类型，原因是因为没有截获堆上或栈上的变量。测试如下代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (void)testBlcok &#123;</span><br><span class="line">    //没有截获局部变量 __NSGlobalBlock__</span><br><span class="line">    void(^blockA)(void) = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block&quot;);</span><br><span class="line">            &#125;;</span><br><span class="line">    NSLog(@&quot;%@&quot;, blockA);</span><br><span class="line">    //原因：只要block literal里没有引用栈或堆上的数据，那么这个block会自动变为__NSGlobalBlock__类型，这是编译器的优化</span><br><span class="line">    // int value = 10; 改为 const int value = 10; 则会为__NSGlobalBlock__ ，因为加上const 的 value存储在常量区</span><br><span class="line">    //截获了局部变量 __NSMallocBlock__</span><br><span class="line">    int value = 10;</span><br><span class="line">        void(^blockB)(void) = ^&#123;</span><br><span class="line">        </span><br><span class="line">        NSLog(@&quot;just a block === %d&quot;, value);</span><br><span class="line">            &#125;;</span><br><span class="line">    NSLog(@&quot;%@&quot;, blockB);</span><br><span class="line">    //一般并不会这么使用</span><br><span class="line">    // __NSStackBlock__</span><br><span class="line">    void(^ __weak blockC)() = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block === %d&quot;, value);</span><br><span class="line">            &#125;;</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;%@&quot;, blockC);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>类型定义：<br><img src="/2019/02/11/block/type.png" title="&nbsp;"></p>
+<h3 id="block在内存中的存储"><a href="#block在内存中的存储" class="headerlink" title="block在内存中的存储"></a>block在内存中的存储</h3><p>数据段中的  <code>__NSGlobalBlock__</code>直到程序结束才会被回收，不过我们很少使用到<code>__NSGlobalBlock__</code>类型的block，因为这样使用block并没有什么意义。<br><code>__NSStackBlock__类</code>型的block存放在栈中，我们知道栈中的内存由系统自动分配和释放，作用域执行完毕之后就会被立即释放，而在相同的作用域中定义block并且调用block似乎也多此一举。<br><code>__NSMallocBlock__</code>是在平时编码过程中最常使用到的。存放在堆中需要我们自己进行内存管理。<br><img src="/2019/02/11/block/block-store.jpeg" title="&nbsp;"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/01/wugongshan/" rel="next" title="武功山游记">
+                <i class="fa fa-chevron-left"></i> 武功山游记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/20/iOS-crash-report/" rel="prev" title="如何自建 Crash 平台">
+                如何自建 Crash 平台 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#block-转-c-源码"><span class="nav-number">1.</span> <span class="nav-text">block 转 c++ 源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#block-变量定义"><span class="nav-number">1.1.</span> <span class="nav-text">block 变量定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#截获局部变量、静态变量、全局静态变量、-block-变量的-block"><span class="nav-number">1.2.</span> <span class="nav-text">截获局部变量、静态变量、全局静态变量、__block 变量的 block</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block-底层关系图解"><span class="nav-number">2.</span> <span class="nav-text">block 底层关系图解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block-的三种类型"><span class="nav-number">3.</span> <span class="nav-text">block 的三种类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block在内存中的存储"><span class="nav-number">4.</span> <span class="nav-text">block在内存中的存储</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

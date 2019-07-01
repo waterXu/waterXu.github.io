@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/24/macho-analysis/flags.jpg">
 <meta property="og:image" content="http://yoursite.com/2019/02/24/macho-analysis/dyld-info.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/24/macho-analysis/section_use.png">
-<meta property="og:updated_time" content="2019-06-30T05:41:43.911Z">
+<meta property="og:updated_time" content="2019-06-30T08:17:57.137Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MachO 文件结构分析">
 <meta name="twitter:description" content="上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。 iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。 MachO 二">
@@ -367,7 +367,13 @@
 </strong>DATA 数据段</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * A segment is made up of zero or more sections. </span><br><span class="line"> */</span><br><span class="line">struct section &#123; /* for 32-bit architectures */</span><br><span class="line">	char		sectname[16];	/* name of this section */</span><br><span class="line">	char		segname[16];	/* segment this section goes in */</span><br><span class="line">	uint32_t	addr;		/* memory address of this section */</span><br><span class="line">	uint32_t	size;		/* size in bytes of this section */</span><br><span class="line">	uint32_t	offset;		/* file offset of this section */</span><br><span class="line">	uint32_t	align;		/* section alignment (power of 2) */</span><br><span class="line">	uint32_t	reloff;		/* file offset of relocation entries */</span><br><span class="line">	uint32_t	nreloc;		/* number of relocation entries */</span><br><span class="line">	uint32_t	flags;		/* flags (section type and attributes)*/</span><br><span class="line">	uint32_t	reserved1;	/* reserved (for offset or index) */</span><br><span class="line">	uint32_t	reserved2;	/* reserved (for count or sizeof) */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct section_64 &#123; /* for 64-bit architectures */</span><br><span class="line">	char		sectname[16];	/* name of this section */</span><br><span class="line">	char		segname[16];	/* segment this section goes in */</span><br><span class="line">	uint64_t	addr;		/* memory address of this section */</span><br><span class="line">	uint64_t	size;		/* size in bytes of this section */</span><br><span class="line">	uint32_t	offset;		/* file offset of this section */</span><br><span class="line">	uint32_t	align;		/* section alignment (power of 2) */</span><br><span class="line">	uint32_t	reloff;		/* file offset of relocation entries */</span><br><span class="line">	uint32_t	nreloc;		/* number of relocation entries */</span><br><span class="line">	uint32_t	flags;		/* flags (section type and attributes)*/</span><br><span class="line">	uint32_t	reserved1;	/* reserved (for offset or index) */</span><br><span class="line">	uint32_t	reserved2;	/* reserved (for count or sizeof) */</span><br><span class="line">	uint32_t	reserved3;	/* reserved */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>常见section作用<br><img src="/2019/02/24/macho-analysis/section_use.png" title="&nbsp;"><br>每个 section 的起始位置 + 大小就是下个 section 的启始位置<br>cstring 包含了所有OC的硬编码字符串，nslog 中的字符串也在cstring中，但是不包含含中文的字符串，这些字符串显示的存储在数据段中。不过同样的字符只会存储一次。<br><code>__stubs</code>会到 <code>__DATA</code> 段的<code>__la_symbol_ptr</code>中找到函数的入口地址。</p>
+<p>常见section作用<br><img src="/2019/02/24/macho-analysis/section_use.png" title="&nbsp;"></p>
+<ul>
+<li>每个 section 的起始位置 + 大小就是下个 section 的启始位置</li>
+<li>cstring 包含了所有OC的硬编码字符串，nslog 中的字符串也在cstring中，但是不包含含中文的字符串，这些字符串显示的存储在数据段中。不过同样的字符只会存储一次。</li>
+<li>ustring 中包含了带中文的硬编码字符串，其他同cstring。</li>
+<li><code>__stubs</code>会到 <code>__DATA</code> 段的<code>__la_symbol_ptr</code>中找到函数的入口地址。</li>
+</ul>
 <h4 id="Loader-Info-（链接信息）"><a href="#Loader-Info-（链接信息）" class="headerlink" title="Loader Info （链接信息）"></a>Loader Info （链接信息）</h4><p>一个完整的用户级 MachO 文件的末端是一系列链接信息。其中包含了动态加载器用来链接可执行文件或者依赖所需使用的符号表、字符串表、dynamic loader info（地址修正，bind）。</p>
 
       
@@ -489,7 +495,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
