@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/var.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/symbolString.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/dwarf_line.png">
-<meta property="og:updated_time" content="2019-07-02T08:33:16.071Z">
+<meta property="og:updated_time" content="2019-07-16T07:45:23.606Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="app 加载过程 &amp; 启动速度优化">
 <meta name="twitter:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
@@ -350,7 +350,7 @@
 <p>少非系统库的依赖<br>合并非系统库<br>使用静态库，比如把代码加入主程序</p>
 </blockquote>
 </li>
-<li>Rebase image &amp; Bind image： ASLR(address space layout randomization 地址空间随机化，每个macho都随机了一个slide)使得可执行文件和动态链接库在虚拟内存中的加载地址每次启动都不固定，需要对地址做修正和绑定，之前提到 MachO 的 LC_DYLD_INFO_ONLY 和 <code>__DATA</code> 段的<code>__stubs</code>和<code>__la_symbol_ptr</code> 就是用来做地址修正和绑定的。<br>rebase修复的是指向当前镜像内部的资源指针； 而bind指向的是镜像外部的资源指针。  rebase步骤先进行，需要把镜像读入内存，并以page为单位进行加密验证，保证不会被篡改，所以这一步的瓶颈在IO。bind在其后进行，由于要查询符号表，来指向跨镜像的资源，加上在rebase阶段，镜像已被读入和加密验证，所以这一步的瓶颈在于CPU计算.<br>优化：<blockquote>
+<li>Rebase image &amp; Bind image： ASLR(address space layout randomization 地址空间随机化，每个macho都随机了一个slide)使得可执行文件和动态链接库在虚拟内存中的加载地址每次启动都不固定，之所以需要Rebase，是因为刚刚提到的 ASLR 使得地址随机化，导致起始地址不固定，另外由于Code Sign，导致不能直接修改Image。Rebase的时候只需要增加对应的偏移量即可。待Rebase的数据都存放在<code>__LINKEDIT</code> 中。可以通过MachOView查看：Dynamic Loader Info -&gt; Rebase Info<br>rebase修复的是指向当前镜像内部的资源指针； 而bind指向的是镜像外部的资源指针。  rebase步骤先进行，需要把镜像读入内存，并以page为单位进行加密验证，保证不会被篡改，所以这一步的瓶颈在IO。bind在其后进行，由于要查询符号表，来指向跨镜像的资源，加上在rebase阶段，镜像已被读入和加密验证，所以这一步的瓶颈在于CPU计算.<br>优化：<blockquote>
 <p>减少Objc类数量， 减少selector数量<br>减少C++虚函数数量<br>加载完macho和动态链接库和进行了地址修正之后,dyld所做的事情完成了大部分.</p>
 </blockquote>
 </li>
@@ -370,7 +370,7 @@
 <blockquote>
 <p>dyld 开始将程序二进制文件初始化<br>交由 ImageLoader 读取 image，其中包含了我们的类、方法等各种符号<br>由于 runtime 向 dyld 绑定了回调，当 image 加载到内存后，dyld 会通知 runtime 进行处理<br>runtime 接手后调用 mapimages 做解析和处理，接下来 loadimages 中调用 callloadmethods 方法，遍历所有加载进来的 Class，按继承层级依次调用 Class 的 +load 方法和其 Category 的 +load 方法<br>至此，可执行文件中和动态库所有的符号(Class，Protocol，Selector，IMP，…)都已经按格式成功加载到内存中，被 runtime 所管理，再这之后，runtime 的那些方法(动态添加 Class、swizzle 等等才能生效)。整个事件由 dyld 主导，完成运行环境的初始化后，配合 ImageLoader 将二进制文件按格式加载到内存， 动态链接依赖库，并由 runtime 负责加载成 objc 定义的结构，所有初始化工作结束后，dyld 调用真正的 main 函数。</p>
 </blockquote>
-<p>还有很多不清晰的点，还需要进行深入了解。<br>参考文章:<a href="https://techblog.toutiao.com/2018/05/29/untitled-24/?from=singlemessage&amp;isappinstalled=0" target="_blank" rel="noopener">https://techblog.toutiao.com/2018/05/29/untitled-24/?from=singlemessage&amp;isappinstalled=0</a></p>
+<p>参考文章:<br><a href="https://techblog.toutiao.com/2018/05/29/untitled-24/?from=singlemessage&amp;isappinstalled=0" target="_blank" rel="noopener">【性能优化】iOS客户端启动速度优化</a><br><a href="https://blog.csdn.net/Hello_Hwc/article/details/78317863" target="_blank" rel="noopener">深入理解iOS App的启动过程</a><br><a href="https://blog.cnbluebox.com/blog/2017/06/20/dyldyu-objc/" target="_blank" rel="noopener">dyld与ObjC</a> </p>
 
       
     </div>
