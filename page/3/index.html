@@ -254,6 +254,449 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/08/Twitter-Crashlytics-iOS/" itemprop="url">Twitter Crashlytics-iOS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T17:29:17Z">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术调研/" itemprop="url" rel="index">
+                    <span itemprop="name">技术调研</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！<br><a href="https://www.jianshu.com/p/0a2ff9cd5c23" target="_blank" rel="noopener">iOS 崩溃统计工具-Crashlytics</a><br>了解crash收集：<a href="https://nianxi.net/ios/ios-crash-reporter.html" target="_blank" rel="noopener">漫谈iOS Crash收集框架</a></p>
+<h3 id="customKey-和-customLog"><a href="#customKey-和-customLog" class="headerlink" title="customKey 和 customLog"></a>customKey 和 customLog</h3><p>customKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到崩溃过程中的用户行为路径，方便用户定位crash根源。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//customKey</span><br><span class="line">[CrashlyticsKit setUserIdentifier:@&quot;device&quot;];</span><br><span class="line">[CrashlyticsKit setUserEmail:@&quot;133@qq.com&quot;];</span><br><span class="line">[CrashlyticsKit setUserName:@&quot;xyl&quot;];</span><br><span class="line">[CrashlyticsKit setObjectValue:@&quot;testValue&quot; forKey:@&quot;testKey&quot;];</span><br><span class="line">NSDictionary *dict = @&#123;</span><br><span class="line">                       @&quot;key1&quot;:@&quot;key1&quot;,</span><br><span class="line">                       @&quot;key2&quot;:@&quot;key2&quot;</span><br><span class="line">                       &#125;;</span><br><span class="line">[CrashlyticsKit setObjectValue:dict forKey:@&quot;testKeyDict&quot;];</span><br></pre></td></tr></table></figure><br><img src="http://qiniu.xuyanlan.com/Twitter-Crashlytics-iOS/customKey.png" alt=""><br></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/08/Twitter-Crashlytics-iOS/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/2017-2018/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/2017-2018/" itemprop="url">2017-2018</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-30T11:27:43Z">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/想法/" itemprop="url" rel="index">
+                    <span itemprop="name">想法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="2017"><a href="#2017" class="headerlink" title="2017"></a>2017</h4><h5 id="2017年算是比较热闹的一年吧，顺便解决了人生大事O-∩-∩-O"><a href="#2017年算是比较热闹的一年吧，顺便解决了人生大事O-∩-∩-O" class="headerlink" title="2017年算是比较热闹的一年吧，顺便解决了人生大事O(∩_∩)O~~"></a>2017年算是比较热闹的一年吧，顺便解决了人生大事O(∩_∩)O~~</h5><h5 id="换了一个工作环境"><a href="#换了一个工作环境" class="headerlink" title="换了一个工作环境"></a>换了一个工作环境</h5><p>离开了呆了3年的巨人网络，巨人网络园区应该是为数不多的工作环境舒适，设施齐全，面积广的园区啦，怀念每天中午打羽毛球or健身的场景。<br><img src="/2018/01/30/2017-2018/201701.JPG" title="&nbsp;"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/30/2017-2018/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/11/TextView-选中高亮动效-iOS/" itemprop="url">TextView 选中高亮动效---iOS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-10T23:05:16Z">
+                2017-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。<br>解决步骤：</p>
+<blockquote>
+<p>1：覆盖一个一模一样的textView、相同的frame、font。<br>2：设置textView的selectedRange<br>3：拿到textView的selectedTextRange<br>4：根据selectedTextRange通过selectionRectsForRange方法拿到选中的UITextSelectionRect数组，UITextSelectionRect中包含选中的rect信息，选中的首尾位置。<br>5：分析UITextSelectionRect数组给textView的layer添加CABasicAnimation的相关path和opacity等动效</p>
+</blockquote>
+<p>代码很简单：<br>新建一个同样的textView<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//额外添加一个用来做高亮的textview</span><br><span class="line">   _maskTextview = [UITextView new];</span><br><span class="line">   _maskTextview.text = testString;</span><br><span class="line">   _maskTextview.textColor = [UIColor redColor];//你要高亮的颜色</span><br><span class="line">   _maskTextview.font = [UIFont systemFontOfSize:20];</span><br><span class="line">   _maskTextview.frame = textView.frame;</span><br><span class="line">   </span><br><span class="line">   [self.view addSubview:_maskTextview];</span><br><span class="line">   </span><br><span class="line">   _layer = [CAShapeLayer layer];</span><br><span class="line">   _layer.frame = _maskTextview.bounds;</span><br><span class="line">   _layer.fillColor = [UIColor blackColor].CGColor;//本来textview的颜色</span><br><span class="line">   [_maskTextview.layer setMask:_layer];</span><br></pre></td></tr></table></figure><br></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/11/TextView-选中高亮动效-iOS/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/18/2017国庆稻城亚丁之旅/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1284,458 +1727,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/04/EffectiveObjective-dynamic/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="纳兰若水">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="纳兰若水">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/04/EffectiveObjective-dynamic/" itemprop="url">Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-04T11:48:59Z">
-                2017-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>我们要知道在Objective-C中，如果像某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象收到消息之后，究竟该调用哪个方法则完全于运行期决定，甚至可以在程序运行时改变(最常见的运用场景就是<code>Method Swizzle</code>黑魔法)，这些特性使得Objective-C成为一门真正的动态语言。<br>给对象发送消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id returnValue = objc_msgSend(someObject,@selector(messageName:),parameter);</span><br></pre></td></tr></table></figure><br>objc_msgSend方法会在接收者所属的类中搜寻其”方法列表 list of methods (可通过<code>class_copyMethodList(objClass,&amp;count)</code>方法获取对象所有方法列表) “,如果能找到与选择子(也就是messageName)名称相符的方法就跳转至其实现代码。若找不到则沿着继承体系向上查找，找到方法再跳转( note :找到后，objc_msgSend会将匹配的结果缓存在<code>快速映射表(fast map)</code>里面,每个类都有这样一块缓存，若是稍后还向该类发送与选择子相同的消息，那么执行就很快。当然还是稍微不如静态绑定的函数调用快，不过消息派发机制并不会成为应用程序的瓶颈啦！)，<br>如果最终还是找不到相符的方法，那就执行<code>消息转发（message forwarding）</code>操作。消息转发分为两大阶段，<code>动态方法解析阶段</code>和<code>完整的消息转发阶段</code>。<br>本文将用例子来演示第一阶段的运用。<br></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/04/EffectiveObjective-dynamic/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/04/jspatch-question/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="纳兰若水">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="纳兰若水">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/04/jspatch-question/" itemprop="url">JSPatch - 随笔记录常见问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-03T18:14:59Z">
-                2017-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index">
-                    <span itemprop="name">技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>接触JSPatch也快一年，在此总结归纳一些新接触的开发者容易碰到的一些问题。其实很多问题bang哥在wiki中已经写的很详细了，建议花点时间仔细看看下面这两个WiKi内容。</p>
-<blockquote>
-<ul>
-<li><a href="https://github.com/bang590/JSPatch/wiki/JSPatch-基础用法" target="_blank" rel="noopener">基础用法</a> </li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><a href="https://github.com/bang590/JSPatch/wiki/JSPatch-常见问题" target="_blank" rel="noopener">常见问题</a></li>
-</ul>
-</blockquote>
-<p>想要了解JSPatch实现原理可以先看 <a href="https://github.com/bang590/JSPatch/wiki/JSPatch-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3" target="_blank" rel="noopener">JSPatch 实现原理详解</a></p>
-<h3 id="require导入类"><a href="#require导入类" class="headerlink" title="require导入类"></a>require导入类</h3><p>只需要一对<code>&#39; &#39;</code>， 多个类之间用逗号 <code>,</code>分隔:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require(&apos;UIView, UIColor&apos;)</span><br></pre></td></tr></table></figure></p>
-<h3 id="方法遇到下划线-需要特别注意"><a href="#方法遇到下划线-需要特别注意" class="headerlink" title="方法遇到下划线_需要特别注意"></a>方法遇到下划线<code>_</code>需要特别注意</h3><p>因为JSPatch是通过<code>_</code>来分割方法参数的，所以遇到方法本身带有<code>_</code>的时候需要使用<code>__</code>双下划线代替，否则会被识别成一个参数，导致出现类似如下的报错。<br></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/04/jspatch-question/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/16/newGaint/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="纳兰若水">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="纳兰若水">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/16/newGaint/" itemprop="url">搬入巨人网络二期大楼</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-15T18:14:59Z">
-                2016-09-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/记录-游记/" itemprop="url" rel="index">
-                    <span itemprop="name">记录 游记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="终于搬到期待已久的新办公楼了-巨人网络二期大楼"><a href="#终于搬到期待已久的新办公楼了-巨人网络二期大楼" class="headerlink" title="终于搬到期待已久的新办公楼了-巨人网络二期大楼"></a>终于搬到期待已久的新办公楼了-巨人网络二期大楼</h3><p>从毕业到巨人网络至今整整两年了，值得纪念啊~趁这次入驻二期大楼，记录下这时刻。<br>二期大楼被称为国内最具硅谷研发气质园区哦，我这就来贴图啦~~<br><br></p>
-<h3 id="二期大楼外观图"><a href="#二期大楼外观图" class="headerlink" title="二期大楼外观图"></a>二期大楼外观图</h3><p><img src="http://qiniu.xuyanlan.com/newGaint/new1.jpg" alt=""><br></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/09/16/newGaint/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1788,7 +1779,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1799,7 +1790,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1871,7 +1862,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         
-<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
