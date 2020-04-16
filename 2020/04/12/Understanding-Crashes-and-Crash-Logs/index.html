@@ -100,7 +100,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/rotatedfree.png">
 <meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/common.png">
 <meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/sanitizer.png">
-<meta property="og:updated_time" content="2020-04-14T07:36:33.017Z">
+<meta property="og:updated_time" content="2020-04-16T04:29:23.375Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding Crashes and Crash Logs">
 <meta name="twitter:description" content="前段时间通过搭建 Crash 平台的机会，知道了如何进行 Crash 的解析和聚类。那么如何去理解一个 Crash 呢？这篇文章是通过 WWDC 中的资料进行整理学习的。  Understanding Crashes and Crash Logs - WWDC 2018 及相关的视频和资料。 参考文章：Understanding Crashes and Crash Logs  崩溃的基本原理什么是">
@@ -416,7 +416,6 @@
 <li>加载crash log文件</li>
 </ul>
 <p>Exception Codes    异常出错的代码（常见代码有以下几种)<br>0x8badf00d错误码：Watchdog超时，意为“ate bad food”。<br>0xdeadfa11错误码：用户强制退出，意为“dead fall”。<br>0xbaaaaaad错误码：用户按住Home键和音量键，获取当前内存状态，不代表崩溃。<br>0xbad22222错误码：VoIP应用（因为太频繁？）被iOS干掉。<br>0xc00010ff错误码：因为太烫了被干掉，意为“cool off”。<br>0xdead10cc错误码：因为在后台时仍然占据系统资源（比如通讯录）被干掉，意为“dead lock”。</p>
-<p>作者：谈Xx<br>链接：<a href="https://www.jianshu.com/p/930d7f77df6c" target="_blank" rel="noopener">https://www.jianshu.com/p/930d7f77df6c</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
 <h4 id="Crash-Log-Analysis-Summary"><a href="#Crash-Log-Analysis-Summary" class="headerlink" title="Crash Log Analysis Summary"></a>Crash Log Analysis Summary</h4><ul>
 <li>Understand the crash reason : 明白 Crash 原因</li>
 <li>Examine the crashed thread’s stack trace  : 检查崩溃线程的堆栈跟踪</li>
