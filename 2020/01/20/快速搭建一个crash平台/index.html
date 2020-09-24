@@ -94,7 +94,8 @@
 <meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/segment.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/json.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/crash.png">
-<meta property="og:updated_time" content="2020-04-12T06:21:48.837Z">
+<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/re.jpg">
+<meta property="og:updated_time" content="2020-09-24T09:08:36.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建 iOS-Crash 平台实践总结">
 <meta name="twitter:description" content="前期调研准备可参考上一篇系列文章：https://www.xuyanlan.com/2019/02/20/iOS-crash-report/ 客户端收集 Crash客户端收集 Crash 使用的是 PLCrashReporter 这个开源的库，集成方法有很多成熟的文章可以参考，这里不再赘述。而且有需要的话你可以在 signal_handler_callback 方法中获取到崩溃信息然后追加崩溃瞬间">
@@ -380,6 +381,11 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
 <li>制定聚类规则<br>  1：找到有 AppName 相关的 Crash 堆栈 Thread 信息，优先级： Last Exception Backtrace &gt; Crashed Thread: XXX &gt; 第一个包含自身 AppName 堆栈的 Thread &gt; Thread 0<br>  2: 定位到的 Thread 提取出 AppName 相关的 Crash 堆栈信息，去除地址相关的信息，进行 md5，这就聚类好了。</li>
 <li>其他定制需求： 如某个 Crash 出现的系统版本、App 版本、新Crash告警，报表等。</li>
 </ul>
+<h3 id="号-unknown-arm64问题解决"><a href="#号-unknown-arm64问题解决" class="headerlink" title="??? 号 + unknown-arm64问题解决"></a>??? 号 + unknown-arm64问题解决</h3><p>有些机型收上来发现image是???，基地址是0x0，搜索发现是苹果新出了arm64e,参考以下文章：<br><a href="https://www.jianshu.com/p/03580e3a1a05" target="_blank" rel="noopener">arm64e符号翻译与PAC问题</a><br>知道原因后发现可以通过crash地址恢复image 和 基地址。</p>
+<ul>
+<li>通过 va = va &amp; 0x0fffffffff; 将崩溃地址复原，遍历所有的image，得到基地址和对应的image。<img src="/2020/01/20/快速搭建一个crash平台/re.jpg" title="&nbsp;"></li>
+<li>又可以愉快的解析啦~</li>
+</ul>
 
       
     </div>
@@ -506,7 +512,7 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -584,7 +590,7 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端收集-Crash"><span class="nav-number">1.</span> <span class="nav-text">客户端收集 Crash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crash-解析-llvm8-0"><span class="nav-number">2.</span> <span class="nav-text">Crash 解析 - llvm8.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量解析-Crash-文件-amp-平台聚类"><span class="nav-number">3.</span> <span class="nav-text">批量解析 Crash 文件 &amp; 平台聚类</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端收集-Crash"><span class="nav-number">1.</span> <span class="nav-text">客户端收集 Crash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crash-解析-llvm8-0"><span class="nav-number">2.</span> <span class="nav-text">Crash 解析 - llvm8.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量解析-Crash-文件-amp-平台聚类"><span class="nav-number">3.</span> <span class="nav-text">批量解析 Crash 文件 &amp; 平台聚类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#号-unknown-arm64问题解决"><span class="nav-number">4.</span> <span class="nav-text">??? 号 + unknown-arm64问题解决</span></a></li></ol></div>
             
 
           </div>

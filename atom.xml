@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2020-04-16T04:29:23.375Z</updated>
+  <updated>2020-09-24T08:40:12.321Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[探究 AutoRelease]]></title>
+    <link href="http://yoursite.com/2020/05/04/%E6%8E%A2%E7%A9%B6-AutoRelease/"/>
+    <id>http://yoursite.com/2020/05/04/探究-AutoRelease/</id>
+    <published>2020-05-03T17:58:38.000Z</published>
+    <updated>2020-09-24T08:40:12.321Z</updated>
+    <content type="html"><![CDATA[<p>参考文章:</p>
+<ul>
+<li><a href="http://satanwoo.github.io/2019/07/02/RevisitAutorelease/?nsukey=jw8uyyU1C%2BzqPgSpg5Kie0F9Bj4HNHiPMBkxPWPBuEs1ZyVoZwklMAJVkv0TeJgILqxLQOH2a0Di8DhFj5abLdtFE3p09pb3az4o9B7IY7rvyZHamZN1OIh5zBQZv1J%2FnHLc6QkiMW%2Fo2PY9fVAeVQN%2FQ5lBojKaT%2FXmKQuCTY5E1MoBK4Ir7Qi6un5pXxvKQutSkFhgEVUn%2FboyV6pdxQ%3D%3D" target="_blank" rel="noopener">Revisit iOS Autorelease 之不经意间可能被影响的优化</a></li>
+<li><a href="https://draveness.me/autoreleasepool/" target="_blank" rel="noopener">自动释放池的前世今生 —- 深入解析 autoreleasepool</a></li>
+<li><a href="http://blog.sunnyxx.com/2014/10/15/behind-autorelease/" target="_blank" rel="noopener">黑幕背后的Autorelease</a></li>
+</ul>
+<p>todo</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>参考文章:</p>
+<ul>
+<li><a href="http://satanwoo.github.io/2019/07/02/RevisitAutorelease/?nsukey=jw8uyyU1C%2BzqPgSpg5Kie0F9Bj4HNHiPMBkxPWPBuEs]]>
+    </summary>
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Understanding Crashes and Crash Logs]]></title>
@@ -165,7 +189,7 @@
     <link href="http://yoursite.com/2020/01/20/%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AAcrash%E5%B9%B3%E5%8F%B0/"/>
     <id>http://yoursite.com/2020/01/20/快速搭建一个crash平台/</id>
     <published>2020-01-19T16:25:47.000Z</published>
-    <updated>2020-04-12T06:21:48.837Z</updated>
+    <updated>2020-09-24T09:08:36.753Z</updated>
     <content type="html"><![CDATA[<p>前期调研准备可参考上一篇系列文章：<a href="https://www.xuyanlan.com/2019/02/20/iOS-crash-report/" target="_blank" rel="noopener">https://www.xuyanlan.com/2019/02/20/iOS-crash-report/</a></p>
 <h3 id="客户端收集-Crash"><a href="#客户端收集-Crash" class="headerlink" title="客户端收集 Crash"></a>客户端收集 Crash</h3><p>客户端收集 Crash 使用的是 <a href="https://github.com/microsoft/plcrashreporter" target="_blank" rel="noopener">PLCrashReporter</a> 这个开源的库，集成方法有很多成熟的文章可以参考，这里不再赘述。而且有需要的话你可以在 <code>signal_handler_callback</code> 方法中获取到崩溃信息然后追加崩溃瞬间的一些 App 信息，对于定位 Crash 有着重要的作用。</p>
 <h3 id="Crash-解析-llvm8-0"><a href="#Crash-解析-llvm8-0" class="headerlink" title="Crash 解析 - llvm8.0"></a>Crash 解析 - llvm8.0</h3><p>实践中 Crash 解析方式并未用到上一篇文章中提到的自己实现的 macho 解析工具，但是前期的准备工作让后期搭建工作更加顺利。如果你的服务器不是 MacOS (是的话可以直接是使用 symbolicatecrash，只需要收集各个版本的固件即可)。我们所部署的 Crash 解析服务器是Linux。<br>发现了一个成熟的 Crash 解析工具 - <a href="http://llvm.org/" target="_blank" rel="noopener">llvm</a>, 我所使用的版本是llvm8.0，部署非常简单，下载解压后就能使用。<a href="http://llvm.org/docs/CommandGuide/" target="_blank" rel="noopener">http://llvm.org/docs/CommandGuide/</a> 中列出了一些 Commands。 其中主要使用到的是:</p>
@@ -195,6 +219,11 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
 <li>整合多个收集上来的 Crash 文件，再统一解析后切分成单个解析好的 Crash 文件。只需要简单的脚本即可实现。</li>
 <li>制定聚类规则<br>  1：找到有 AppName 相关的 Crash 堆栈 Thread 信息，优先级： Last Exception Backtrace &gt; Crashed Thread: XXX &gt; 第一个包含自身 AppName 堆栈的 Thread &gt; Thread 0<br>  2: 定位到的 Thread 提取出 AppName 相关的 Crash 堆栈信息，去除地址相关的信息，进行 md5，这就聚类好了。</li>
 <li>其他定制需求： 如某个 Crash 出现的系统版本、App 版本、新Crash告警，报表等。</li>
+</ul>
+<h3 id="号-unknown-arm64问题解决"><a href="#号-unknown-arm64问题解决" class="headerlink" title="??? 号 + unknown-arm64问题解决"></a>??? 号 + unknown-arm64问题解决</h3><p>有些机型收上来发现image是???，基地址是0x0，搜索发现是苹果新出了arm64e,参考以下文章：<br><a href="https://www.jianshu.com/p/03580e3a1a05" target="_blank" rel="noopener">arm64e符号翻译与PAC问题</a><br>知道原因后发现可以通过crash地址恢复image 和 基地址。</p>
+<ul>
+<li>通过 va = va &amp; 0x0fffffffff; 将崩溃地址复原，遍历所有的image，得到基地址和对应的image。<img src="/2020/01/20/快速搭建一个crash平台/re.jpg" title="&nbsp;"></li>
+<li>又可以愉快的解析啦~</li>
 </ul>
 ]]></content>
     <summary type="html">
@@ -460,7 +489,7 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
     <link href="http://yoursite.com/2019/02/24/macho-analysis/"/>
     <id>http://yoursite.com/2019/02/24/macho-analysis/</id>
     <published>2019-02-23T17:53:35.000Z</published>
-    <updated>2019-07-02T08:29:03.421Z</updated>
+    <updated>2020-05-03T09:59:46.600Z</updated>
     <content type="html"><![CDATA[<p>上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。</p>
 <p>iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。</p>
 <p>MachO 二进制文件可以根据前四字节的magic_num来判断是不是 Fat (包含一个或多个架构，有 Fat_Header), 每个架构同样是的 MachO文件。可以这样比喻，相当于对一个或多个文件用文件夹压缩了下。zip 包相当于 Fat，文件是 Thin。每个文件的内部结构式一致的。</p>
@@ -516,6 +545,8 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//分解</span><br><span class="line">lipo BICrashAnalyzeDemo -thin arm64 -output crashAnalyzeDemoARM64</span><br><span class="line">lipo BICrashAnalyzeDemo -thin armv7 -output crashAnalyzeDemoARMV7</span><br><span class="line">//合并</span><br><span class="line">lipo crashAnalyzeDemoARM64 crashAnalyzeDemoARMV7 -create -output BICrashAnalyzeDemo</span><br></pre></td></tr></table></figure>]]>
     
     </summary>
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
     
   </entry>
   
@@ -1043,38 +1074,6 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
       <category term="备忘录" scheme="http://yoursite.com/tags/%E5%A4%87%E5%BF%98%E5%BD%95/"/>
     
       <category term="iOS" scheme="http://yoursite.com/categories/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[远征腾格里沙漠-五湖连穿]]></title>
-    <link href="http://yoursite.com/2018/04/10/%E8%BF%9C%E5%BE%81%E8%85%BE%E6%A0%BC%E9%87%8C/"/>
-    <id>http://yoursite.com/2018/04/10/远征腾格里/</id>
-    <published>2018-04-10T13:07:25.000Z</published>
-    <updated>2018-10-31T11:43:29.000Z</updated>
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>日期：2018-04-05 ~ 2018-04-07<br>行程特色：领略塞外沙漠风光，体验沙漠徒步，挑战自我<br>全程：53公里<br>装备：防沙鞋、防晒帽、墨镜、轻装<br>温度：-4°C ~ 25°C<br>行程安排：4号飞银川，5号进沙漠，7号出沙漠，8号从银川飞回上海。</p>
-<p><img src="http://qiniu.xuyanlan.com/tengGeLi/host.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/home.jpg" alt=""></p>
-<a id="more"></a>
-<h4 id="4-4号下午抵达银川"><a href="#4-4号下午抵达银川" class="headerlink" title="4-4号下午抵达银川"></a>4-4号下午抵达银川</h4><p>下午到达银川风沙特别大，但是还是冒着风沙去了影视城游玩了一圈，因为风沙特别大，里面的很多商店和游戏项目都关门了.空气中都是风沙的味道。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/441.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/442.jpg" alt=""></p>
-<h4 id="4-5-沙漠徒步启程-amp-天鹅湖"><a href="#4-5-沙漠徒步启程-amp-天鹅湖" class="headerlink" title="4-5 沙漠徒步启程 &amp; 天鹅湖"></a>4-5 沙漠徒步启程 &amp; 天鹅湖</h4><p>踏上沙漠的那一刻，脚随之陷入柔软的沙子，前进的步伐却很沉重，刚开始走的十几步感觉非常的累，慢慢坚持就习惯了，走着走着就进入了一个无敌状态了，感觉可以一步一步，一直走下去，没有想象中的困难。第一天走沙漠，阳沙天气，气温10°C左右，风很大，吹的脸生疼，一定得带头巾、帽子、墨镜还有手套，从午开始走，走到下午5点半到天鹅湖营地。开始搭帐篷，帐篷是俱乐部的人开车带进来的，徒步时只需要要轻装上阵就好。不过也有些徒步俱乐部是全程重装的，自己带着帐篷和实物和水，这个就需要非常专业的徒步经验和体力了。到了晚上的风沙愈发的大了，帐篷各种乱飞，没办法，后来大部分人领着睡袋宿在了吃饭的大充气帐篷里，四五十个平方的地上睡满了一地的人，听着呼呼的风声。恶劣的环境，寒冷的风，让有些小伙伴对后两天的行程充满抗拒，深夜包车去舒适的下一个营地了。风太大了都没办法拍什么照片，附上两张图吧。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/452.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/453.jpg" alt=""></p>
-<h4 id="4-6-一整天的沙漠徒步-—-行程28公里"><a href="#4-6-一整天的沙漠徒步-—-行程28公里" class="headerlink" title="4-6 一整天的沙漠徒步 — 行程28公里"></a>4-6 一整天的沙漠徒步 — 行程28公里</h4><p>第二天的沙漠徒步比较累，要一直走整整一天，同样也是轻装，只带少量的路餐和水，水中途还会有补给。这一天天气晴朗，但是依然比较冷，均温度10°左右，防晒和防风还是得做好。出发之前没有注意，带了一双透气的鞋子，沙子哗啦啦的往鞋子里面流~/(ㄒoㄒ)/~~，还好沙漠的沙子非常柔软细腻，入鞋并不会磨脚，但是沙子多了总是不舒服，只能用保鲜袋套好鞋子，再用头巾把鞋子扎起来，不过这样就非常的捂，等结束行程鞋子都湿透了。上午的行程是比较累的，一直是爬沙丘的状态。值得欣慰的是，我们坚持下来了。默默的表扬某个小胖子💕^_^。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/461.jpg" alt=""><br>五湖连穿之–乌兰湖（中午休息就餐点）<br><img src="http://qiniu.xuyanlan.com/tengGeLi/467.jpg" alt=""><br>从乌兰湖到苏海图这段路是这三天中最最好走的路了，一路上基本上都是盐碱地，有种终于脚踏实地的感觉。乌兰湖到苏海图中间的盐碱地，30-50分钟穿过<br><img src="http://qiniu.xuyanlan.com/tengGeLi/466.jpg" alt=""><br>苏海图，苏海图湖现在是一片一片的小湖泊组成，我们从苏海图的盐碱地中通行。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/468.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/469.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/4610.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/4611.jpg" alt=""><br>走到了一条废弃的高速公路，真是非常亲切啊，而且已经可以看到今晚驻扎的营地了，相当开心<br><img src="http://qiniu.xuyanlan.com/tengGeLi/464.jpg" alt=""></p>
-<p>大概5点半左右走到第二天的营地，太阳湖。坚持了一天，停下来之后腿酸到不会正常走路了！<br>体验了下领队给我们的红酒晚宴和篝火晚会，有几个妹子跳的舞还挺专业，哈哈~<br>夜晚的星空真的是太美了，可惜不敢拿出单反来拍，怕进沙子。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/462.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/463.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/465.jpg" alt=""></p>
-<h4 id="4-7-体验沙漠之美"><a href="#4-7-体验沙漠之美" class="headerlink" title="4-7 体验沙漠之美"></a>4-7 体验沙漠之美</h4><p>第三天从包裹在冰霜下的帐篷中醒来，天气大好，经历过狂风、沙尘暴，沙漠终于要用美景和好天气陪伴我们最后的半日行程，真正的体验到沙漠的美丽。<br>太阳湖真的是太美了，清澈的湖水中沙漠的倒影。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/471.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/472.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/473.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/475.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/474.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/478.jpg" alt=""></p>
-<p>沙漠徒步特有的风景线，仔细看还能看见我们前进的方向悬挂着月亮。<br><img src="http://qiniu.xuyanlan.com/tengGeLi/476.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/477.jpg" alt=""></p>
-<h4 id="沙漠遇见的小伙伴"><a href="#沙漠遇见的小伙伴" class="headerlink" title="沙漠遇见的小伙伴"></a>沙漠遇见的小伙伴</h4><p><img src="http://qiniu.xuyanlan.com/tengGeLi/1.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/2.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/6.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/5.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/3.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/4.jpg" alt=""></p>
-<h4 id="携手徒步沙漠的小伙伴们"><a href="#携手徒步沙漠的小伙伴们" class="headerlink" title="携手徒步沙漠的小伙伴们"></a>携手徒步沙漠的小伙伴们</h4><p><img src="http://qiniu.xuyanlan.com/tengGeLi/collect1.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/collect2.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/collect3.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/collect4.jpg" alt=""></p>
-<h4 id="随行的队医，贴心守护"><a href="#随行的队医，贴心守护" class="headerlink" title="随行的队医，贴心守护"></a>随行的队医，贴心守护</h4><p><img src="http://qiniu.xuyanlan.com/tengGeLi/collect5.jpg" alt=""></p>
-<h4 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h4><p>每次长时间徒步内心都经过了想放弃-&gt;下次再也不徒步了-&gt;渐入佳境-&gt;完成之后的内心满足+身心俱疲，但是下次有好的路线还是义无反顾的收拾行囊出发。<br>喜欢上了用脚步领略不同路线的风景，不同的挑战，有相同的人陪伴吧。工作之后的好几年都比较宅，不喜欢出门逛街，购物。但突然发现自己还是挺喜欢户外的，就一发不可收拾，感觉把身心带到了一个自己很喜欢的健康状态，这才是最可贵的。诗和远方喜欢就出发了。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>日期：2018-04-05 ~ 2018-04-07<br>行程特色：领略塞外沙漠风光，体验沙漠徒步，挑战自我<br>全程：53公里<br>装备：防沙鞋、防晒帽、墨镜、轻装<br>温度：-4°C ~ 25°C<br>行程安排：4号飞银川，5号进沙漠，7号出沙漠，8号从银川飞回上海。</p>
-<p><img src="http://qiniu.xuyanlan.com/tengGeLi/host.jpg" alt=""><br><img src="http://qiniu.xuyanlan.com/tengGeLi/home.jpg" alt=""></p>]]>
-    
-    </summary>
-    
-      <category term="游记" scheme="http://yoursite.com/tags/%E6%B8%B8%E8%AE%B0/"/>
-    
-      <category term="游记" scheme="http://yoursite.com/categories/%E6%B8%B8%E8%AE%B0/"/>
     
   </entry>
   
