@@ -254,6 +254,284 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/block/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/11/block/" itemprop="url">block 探索</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-10T21:31:14Z">
+                2019-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="block-转-c-源码"><a href="#block-转-c-源码" class="headerlink" title="block 转 c++ 源码"></a>block 转 c++ 源码</h3><p>如下代码 .h .m文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//TestClang.h</span><br><span class="line">@interface TestClang : NSObject</span><br><span class="line">+ (void)testBlcok;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//TestClang.m</span><br><span class="line">#import &quot;TestClang.h&quot;</span><br><span class="line">static int numGlobel = 29;</span><br><span class="line">@implementation TestClang</span><br><span class="line">+ (void)testBlcok &#123;</span><br><span class="line">    //没有截获局部变量 __NSGlobalBlock__</span><br><span class="line">    void(^block1)(void) = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block&quot;);</span><br><span class="line">            &#125;;</span><br><span class="line">    NSLog(@&quot; block1 = %@&quot;, block1);</span><br><span class="line">    block1();</span><br><span class="line">    static int numStatic = 12;</span><br><span class="line">    int num = 10;</span><br><span class="line">    __block int numBlock = 19;</span><br><span class="line">    __block int numBlock2 = 30;</span><br><span class="line">    __block int numBlockTest = 30;</span><br><span class="line">        void(^block2)(void) = ^&#123;</span><br><span class="line">        NSLog(@&quot;just a block === %d, numStatic = %d numGlobel = %d  numBlock=%d numBlock2=%d numBlockTest = %d&quot;, num,numStatic,numGlobel,numBlock,numBlock2,numBlockTest);</span><br><span class="line">            &#125;;</span><br><span class="line">    num = 33;</span><br><span class="line">    numStatic = 121;</span><br><span class="line">    numGlobel = 129;</span><br><span class="line">    numBlock = 22222;</span><br><span class="line">    block2();</span><br><span class="line">    NSLog(@&quot;block2 = %@&quot;, block2);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>执行：xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc TestClang.m<br>不要引用其他头文件，以免导出报Error<br>目录下生成了一个TestClang.cpp文件</p>
+</blockquote>
+<ul>
+<li>testBlock 对应的方法变为：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//_C_ 表示为类方法 _I_ 为实例方法</span><br><span class="line">static void _C_TestClang_testBlcok(Class self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">    void(*block1)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_0((void *)__TestClang__testBlcok_block_func_0, &amp;__TestClang__testBlcok_block_desc_0_DATA));</span><br><span class="line">    NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_cf514e_mi_1, block1);</span><br><span class="line">    ((void (*)(__block_impl *))((__block_impl *)block1)-&gt;FuncPtr)((__block_impl *)block1);</span><br><span class="line">    static int numStatic = 12;</span><br><span class="line">    int num = 10;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlock_0 numBlock = &#123;(void*)0,(__Block_byref_numBlock_0 *)&amp;numBlock, 0, sizeof(__Block_byref_numBlock_0), 19&#125;;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlock2_1 numBlock2 = &#123;(void*)0,(__Block_byref_numBlock2_1 *)&amp;numBlock2, 0, sizeof(__Block_byref_numBlock2_1), 30&#125;;</span><br><span class="line">    __attribute__((__blocks__(byref))) __Block_byref_numBlockTest_2 numBlockTest = &#123;(void*)0,(__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 0, sizeof(__Block_byref_numBlockTest_2), 30&#125;;</span><br><span class="line"></span><br><span class="line">        void(*block2)(void) = ((void (*)())&amp;__TestClang__testBlcok_block_impl_1((void *)__TestClang__testBlcok_block_func_1, &amp;__TestClang__testBlcok_block_desc_1_DATA, num, &amp;numStatic, (__Block_byref_numBlock_0 *)&amp;numBlock, (__Block_byref_numBlock2_1 *)&amp;numBlock2, (__Block_byref_numBlockTest_2 *)&amp;numBlockTest, 570425344));</span><br><span class="line">    num = 33;</span><br><span class="line">    numStatic = 121;</span><br><span class="line">    numGlobel = 129;</span><br><span class="line">    (numBlock.__forwarding-&gt;numBlock) = 22222;</span><br><span class="line">    ((void (*)(__block_impl *))((__block_impl *)block2)-&gt;FuncPtr)((__block_impl *)block2);</span><br><span class="line">    NSLog((NSString *)&amp;__NSConstantStringImpl__var_folders_nc_qvb_bh854tz1y0p1hdk5y6km0000gn_T_TestClang_cf514e_mi_3, block2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/11/block/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/01/wugongshan/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/01/wugongshan/" itemprop="url">武功山游记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-31T18:14:59Z">
+                2018-12-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/游记/" itemprop="url" rel="index">
+                    <span itemprop="name">游记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="续：2018年12月31日，雪后，不一样的武功山"><a href="#续：2018年12月31日，雪后，不一样的武功山" class="headerlink" title="续：2018年12月31日，雪后，不一样的武功山~"></a>续：2018年12月31日，雪后，不一样的武功山~</h2><p>一直想去看冬季的武功山，期待满山白雪皑皑，雪景连接云海。何等壮观。我提出冬季上武功山露营，一家人心痒痒，但是担心大雪封山，临回家才确定上山。但是考虑到露营太冷，改为山脚景区泡温泉，次日上山。抵达景区温泉还下着雪，就着雪泡温泉的感觉真是冰火两重天。泡够时间就 “落荒而逃” ~</p>
+<p>次日9点到达武功山脚下，买好门票缆车票。得知山中 -6℃ ，又买好口罩手套等。脚踩防滑链，踏着积雪，向着被白雪覆盖的武功山前进。<br></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/01/01/wugongshan/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/资源下发/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1411,303 +1689,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/06/五月五-奥森徒步狼人杀/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="纳兰若水">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="纳兰若水">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/06/五月五-奥森徒步狼人杀/" itemprop="url">五月五-奥森徒步狼人杀</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T18:52:55Z">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/游记/" itemprop="url" rel="index">
-                    <span itemprop="name">游记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>时间：2018-05-05<br>地点：北京<br>行程：奥林匹克森林公园 -&gt; 军事博物馆 -&gt; 玉渊潭 -&gt; 北京大学<br>活动类型：休闲、游玩<br>原计划：10位小伙伴8：30在奥森公园地铁站D出口集合，园内稍作徒步然后择一处林荫草地，铺上垫子，放上零食，自我介绍互相认识之后就开始众人期待的狼人杀。<br>突发情况：叮铃铃，叮铃铃…几位小伙伴在出发当天早6点收到处理bug加班电话，无奈工作为先，享乐在后，只能缺席。</p>
-<h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><p>相约8：30在奥森公园集合，由于我是从上海来北京出差，不太熟悉北京的交通，最后集合好的时间到8：50，集合人数：5人，ㄟ( ▔, ▔ )ㄏ 。<br>次日在奥森公园有北马比赛，所以当天就有很多人在预跑，先徒步的计划只能搁置，找了一处草地，铺上垫子，放上零食，各自坐好。<br></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/05/06/五月五-奥森徒步狼人杀/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/12/iOS技术点备忘录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="纳兰若水">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="纳兰若水">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/12/iOS技术点备忘录/" itemprop="url">iOS小技术点备忘录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-11T23:52:31Z">
-                2018-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>记录一些小技术点，方便使用时查找。</p>
-<h4 id="更改UITabBar-amp-amp-UINavigationBar背景颜色"><a href="#更改UITabBar-amp-amp-UINavigationBar背景颜色" class="headerlink" title="更改UITabBar &amp;&amp; UINavigationBar背景颜色"></a>更改UITabBar &amp;&amp; UINavigationBar背景颜色</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[[UITabBar appearance] setBarTintColor:[UIColor redColor]];</span><br><span class="line">[[UINavigationBar appearance] setBarTintColor:[UIColor redColor]];</span><br></pre></td></tr></table></figure>
-<h4 id="更改UITabBar-amp-amp-UINavigationBar字体颜色"><a href="#更改UITabBar-amp-amp-UINavigationBar字体颜色" class="headerlink" title="更改UITabBar &amp;&amp; UINavigationBar字体颜色"></a>更改UITabBar &amp;&amp; UINavigationBar字体颜色</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//改变按钮navigationBar tintColor颜色</span><br><span class="line">self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:102/255.0 green:102/255.0 blue:102/255.0 alpha:1.0];</span><br><span class="line">//改变tabbar 正常颜色，选中色</span><br><span class="line"> NSDictionary *attributeNormal = @&#123;NSForegroundColorAttributeName:[UIColor grayColor]&#125;;</span><br><span class="line">[subVC.tabBarItem setTitleTextAttributes:attributeNormal forState:(UIControlStateNormal)];</span><br><span class="line"> NSDictionary *attributeSelected = @&#123;NSForegroundColorAttributeName:[UIColor redColor]&#125;;</span><br><span class="line">[subVC.tabBarItem setTitleTextAttributes:attributeSelected forState: (UIControlStateSelected)];</span><br></pre></td></tr></table></figure>
-<h4 id="设置UIViewController的view的top在navigationBar下面-amp-bottom位置在Tabbar的上面"><a href="#设置UIViewController的view的top在navigationBar下面-amp-bottom位置在Tabbar的上面" class="headerlink" title="设置UIViewController的view的top在navigationBar下面 &amp; bottom位置在Tabbar的上面"></a>设置UIViewController的view的top在navigationBar下面 &amp; bottom位置在Tabbar的上面</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tabBarController.tabBar.translucent = NO;</span><br><span class="line">uiviewController.navigationController.navigationBar.translucent = NO;</span><br></pre></td></tr></table></figure>
-<h4 id="改变UISlider的进度条高度"><a href="#改变UISlider的进度条高度" class="headerlink" title="改变UISlider的进度条高度"></a>改变UISlider的进度条高度</h4><p>需要继承UISlider并t重载trackRectForBounds方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (CGRect)trackRectForBounds:(CGRect)bounds</span><br><span class="line">&#123;</span><br><span class="line">    return CGRectMake(0, 0, CGRectGetWidth(self.frame), 5.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/12/iOS技术点备忘录/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1760,7 +1741,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1843,7 +1824,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         
-<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
