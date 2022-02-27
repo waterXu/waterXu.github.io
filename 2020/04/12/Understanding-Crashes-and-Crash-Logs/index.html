@@ -89,22 +89,22 @@
 <meta property="og:site_name" content="纳兰若水">
 <meta property="og:description" content="前段时间通过搭建 Crash 平台的机会，知道了如何进行 Crash 的解析和聚类。那么如何去理解一个 Crash 呢？这篇文章是通过 WWDC 中的资料进行整理学习的。  Understanding Crashes and Crash Logs - WWDC 2018 及相关的视频和资料。 参考文章：Understanding Crashes and Crash Logs  崩溃的基本原理什么是">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog2.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog3.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashreson.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashcode.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/badfood.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/memerror.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/tiny.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/rotatedfree.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/common.png">
-<meta property="og:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/sanitizer.png">
-<meta property="og:updated_time" content="2020-04-16T04:29:23.375Z">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog2.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog3.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashreson.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashcode.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/badfood.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/memerror.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/tiny.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/rotatedfree.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/common.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/sanitizer.png">
+<meta property="og:updated_time" content="2022-02-27T04:38:48.537Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding Crashes and Crash Logs">
 <meta name="twitter:description" content="前段时间通过搭建 Crash 平台的机会，知道了如何进行 Crash 的解析和聚类。那么如何去理解一个 Crash 呢？这篇文章是通过 WWDC 中的资料进行整理学习的。  Understanding Crashes and Crash Logs - WWDC 2018 及相关的视频和资料。 参考文章：Understanding Crashes and Crash Logs  崩溃的基本原理什么是">
-<meta name="twitter:image" content="http://yoursite.com/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog.jpg">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog.jpg">
 
 
 
@@ -376,9 +376,9 @@
 <li>Sharing from device (用户隐私共享数据分享)</li>
 </ul>
 <a id="more"></a>
-<h3 id="如何阅读崩溃日志"><a href="#如何阅读崩溃日志" class="headerlink" title="如何阅读崩溃日志"></a>如何阅读崩溃日志</h3><p>log文件中包含crash的的基本信息，crash原因，崩溃栈，寄存器、loader images。<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog.jpg" title="&nbsp;"><br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog2.png" title="&nbsp;"><br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashlog3.png" title="&nbsp;"></p>
+<h3 id="如何阅读崩溃日志"><a href="#如何阅读崩溃日志" class="headerlink" title="如何阅读崩溃日志"></a>如何阅读崩溃日志</h3><p>log文件中包含crash的的基本信息，crash原因，崩溃栈，寄存器、loader images。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog.jpg" alt=""><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog2.png" alt=""><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashlog3.png" alt=""></p>
 <h3 id="如何分析-Crash-原因"><a href="#如何分析-Crash-原因" class="headerlink" title="如何分析 Crash 原因"></a>如何分析 Crash 原因</h3><p>有了这些信息后，怎么分析crash原因呢？首先看一下Exception Type，通过这个可以知道crash的原因，</p>
-<h4 id="EXC-BAD-INSTRUCTION-SIGILL"><a href="#EXC-BAD-INSTRUCTION-SIGILL" class="headerlink" title="EXC_BAD_INSTRUCTION (SIGILL)"></a>EXC_BAD_INSTRUCTION (SIGILL)</h4><p>下面这个例子中 EXC_BAD_INSTRUCTION 的意思是 CPU 可能尝试执行不合法的指令。也可以看一下Crash Thread的调用栈.<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashreson.png" title="&nbsp;"><br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/crashcode.jpg" title="&nbsp;"></p>
+<h4 id="EXC-BAD-INSTRUCTION-SIGILL"><a href="#EXC-BAD-INSTRUCTION-SIGILL" class="headerlink" title="EXC_BAD_INSTRUCTION (SIGILL)"></a>EXC_BAD_INSTRUCTION (SIGILL)</h4><p>下面这个例子中 EXC_BAD_INSTRUCTION 的意思是 CPU 可能尝试执行不合法的指令。也可以看一下Crash Thread的调用栈.<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashreson.png" alt=""><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crashcode.jpg" alt=""></p>
 <p>引出断言和前提条件 (发生错误时故意中止该过程)</p>
 <ul>
 <li>强制拆开存储 nil 的 Optional (针对 Swift)</li>
@@ -387,7 +387,7 @@
 <li>未捕获的异常</li>
 <li>代码中的自定义断言</li>
 </ul>
-<h4 id="EXC-CRASH-SIGKILL"><a href="#EXC-CRASH-SIGKILL" class="headerlink" title="EXC_CRASH (SIGKILL)"></a>EXC_CRASH (SIGKILL)</h4><p>另一个具体的例子 EXC_CRASH ，下面这个crash信息可以看出，具体原因是看门狗定时器超时，一般是因为APP启动的时间过长或者响应系统事件事件超时导致；比如在主线程进行网络请求，主线程会一直卡住直到网络回调回来。后来占用资源也可能会被系统 kill （0xdead10cc）。<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/badfood.jpg" title="&nbsp;"></p>
+<h4 id="EXC-CRASH-SIGKILL"><a href="#EXC-CRASH-SIGKILL" class="headerlink" title="EXC_CRASH (SIGKILL)"></a>EXC_CRASH (SIGKILL)</h4><p>另一个具体的例子 EXC_CRASH ，下面这个crash信息可以看出，具体原因是看门狗定时器超时，一般是因为APP启动的时间过长或者响应系统事件事件超时导致；比如在主线程进行网络请求，主线程会一直卡住直到网络回调回来。后来占用资源也可能会被系统 kill （0xdead10cc）。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/badfood.jpg" alt=""></p>
 <p>被操作系统kill的几种情况</p>
 <ul>
 <li>Watchdog events ：Watchdog 定时器超时</li>
@@ -401,14 +401,14 @@
 <li>Disabled in Simulator and in the debugger （在模拟器和调试器中被禁用）</li>
 <li>Test your app without the debugger :<br>  1:without the debugger ： 非 debug 模式测试你的应用<br>  2:on a real device ： 在真实的设备上<br>  3:on older hardware ： 在较旧的硬件上</li>
 </ul>
-<h4 id="EXC-BAD-ACCESS-SIGSEGV"><a href="#EXC-BAD-ACCESS-SIGSEGV" class="headerlink" title="EXC_BAD_ACCESS (SIGSEGV)"></a>EXC_BAD_ACCESS (SIGSEGV)</h4><p>这个例子是出现了 Memory Errors 导致。<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/memerror.jpg" title="&nbsp;"><br>导致内存出错的原因：</p>
+<h4 id="EXC-BAD-ACCESS-SIGSEGV"><a href="#EXC-BAD-ACCESS-SIGSEGV" class="headerlink" title="EXC_BAD_ACCESS (SIGSEGV)"></a>EXC_BAD_ACCESS (SIGSEGV)</h4><p>这个例子是出现了 Memory Errors 导致。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/memerror.jpg" alt=""><br>导致内存出错的原因：</p>
 <ul>
 <li>写入只读存储器 </li>
 <li>从根本不存在的内存中读取。(读取释放后的对象)</li>
 <li>over released</li>
 <li>buffer overflow</li>
 </ul>
-<p>通过crash地址可以得到更多信息，7fdd5e70700这个地址在MALLOC_TINY的地址空间范围内，<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/tiny.png" title="&nbsp;"><br>当free函数删除一个对象时，它会将其插入到其他 dead 对象的空闲列表中。<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/rotatedfree.png" title="&nbsp;"></p>
+<p>通过crash地址可以得到更多信息，7fdd5e70700这个地址在MALLOC_TINY的地址空间范围内，<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/tiny.png" alt=""><br>当free函数删除一个对象时，它会将其插入到其他 dead 对象的空闲列表中。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/rotatedfree.png" alt=""></p>
 <p>如何找到具体的对象 ？有没有办法知道具体是哪个object被多次release导致的crash呢？日志里面虽然有调用栈信息，但是都是编译器生成的函数，没有跟crash相关的具体信息。下面通过一个具体的例子说明如何找到LoginViewController中被多次release的对象。</p>
 <ul>
 <li>在命令行或者xcode打开lldb</li>
@@ -425,8 +425,7 @@
 <li>Look at code other than the line that crashed : 看看除了崩溃的行之外的代码</li>
 <li>Look at thread stack traces other than the crashed thread : 查看崩溃线程以外的线程堆栈跟踪</li>
 <li>Look at more than one crash log : 查看多个 crash log</li>
-<li>Use Address Sanitizer and Zombies to reproduce memory errors : 使用 Address Sanitizer 和僵 Zombies 来重现内存错误<img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/common.png" title="&nbsp;">
-</li>
+<li>Use Address Sanitizer and Zombies to reproduce memory errors : 使用 Address Sanitizer 和僵 Zombies 来重现内存错误<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/common.png" alt=""></li>
 </ul>
 <p>-&gt; 参考资料：<a href="https://developer.apple.com/library/archive/technotes/tn2151/_index.html" target="_blank" rel="noopener">Understanding and Analyzing Application Crash Reports</a></p>
 <h3 id="Multithreading-Issues-多线程问题"><a href="#Multithreading-Issues-多线程问题" class="headerlink" title="Multithreading Issues (多线程问题)"></a>Multithreading Issues (多线程问题)</h3><h4 id="Symptoms-of-Multithreading-Bugs-in-Crash-Logs"><a href="#Symptoms-of-Multithreading-Bugs-in-Crash-Logs" class="headerlink" title="Symptoms of Multithreading Bugs in Crash Logs"></a>Symptoms of Multithreading Bugs in Crash Logs</h4><ul>
@@ -435,7 +434,7 @@
 <li>Multiple threads currently executing similar code: 当前正在执行类似代码的多个线程</li>
 <li>One bug can appear as different crash points : 一个bug可以显示为不同的崩溃点</li>
 </ul>
-<p>Edit Scheme → Dignostics → Thread Sanitizer → finding buffer overflows<br><img src="/2020/04/12/Understanding-Crashes-and-Crash-Logs/sanitizer.png" title="&nbsp;"></p>
+<p>Edit Scheme → Dignostics → Thread Sanitizer → finding buffer overflows<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/sanitizer.png" alt=""></p>
 <h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h4><ul>
 <li>Test your app on real devices</li>
 <li>Try to reproduce crashes</li>
@@ -592,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

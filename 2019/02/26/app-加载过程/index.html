@@ -88,16 +88,16 @@
 <meta property="og:site_name" content="纳兰若水">
 <meta property="og:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/exec.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/text_text.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/var.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/symbolString.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/26/app-加载过程/dwarf_line.png">
-<meta property="og:updated_time" content="2019-07-16T07:45:23.606Z">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/text_text.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/var.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/symbolString.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/dwarf_line.png">
+<meta property="og:updated_time" content="2022-02-27T03:57:36.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="app 加载过程 &amp; 启动速度优化">
 <meta name="twitter:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
-<meta name="twitter:image" content="http://yoursite.com/2019/02/26/app-加载过程/exec.png">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png">
 
 
 
@@ -328,8 +328,8 @@
 
       
         <p>上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。</p>
-<h4 id="MachO-可执行文件类型"><a href="#MachO-可执行文件类型" class="headerlink" title="MachO 可执行文件类型"></a>MachO 可执行文件类型</h4><p>Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE 类型。<br>MachOView中查看如下。<br><img src="/2019/02/26/app-加载过程/exec.png" title="&nbsp;"><br><a id="more"></a></p>
-<h4 id="link-map"><a href="#link-map" class="headerlink" title="link map"></a>link map</h4><p>MachO 中重要的信息都在 Section 中。<br>可以通过 Xcode 开启 Write Link Map File = YES 后生成的 txt 文件来辅助分析 Section。可以帮助你更好的了解 App 的加载。<br><img src="/2019/02/26/app-加载过程/text_text.png" title="&nbsp;"></p>
+<h4 id="MachO-可执行文件类型"><a href="#MachO-可执行文件类型" class="headerlink" title="MachO 可执行文件类型"></a>MachO 可执行文件类型</h4><p>Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE 类型。<br>MachOView中查看如下。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png" alt=""><br><a id="more"></a></p>
+<h4 id="link-map"><a href="#link-map" class="headerlink" title="link map"></a>link map</h4><p>MachO 中重要的信息都在 Section 中。<br>可以通过 Xcode 开启 Write Link Map File = YES 后生成的 txt 文件来辅助分析 Section。可以帮助你更好的了解 App 的加载。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/text_text.png" alt=""></p>
 <h5 id="Object-files"><a href="#Object-files" class="headerlink" title="Object files"></a>Object files</h5><p>这个部分包括的内容如下：</p>
 <blockquote>
 <p>.o文件，也就是.m文件编译后的结果。<br>.a文件<br>需要link的framework<br>前面是文件的编号（section中用到），后面是文件的路径。</p>
@@ -337,8 +337,8 @@
 <h5 id="Sections"><a href="#Sections" class="headerlink" title="Sections"></a>Sections</h5><p>这个区域提供了各个段（Segment）和节（Section）在可执行文件中的位置和大小。这个区域完整的描述克可执行文件中的全部内容，对应 MachO 的 segment 和 section<br>其中，段分为两种<br><code>__TEXT</code> 代码段<br><code>__DATA</code> 数据段<br><code>__text</code>节的地址是0x100001A50，大小是0x0002436D，二者相加的就是<code>__stubs</code>的位置0x100025DBE。</p>
 <h5 id="Symbols"><a href="#Symbols" class="headerlink" title="Symbols"></a>Symbols</h5><p>Section 部分将二进制文件进行了一级划分。而，Symbols 对 Section 中的各个段进行了二级划分，</p>
 <p>例如，对于<code>__TEXT __text</code>,表示代码段中的代码内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Symbols:</span><br><span class="line">地址     	大小         文件编号  方法名</span><br><span class="line"># Address	Size    	File  	Name</span><br><span class="line">0x100001A50	0x00000120	[  2] -[EasyViewController sectionSource]</span><br><span class="line">0x100001B70	0x00001720	[  2] -[EasyViewController dataSource]</span><br><span class="line">0x100003290	0x00000610	[  2] -[EasyViewController viewDidLoad]</span><br><span class="line">0x1000038A0	0x00000080	[  2] -[EasyViewController viewDidAppear:]</span><br><span class="line">0x100003920	0x00000300	[  2] -[EasyViewController viewWillAppear:]</span><br><span class="line">...</span><br><span class="line">0x100025A60	0x0000035D	[ 17] _parseSystemVersionPList</span><br><span class="line">0x100025DBE	0x00000006	[ 18] _CFRunLoopAddObserver // 这里开始是__stubs</span><br></pre></td></tr></table></figure><br><code>__Text __stubs</code></p>
-<p>对于<code>__Data __objc_var</code><br>搜索 0x100036F60 可以找到如下信息<br><img src="/2019/02/26/app-加载过程/var.png" title="&nbsp;"></p>
-<p>我们在每次编译过后，生成的 dsym 中，就存储了16进制的函数地址映射。可以通过 MachoView 查看 SymbolString。SymbolString包含了方法段的启始地址。<br><img src="/2019/02/26/app-加载过程/symbolString.png" title="&nbsp;"><br><code>_DWARF __debbug_line</code>中存储了行号信息<br><code>_DWARF __debbug_info</code> 和 <code>_DWARF __debbug_frame</code> dwarf-dump –lookup 就是通过 SymbolString 和  <code>__debbug_line</code> 和 <code>_DWARF __debbug_info</code>等信息来获取崩溃信息。<br><img src="/2019/02/26/app-加载过程/dwarf_line.png" title="&nbsp;"><br>实际测试还需要进一步对 DWARF 格式有更多的了解，后续再说。</p>
+<p>对于<code>__Data __objc_var</code><br>搜索 0x100036F60 可以找到如下信息<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/var.png" alt=""></p>
+<p>我们在每次编译过后，生成的 dsym 中，就存储了16进制的函数地址映射。可以通过 MachoView 查看 SymbolString。SymbolString包含了方法段的启始地址。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/symbolString.png" alt=""><br><code>_DWARF __debbug_line</code>中存储了行号信息<br><code>_DWARF __debbug_info</code> 和 <code>_DWARF __debbug_frame</code> dwarf-dump –lookup 就是通过 SymbolString 和  <code>__debbug_line</code> 和 <code>_DWARF __debbug_info</code>等信息来获取崩溃信息。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/dwarf_line.png" alt=""><br>实际测试还需要进一步对 DWARF 格式有更多的了解，后续再说。</p>
 <h4 id="dyld"><a href="#dyld" class="headerlink" title="dyld"></a>dyld</h4><p>App开始启动后，系统首先加载可执行文件 （所有 .o 文件集合）,然后加载动态链接库 dyld，dyld是一个专门用来加载动态链接库的库，递归加载所有的依赖动态链接库。<br>动态链接库包括：iOS 中用到的所有系统 framework，加载OC runtime方法的libobjc，系统级别的libSystem，CoreFoundation等。<br>系统使用动态链接的好处：</p>
 <ul>
 <li>代码共用：很多程序都动态链接了这些 lib，但它们在内存和磁盘中中只有一份，方便缓存。</li>
@@ -491,7 +491,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

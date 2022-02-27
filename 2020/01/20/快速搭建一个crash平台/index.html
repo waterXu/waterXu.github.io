@@ -89,17 +89,17 @@
 <meta property="og:site_name" content="纳兰若水">
 <meta property="og:description" content="前期调研准备可参考上一篇系列文章：https://www.xuyanlan.com/2019/02/20/iOS-crash-report/ 客户端收集 Crash客户端收集 Crash 使用的是 PLCrashReporter 这个开源的库，集成方法有很多成熟的文章可以参考，这里不再赘述。而且有需要的话你可以在 signal_handler_callback 方法中获取到崩溃信息然后追加崩溃瞬间">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/image.png">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/segment.png">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/segment.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/json.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/crash.png">
-<meta property="og:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/re.jpg">
-<meta property="og:updated_time" content="2020-09-24T09:08:36.753Z">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/image.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/segment.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/segment.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/json.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crash.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/re.jpg">
+<meta property="og:updated_time" content="2022-02-27T03:34:41.992Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建 iOS-Crash 平台实践总结">
 <meta name="twitter:description" content="前期调研准备可参考上一篇系列文章：https://www.xuyanlan.com/2019/02/20/iOS-crash-report/ 客户端收集 Crash客户端收集 Crash 使用的是 PLCrashReporter 这个开源的库，集成方法有很多成熟的文章可以参考，这里不再赘述。而且有需要的话你可以在 signal_handler_callback 方法中获取到崩溃信息然后追加崩溃瞬间">
-<meta name="twitter:image" content="http://yoursite.com/2020/01/20/快速搭建一个crash平台/image.png">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/image.png">
 
 
 
@@ -363,17 +363,14 @@
 <a id="more"></a>
 <p><code>llvm-symbolizer</code> 使用非常简单，<code>--obj</code> 指定 Binary Image 文件（如：xxx.dSym、libobjc.A.dylib）路径，后面可以跟同一个 Binary Image 中的多个文件地址（File Address）。但是从 Crash 文件中不能直接得到文件地址，上篇文章中提到了获取文件地址的方式，File Address = Stack address - Load address + Slide Value。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//crash的某一行信息，0x0000000195dd13a8 为 Stack address, 0x195da1000 是 Load address。 最后的十进制值其实就是 Stack address - Load address 的值了。</span><br><span class="line">1 libdispatch.dylib 0x0000000195dd13a8 0x195da1000 + 197544</span><br></pre></td></tr></table></figure>
-<p>而通过 Load address 可以从 Binary Images 里面找到对应的库:<br><img src="/2020/01/20/快速搭建一个crash平台/image.png" title="&nbsp;"></p>
+<p>而通过 Load address 可以从 Binary Images 里面找到对应的库:<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/image.png" alt=""></p>
 <ul>
 <li>dSym 类型的 Binary Image 能够直接通过判断 arm 来获取 Slide Value，<pre><code>Slide Value（32位虚拟地址）: 0x00004000
 Slide Value（64位虚拟地址）: 0x0000000100000000 
 </code></pre></li>
-<li>系统库获取则要依靠从库文件中读取出来，可以通过 <code>llvm-readelf</code> 命令来获取 Slide Value，其中 Segment 的 Text 段中的vmaddr 就是 Slide Value 了。如图：<img src="/2020/01/20/快速搭建一个crash平台/segment.png" title="&nbsp;">
-可通过 llvm-dwarfdump -uuid  获取到的 UUID 和 Slide Value进行 Map，记录到对应系统库的一个文件中，真正解析的时候直接通过 Binary Images 定位到 UUID 后通过 Map 查找到 Slide Value 进行计算。<img src="/2020/01/20/快速搭建一个crash平台/segment.jpg" title="&nbsp;">
-<img src="/2020/01/20/快速搭建一个crash平台/json.jpg" title="&nbsp;">
-</li>
+<li>系统库获取则要依靠从库文件中读取出来，可以通过 <code>llvm-readelf</code> 命令来获取 Slide Value，其中 Segment 的 Text 段中的vmaddr 就是 Slide Value 了。如图：<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/segment.png" alt=""><br>可通过 llvm-dwarfdump -uuid  获取到的 UUID 和 Slide Value进行 Map，记录到对应系统库的一个文件中，真正解析的时候直接通过 Binary Images 定位到 UUID 后通过 Map 查找到 Slide Value 进行计算。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/segment.jpg" alt=""><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/json.jpg" alt=""></li>
 </ul>
-<p>附上一张平时 debug 时没开断点，abort 住了只能拿到未解析的堆栈信息，利用llvm 查找崩溃的截图。<br><img src="/2020/01/20/快速搭建一个crash平台/crash.png" title="&nbsp;"><br>至此，想必你已经知道了如何通过 llvm 来解析 Crash 中的某行崩溃信息， 接下来的事情就是如何批量解析和平台化了。</p>
+<p>附上一张平时 debug 时没开断点，abort 住了只能拿到未解析的堆栈信息，利用llvm 查找崩溃的截图。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/crash.png" alt=""><br>至此，想必你已经知道了如何通过 llvm 来解析 Crash 中的某行崩溃信息， 接下来的事情就是如何批量解析和平台化了。</p>
 <h3 id="批量解析-Crash-文件-amp-平台聚类"><a href="#批量解析-Crash-文件-amp-平台聚类" class="headerlink" title="批量解析 Crash 文件 &amp; 平台聚类"></a>批量解析 Crash 文件 &amp; 平台聚类</h3><pre><code>我们已经收集到很多 Crash 文件了，上面说了如何解析一行崩溃信息。那么就可以进行批量解析了和聚类了。
 </code></pre><p>其实很简单，我们做的只是利用了 <code>llvm-symbolizer</code> 命令同时能够解析多个崩溃地址的特性：</p>
 <ul>
@@ -383,7 +380,7 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
 </ul>
 <h3 id="号-unknown-arm64问题解决"><a href="#号-unknown-arm64问题解决" class="headerlink" title="??? 号 + unknown-arm64问题解决"></a>??? 号 + unknown-arm64问题解决</h3><p>有些机型收上来发现image是???，基地址是0x0，搜索发现是苹果新出了arm64e,参考以下文章：<br><a href="https://www.jianshu.com/p/03580e3a1a05" target="_blank" rel="noopener">arm64e符号翻译与PAC问题</a><br>知道原因后发现可以通过crash地址恢复image 和 基地址。</p>
 <ul>
-<li>通过 va = va &amp; 0x0fffffffff; 将崩溃地址复原，遍历所有的image，得到基地址和对应的image。<img src="/2020/01/20/快速搭建一个crash平台/re.jpg" title="&nbsp;"></li>
+<li>通过 va = va &amp; 0x0fffffffff; 将崩溃地址复原，遍历所有的image，得到基地址和对应的image。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%e5%88%9b%e5%bb%bacrash%e5%b9%b3%e5%8f%b0/re.jpg" alt=""></li>
 <li>又可以愉快的解析啦~</li>
 </ul>
 
@@ -512,7 +509,7 @@ Slide Value（64位虚拟地址）: 0x0000000100000000
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
