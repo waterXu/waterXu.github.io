@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="我们要知道在Objective-C中，如果像某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象收到消息之后，究竟该调用哪个方法则完全于运行期决定，甚至可以在程序运行时改变(最常见的运用场景就是Method Swizzle黑魔法)，这些特性使得Objective-C成为一门真正的动态语言。给对象发送消息：1id returnValue = ob">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性">
+<meta property="og:url" content="http://yoursite.com/2017/01/04/EffectiveObjective-dynamic/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="我们要知道在Objective-C中，如果像某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象收到消息之后，究竟该调用哪个方法则完全于运行期决定，甚至可以在程序运行时改变(最常见的运用场景就是Method Swizzle黑魔法)，这些特性使得Objective-C成为一门真正的动态语言。给对象发送消息：1id returnValue = ob">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-18T11:29:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性">
+<meta name="twitter:description" content="我们要知道在Objective-C中，如果像某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象收到消息之后，究竟该调用哪个方法则完全于运行期决定，甚至可以在程序运行时改变(最常见的运用场景就是Method Swizzle黑魔法)，这些特性使得Objective-C成为一门真正的动态语言。给对象发送消息：1id returnValue = ob">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/04/EffectiveObjective-dynamic/">
+
+
+
+
+
+  <title>Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/04/EffectiveObjective-dynamic/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-04T19:48:59+08:00">
+                2017-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们要知道在Objective-C中，如果像某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象收到消息之后，究竟该调用哪个方法则完全于运行期决定，甚至可以在程序运行时改变(最常见的运用场景就是<code>Method Swizzle</code>黑魔法)，这些特性使得Objective-C成为一门真正的动态语言。<br>给对象发送消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id returnValue = objc_msgSend(someObject,@selector(messageName:),parameter);</span><br></pre></td></tr></table></figure><br>objc_msgSend方法会在接收者所属的类中搜寻其”方法列表 list of methods (可通过<code>class_copyMethodList(objClass,&amp;count)</code>方法获取对象所有方法列表) “,如果能找到与选择子(也就是messageName)名称相符的方法就跳转至其实现代码。若找不到则沿着继承体系向上查找，找到方法再跳转( note :找到后，objc_msgSend会将匹配的结果缓存在<code>快速映射表(fast map)</code>里面,每个类都有这样一块缓存，若是稍后还向该类发送与选择子相同的消息，那么执行就很快。当然还是稍微不如静态绑定的函数调用快，不过消息派发机制并不会成为应用程序的瓶颈啦！)，<br>如果最终还是找不到相符的方法，那就执行<code>消息转发（message forwarding）</code>操作。消息转发分为两大阶段，<code>动态方法解析阶段</code>和<code>完整的消息转发阶段</code>。<br>本文将用例子来演示第一阶段的运用。<br><a id="more"></a></p>
+<h3 id="以完整例子演示动态方法解析"><a href="#以完整例子演示动态方法解析" class="headerlink" title="以完整例子演示动态方法解析"></a>以完整例子演示动态方法解析</h3><p>对象在收到无法解读的消息后，首先将调用其所属类的下列类方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+(BOOL)resolveInstanceMethod:(SEL)selector</span><br></pre></td></tr></table></figure><br>该方法就是那个未知的选择子，其返回值为Boolean类型，标识这个类是否能新增一个实例方法用以处理此选择子。在继续往下执行转发机制之前，本类有机会新增一个处理此选择自的方法。假如尚未实现的方法不是实例方法而是类方法，那么就是另一个方法<code>resolveClassMethod:</code>.使用这种方法的前提是：相关方法的实现代码已经写好，只等着运行的时候动态插在类里面就可以了。比如接下来的实现@dynamic属性实例。<br>假设要编写一个类似于“字典”的对象，他里面可以容纳其他对象，只不过开发者要直接通过属性存取其中的数据，这个类的设计思路是：由开发者来添加属性定义，<br>并将其声明为@dynamic，而类则会自动处理相关属性值的存放与获取操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//类接口  .h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">@interface TestDynamicDict : NSObject</span><br><span class="line">@property (nonatomic, strong) NSString *string;</span><br><span class="line">@property (nonatomic, strong) NSNumber *number;</span><br><span class="line">@property (nonatomic, strong) NSData *data;</span><br><span class="line">@property (nonatomic, strong) id opaqueObject;</span><br><span class="line">@end</span><br><span class="line">//note：属性具体是什么数据类型无关紧要，只是显示此功能的作用。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">//类实现 .m</span><br><span class="line">#import &quot;TestDynamicDict.h&quot;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line">@interface TestDynamicDict()&#123;</span><br><span class="line">&#125;</span><br><span class="line">//将属性声明为@dynamic，让编译器不要为其自动合成实例变量的存取方法。</span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary *backStore;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation TestDynamicDict</span><br><span class="line">@dynamic string, number, data, opaqueObject;</span><br><span class="line">-(id)init&#123;</span><br><span class="line">    if(self = [super init])&#123;</span><br><span class="line">        _backStore = [NSMutableDictionary new];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line">//关键代码，resolveInstanceMethod的实现</span><br><span class="line">+(BOOL)resolveInstanceMethod:(SEL)selector&#123;</span><br><span class="line">    NSString *selectorString = NSStringFromSelector(selector);</span><br><span class="line">    if([selectorString hasPrefix:@&quot;set&quot;])&#123;//setter</span><br><span class="line">        class_addMethod(self, selector, (IMP)autoDictionarySetter, &quot;v@:@&quot;);</span><br><span class="line">    &#125;else&#123;//getter</span><br><span class="line">        class_addMethod(self, selector, (IMP)autoDictionaryGetter, &quot;v@@:&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line">//getter 函数实现</span><br><span class="line">id autoDictionaryGetter(id self, SEL _cmd)&#123;</span><br><span class="line">    TestDynamicDict *typeSelf = (TestDynamicDict *)self;</span><br><span class="line">    NSMutableDictionary *backStore = typeSelf.backStore;</span><br><span class="line">    NSString *key = NSStringFromSelector(_cmd);</span><br><span class="line">    return [backStore objectForKey:key];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">//setter 函数实现</span><br><span class="line">void autoDictionarySetter(id self, SEL _cmd, id value)&#123;</span><br><span class="line">    TestDynamicDict *typeSelf = (TestDynamicDict *)self;</span><br><span class="line">    NSMutableDictionary *backStore = typeSelf.backStore;</span><br><span class="line">    NSString *selectorKey = NSStringFromSelector(_cmd);</span><br><span class="line">    NSMutableString *key = [selectorKey mutableCopy];</span><br><span class="line">    //remove : end</span><br><span class="line">    [key deleteCharactersInRange:NSMakeRange(key.length - 1, 1)];</span><br><span class="line">    //remove set</span><br><span class="line">    [key deleteCharactersInRange:NSMakeRange(0, 3)];</span><br><span class="line">    NSString *lowerFirstChar = [[key substringToIndex:1]lowercaseString];</span><br><span class="line">    [key replaceCharactersInRange:NSMakeRange(0, 1) withString:lowerFirstChar];</span><br><span class="line">    if(value)&#123;</span><br><span class="line">        [backStore setObject:value forKey:key];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        [backStore removeObjectForKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>首次在TestDynamicDict实力上访问某个属性时，运行期系统还找不到对应选择子，因为所需的选择子既没有直接实现，也没有合成出来。假设写入string属性，那么系统会以<code>setString:</code>为选择子调用上面的这个方法，同理读取时选择子为<code>string</code>。此时就利用resolveInstanceMethod方法向类中新增一个处理选择子所用的方法，这两个方法分别以autoDictionarySetter和autoDictionaryGetter函数指针的形式出现。此时就用到了class_addMethod来向类中动态新增方法，其中最后一个参数标识待添加方法的<code>类型编码 （type encoding）</code>，可以通过<code>method_getTypeEncoding(Method m)</code>方法打印查看。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//用法</span><br><span class="line">TestDynamicDict *dict = [TestDynamicDict new];</span><br><span class="line">dict.string = @&quot;dynamic is work&quot;;</span><br><span class="line">NSLog(@&quot;dict.string = %@&quot; ,dict.string);</span><br></pre></td></tr></table></figure><br>output<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dict.string = dynamic is work</span><br></pre></td></tr></table></figure><br>其他属性的访问方式与string类似，想要添加新属性，只需要用@property来定义，并将其声明为@dynamic即可。在iOS的CoreAnimation框架中，CALayer类就用到与本例相似的实现方式，这使得CALayer成为兼容于键值编码的容器类，能够向里面随意添加属性，然后以键值对的形式来访问。键值存储工作由基类负责，我们只需在CALayer的子类中定义新属性即可。</p>
+<p>若经过上述两步之后还没办法处理选择子，那就启动完整的消息转发机制。有时间再整理完整消息转发机制的内容。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/04/jspatch-question/" rel="next" title="JSPatch - 随笔记录常见问题">
+                <i class="fa fa-chevron-left"></i> JSPatch - 随笔记录常见问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/05/reactnative-listview/" rel="prev" title="React-Native 之 ListView 的简单使用">
+                React-Native 之 ListView 的简单使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#以完整例子演示动态方法解析"><span class="nav-number">1.</span> <span class="nav-text">以完整例子演示动态方法解析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">59.7k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

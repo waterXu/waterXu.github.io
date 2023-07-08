@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="reactnative,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="官方文档详细的介绍了ListView的使用方式。在这里我简单的进行了实践，拉取网络数据进行显示，触底自动加载更多。代码非常简洁清晰，这里直接贴出来O(∩_∩)O~。">
+<meta name="keywords" content="reactnative">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React-Native 之 ListView 的简单使用">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/reactnative-listview/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="官方文档详细的介绍了ListView的使用方式。在这里我简单的进行了实践，拉取网络数据进行显示，触底自动加载更多。代码非常简洁清晰，这里直接贴出来O(∩_∩)O~。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-18T15:42:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React-Native 之 ListView 的简单使用">
+<meta name="twitter:description" content="官方文档详细的介绍了ListView的使用方式。在这里我简单的进行了实践，拉取网络数据进行显示，触底自动加载更多。代码非常简洁清晰，这里直接贴出来O(∩_∩)O~。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/05/reactnative-listview/">
+
+
+
+
+
+  <title>React-Native 之 ListView 的简单使用 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/05/reactnative-listview/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React-Native 之 ListView 的简单使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-05T19:48:59+08:00">
+                2017-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  689
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>官方文档详细的介绍了<a href="http://facebook.github.io/react-native/docs/listview.html" target="_blank" rel="noopener">ListView的使用方式</a>。<br>在这里我简单的进行了实践，拉取网络数据进行显示，触底自动加载更多。代码非常简洁清晰，这里直接贴出来O(∩_∩)O~。<br><a id="more"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">import &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  ListView,</span><br><span class="line">  View,</span><br><span class="line">  Image</span><br><span class="line">&#125; from &apos;react-native&apos;;</span><br><span class="line"></span><br><span class="line">var totalList = []; </span><br><span class="line"></span><br><span class="line">export default class BillProject extends Component &#123;  </span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    const ds = new ListView.DataSource(&#123;rowHasChanged: (r1, r2) =&gt; r1 !== r2&#125;);</span><br><span class="line">    this._onEndReached.bind(this);</span><br><span class="line">    this.state = &#123;</span><br><span class="line">      dataSource: ds.cloneWithRows([]),</span><br><span class="line">      loadState:&quot;1&quot;, // 1正在加载 2加载完成 3 加载错误 </span><br><span class="line">      page:0</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">      console.log(&quot;render&quot;);</span><br><span class="line">    return (</span><br><span class="line">      &lt;ListView</span><br><span class="line">        onEndReachedThreshold=&#123;2&#125;</span><br><span class="line">        onEndReached=&#123;this._onEndReached.bind(this)&#125;</span><br><span class="line">        contentContainerStyle=&#123;styles.list&#125;</span><br><span class="line">        enableEmptySections=&#123;true&#125;</span><br><span class="line">        dataSource=&#123;this.state.dataSource&#125;</span><br><span class="line">        renderRow=&#123;this._renderRow&#125;/&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  _renderRow(rowData, sectionID, rowID)&#123;</span><br><span class="line">      return (</span><br><span class="line">              &lt;View style=&#123;styles.row&#125;&gt;</span><br><span class="line">                  &lt;Image   </span><br><span class="line">                  style=&#123;styles.thumb&#125;                     </span><br><span class="line">                   source=&#123; &#123;uri: &quot;http://api.all-appp.com/uploads/&quot; + rowData.zuopin_url&#125;&#125;</span><br><span class="line">                  &gt; </span><br><span class="line">                  &lt;/Image&gt;</span><br><span class="line">              &lt;/View&gt;</span><br><span class="line">          );</span><br><span class="line">  &#125;</span><br><span class="line">  componentWillMount()&#123;</span><br><span class="line">    this.getZuoPinFromApi();</span><br><span class="line">  &#125;</span><br><span class="line">  _onEndReached()&#123;</span><br><span class="line">    console.log(&quot;到达底部&quot;);</span><br><span class="line">    //加载更多数据 通过onEndReachedThreshold设置离底部还有几个cell 需要render时触发</span><br><span class="line">    this.getZuoPinFromApi();</span><br><span class="line">  &#125;</span><br><span class="line">  //获取网络数据</span><br><span class="line">  getZuoPinFromApi() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      let formData = new FormData();  </span><br><span class="line">      formData.append(&quot;type&quot;,&quot;3&quot;);  </span><br><span class="line">      formData.append(&quot;page&quot;,this.state.page); </span><br><span class="line">      formData.append(&quot;userid&quot;,&quot;&quot;); </span><br><span class="line">      formData.append(&quot;myid&quot;,&quot;3&quot;); </span><br><span class="line">      formData.append(&quot;filterid&quot;,totalList.length &gt; 0 ? totalList[totalList.length-1].zuopin_id : &quot;&quot;); </span><br><span class="line">      formData.append(&quot;customType&quot;,&quot;1&quot;); </span><br><span class="line">      formData.append(&quot;version&quot;,&quot;0.2.8&quot;);</span><br><span class="line">      var self = this; </span><br><span class="line">      var response = fetch(&apos;http://api.all-appp.com/api/show&apos;,&#123;</span><br><span class="line">          method: &apos;POST&apos;,</span><br><span class="line">          headers: &#123;</span><br><span class="line">            &apos;Accept&apos;: &apos;application/json&apos;,</span><br><span class="line">            &apos;Content-Type&apos;: &apos;application/json&apos;,</span><br><span class="line">          &#125;,</span><br><span class="line">          body: formData</span><br><span class="line">        &#125;)</span><br><span class="line">      .then((response) =&gt; response.json())</span><br><span class="line">      .then((responseJson) =&gt; &#123;</span><br><span class="line">        console.log(&quot;response &quot; + response);</span><br><span class="line">        if(responseJson.code == 0)&#123;</span><br><span class="line">          // self.state.dataSource.cloneWithRows(responseJson.zuopins)</span><br><span class="line">          // self.state.dataSource.concat(responseJson.zuopins);</span><br><span class="line">          // self.setState(self.state.dataSource);</span><br><span class="line">          totalList = totalList.concat(responseJson.zuopins);</span><br><span class="line">          this.setState(&#123;  </span><br><span class="line">              dataSource: self.state.dataSource.cloneWithRows(totalList), </span><br><span class="line">              loadState:&quot;1&quot;,</span><br><span class="line">              page:self.state.page + 1</span><br><span class="line">          &#125;);  </span><br><span class="line">        &#125;else&#123;</span><br><span class="line">          console.log(responseJson.msg);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch((error) =&gt; &#123;</span><br><span class="line">        console.error(error);</span><br><span class="line">      &#125;);;</span><br><span class="line">    &#125; catch(error) &#123;</span><br><span class="line">      console.error(error);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">const styles = StyleSheet.create(&#123;</span><br><span class="line">  list: &#123;</span><br><span class="line">    marginTop:5,</span><br><span class="line">    justifyContent: &apos;space-around&apos;,</span><br><span class="line">    flexDirection: &apos;row&apos;,</span><br><span class="line">    flexWrap: &apos;wrap&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  row: &#123;</span><br><span class="line">    justifyContent: &apos;center&apos;,</span><br><span class="line">    padding: 5,</span><br><span class="line">    margin: 3,</span><br><span class="line">    width: 150,</span><br><span class="line">    height: 150,</span><br><span class="line">    backgroundColor: &apos;#F6F6F6&apos;,</span><br><span class="line">    alignItems: &apos;center&apos;,</span><br><span class="line">    borderWidth: 1,</span><br><span class="line">    borderRadius: 5,</span><br><span class="line">    borderColor: &apos;#CCC&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  thumb: &#123;</span><br><span class="line">    width: 140,</span><br><span class="line">    height: 140</span><br><span class="line">  &#125;,</span><br><span class="line">  text: &#123;</span><br><span class="line">    flex: 1,</span><br><span class="line">    marginTop: 5,</span><br><span class="line">    fontWeight: &apos;bold&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">AppRegistry.registerComponent(&apos;BillProject&apos;, () =&gt; BillProject);</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+  <!-- more -->
+<blockquote>
+<p>在constructor方法中新建一个DataSource实例.</p>
+</blockquote>
+<h3 id="简单列举用到的一部分Listview属性。"><a href="#简单列举用到的一部分Listview属性。" class="headerlink" title="简单列举用到的一部分Listview属性。"></a>简单列举用到的一部分Listview属性。</h3><blockquote>
+<p>onEndReachedThreshold={2} 表示在离底部还有2个row需要render的时候触发 onEndReached 方法。</p>
+</blockquote>
+<blockquote>
+<p>onEndReached={this._onEndReached.bind(this)} 利用这个方法进行触底加载更多操作，代码里没有给出加载动画，不过RN给出了一个默认实现属性RefreshControl，你们可以自行尝试。</p>
+</blockquote>
+<blockquote>
+<p>enableEmptySections={true} 允许组为空</p>
+</blockquote>
+<blockquote>
+<p>renderRow={this._renderRow} 每个cell绘制方法</p>
+</blockquote>
+<p><br><br> <a href="http://upload-images.jianshu.io/upload_images/1605018-56229f0ba8670665.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" target="_blank" rel="noopener">点击查看效果图</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/reactnative/" rel="tag"># reactnative</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/04/EffectiveObjective-dynamic/" rel="next" title="Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性">
+                <i class="fa fa-chevron-left"></i> Effective Objective 2.0 读书笔记 之 动态方法解析实现@dynamic属性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/06/reactnative-image/" rel="prev" title="React-Native 之 Image加载本地图片的坑">
+                React-Native 之 Image加载本地图片的坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单列举用到的一部分Listview属性。"><span class="nav-number">1.</span> <span class="nav-text">简单列举用到的一部分Listview属性。</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">59.7k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
