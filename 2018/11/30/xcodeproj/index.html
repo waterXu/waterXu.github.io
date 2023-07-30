@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="xcodeproj xcodeproj 实际上是一个文件夹，打开后可以看到 project.pbxproj, xcuserdata, project.xcworkspace.   project.pbxproj: “在 project 里的 project”，是 xcodeproj 最主要的文件 project.xcworkspace: 一个子文件夹，存储了用户 workspace 的相关信息">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xcodeproj">
+<meta property="og:url" content="http://yoursite.com/2018/11/30/xcodeproj/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="xcodeproj xcodeproj 实际上是一个文件夹，打开后可以看到 project.pbxproj, xcuserdata, project.xcworkspace.   project.pbxproj: “在 project 里的 project”，是 xcodeproj 最主要的文件 project.xcworkspace: 一个子文件夹，存储了用户 workspace 的相关信息">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-07T02:59:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="xcodeproj">
+<meta name="twitter:description" content="xcodeproj xcodeproj 实际上是一个文件夹，打开后可以看到 project.pbxproj, xcuserdata, project.xcworkspace.   project.pbxproj: “在 project 里的 project”，是 xcodeproj 最主要的文件 project.xcworkspace: 一个子文件夹，存储了用户 workspace 的相关信息">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/30/xcodeproj/">
+
+
+
+
+
+  <title>xcodeproj | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/xcodeproj/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">xcodeproj</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-30T22:53:20+08:00">
+                2018-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  419
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>xcodeproj</p>
+<p>xcodeproj 实际上是一个文件夹，打开后可以看到 project.pbxproj, xcuserdata, project.xcworkspace. </p>
+<ul>
+<li>project.pbxproj: “在 project 里的 project”，是 xcodeproj 最主要的文件</li>
+<li>project.xcworkspace: 一个子文件夹，存储了用户 workspace 的相关信息</li>
+<li>xcuserdata: 另外一个文件夹，里面也是用户相关的一些信息<a id="more"></a>
+</li>
+</ul>
+<p>project.pbxproj 是 Next style 的 plist，描述了一个树状结构，最顶层是 RootElement.</p>
+<ul>
+<li>Root Element<ul>
+<li>PBXBuildFile</li>
+<li>PBXBuildPhase<ul>
+<li>PBXAppleScriptBuildPhase</li>
+<li>PBXCopyFilesBuildPhase</li>
+<li>PBXFrameworksBuildPhase</li>
+<li>PBXHeadersBuildPhase</li>
+<li>PBXResourcesBuildPhase</li>
+<li>PBXShellScriptBuildPhase</li>
+<li>PBXSourcesBuildPhase</li>
+</ul>
+</li>
+<li>PBXContainerItemProxy</li>
+<li>PBXFileElement<ul>
+<li>PBXFileReference</li>
+<li>PBXGroup</li>
+<li>PBXVariantGroup</li>
+</ul>
+</li>
+<li>PBXTarget<ul>
+<li>PBXAggregateTarget</li>
+<li>PBXLegacyTarget</li>
+<li>PBXNativeTarget</li>
+</ul>
+</li>
+<li>PBXProject</li>
+<li>PBXTargetDependency</li>
+<li>XCBuildConfiguration</li>
+<li>XCConfigurationList</li>
+</ul>
+</li>
+</ul>
+<p>除根节点外每一个节点都有一个 reference，节点间通过引用这个 reference 表明包含的关系.</p>
+<p>下面是一个 pbxproj 文件的内容示例，objects 里包含有所有的子节点， rootObject 存储的是 PBXProject 的 reference.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// !$*UTF8*$!</span><br><span class="line">&#123;</span><br><span class="line">    archiveVersion = 1;</span><br><span class="line">    classes = &#123;</span><br><span class="line">    &#125;;</span><br><span class="line">    objectVersion = 45;</span><br><span class="line">    objects = &#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    &#125;;</span><br><span class="line">    rootObject = 0867D690FE84028FC02AAC07 /* Project object */;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PBXProject 则包含了如配置，target 等信息，其中 mainGroup 就是我们打开项目看到的文件层级列表中最顶层的那个节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">29B97313FDCFA39411CA2CEA /* Project object */ = &#123;</span><br><span class="line">        isa = PBXProject;</span><br><span class="line">        buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject &quot;XXX&quot; */;</span><br><span class="line">        compatibilityVersion = &quot;Xcode 2.4&quot;;</span><br><span class="line">        developmentRegion = English;</span><br><span class="line">        hasScannedForEncodings = 1;</span><br><span class="line">        knownRegions = (</span><br><span class="line">                English,</span><br><span class="line">                Japanese,</span><br><span class="line">                French,</span><br><span class="line">                German,</span><br><span class="line">                en,</span><br><span class="line">        );</span><br><span class="line">        mainGroup = 29B97314FDCFA39411CA2CEA /* XXX*/;</span><br><span class="line">        projectDirPath = &quot;&quot;;</span><br><span class="line">        projectRoot = &quot;&quot;;</span><br><span class="line">        targets = (</span><br><span class="line">             8D1107260486CEB800E47090 /* XXX*/,</span><br><span class="line">        );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>PBXGroup 的 children 字段的值是一个 reference 数组, reference 可以指向另外一个 PBXGroup，也可以指向一个文件节点 PBXFileReference<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">015554500155562000000001 /* SlimmingResouces */ = &#123;</span><br><span class="line">	isa = PBXGroup;</span><br><span class="line">	children = (</span><br><span class="line">		01555120015554C000000001 /* Help.zip */,</span><br><span class="line">	);</span><br><span class="line">	name = SlimmingResouces;</span><br><span class="line">	sourceTree = &quot;&lt;group&gt;&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>添加一个文件的过程：</p>
+<ul>
+<li>创建一个 PBXFileReference 对象 fileRef</li>
+<li>创建或者查找到一个 PBXGroup，将 fileRef 加入</li>
+<li>用 fileRef 创建一个 PBXBuildFile buildFile</li>
+<li>找到待加入的 PBXNativeTarget target</li>
+<li>找到 target 的 PBXResourcesBuildPhase 将 fileRef 加入<br></li>
+</ul>
+<h2 id="links"><a href="#links" class="headerlink" title="links"></a>links</h2><p><a href="http://www.monobjc.net/xcode-project-file-format.html" target="_blank" rel="noopener">http://www.monobjc.net/xcode-project-file-format.html</a></p>
+<p><a href="https://github.com/google/zopfli" target="_blank" rel="noopener">https://github.com/google/zopfli</a></p>
+<p><a href="https://github.com/google/brotli" target="_blank" rel="noopener">https://github.com/google/brotli</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/12/冲绳四日三晚游记/" rel="next" title="冲绳四日三晚游记">
+                <i class="fa fa-chevron-left"></i> 冲绳四日三晚游记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/07/资源下发/" rel="prev" title="on-demand 资源下发">
+                on-demand 资源下发 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#links"><span class="nav-number">1.</span> <span class="nav-text">links</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">59.9k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="app 加载过程 &amp; 启动速度优化">
+<meta property="og:url" content="http://yoursite.com/2019/02/26/app-加载过程/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/text_text.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/var.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/symbolString.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/dwarf_line.png">
+<meta property="og:updated_time" content="2022-02-27T03:57:36.242Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="app 加载过程 &amp; 启动速度优化">
+<meta name="twitter:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/26/app-加载过程/">
+
+
+
+
+
+  <title>app 加载过程 & 启动速度优化 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/26/app-加载过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">app 加载过程 & 启动速度优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T02:21:33+08:00">
+                2019-02-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。</p>
+<h4 id="MachO-可执行文件类型"><a href="#MachO-可执行文件类型" class="headerlink" title="MachO 可执行文件类型"></a>MachO 可执行文件类型</h4><p>Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE 类型。<br>MachOView中查看如下。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/exec.png" alt=""><br><a id="more"></a></p>
+<h4 id="link-map"><a href="#link-map" class="headerlink" title="link map"></a>link map</h4><p>MachO 中重要的信息都在 Section 中。<br>可以通过 Xcode 开启 Write Link Map File = YES 后生成的 txt 文件来辅助分析 Section。可以帮助你更好的了解 App 的加载。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/text_text.png" alt=""></p>
+<h5 id="Object-files"><a href="#Object-files" class="headerlink" title="Object files"></a>Object files</h5><p>这个部分包括的内容如下：</p>
+<blockquote>
+<p>.o文件，也就是.m文件编译后的结果。<br>.a文件<br>需要link的framework<br>前面是文件的编号（section中用到），后面是文件的路径。</p>
+</blockquote>
+<h5 id="Sections"><a href="#Sections" class="headerlink" title="Sections"></a>Sections</h5><p>这个区域提供了各个段（Segment）和节（Section）在可执行文件中的位置和大小。这个区域完整的描述克可执行文件中的全部内容，对应 MachO 的 segment 和 section<br>其中，段分为两种<br><code>__TEXT</code> 代码段<br><code>__DATA</code> 数据段<br><code>__text</code>节的地址是0x100001A50，大小是0x0002436D，二者相加的就是<code>__stubs</code>的位置0x100025DBE。</p>
+<h5 id="Symbols"><a href="#Symbols" class="headerlink" title="Symbols"></a>Symbols</h5><p>Section 部分将二进制文件进行了一级划分。而，Symbols 对 Section 中的各个段进行了二级划分，</p>
+<p>例如，对于<code>__TEXT __text</code>,表示代码段中的代码内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Symbols:</span><br><span class="line">地址     	大小         文件编号  方法名</span><br><span class="line"># Address	Size    	File  	Name</span><br><span class="line">0x100001A50	0x00000120	[  2] -[EasyViewController sectionSource]</span><br><span class="line">0x100001B70	0x00001720	[  2] -[EasyViewController dataSource]</span><br><span class="line">0x100003290	0x00000610	[  2] -[EasyViewController viewDidLoad]</span><br><span class="line">0x1000038A0	0x00000080	[  2] -[EasyViewController viewDidAppear:]</span><br><span class="line">0x100003920	0x00000300	[  2] -[EasyViewController viewWillAppear:]</span><br><span class="line">...</span><br><span class="line">0x100025A60	0x0000035D	[ 17] _parseSystemVersionPList</span><br><span class="line">0x100025DBE	0x00000006	[ 18] _CFRunLoopAddObserver // 这里开始是__stubs</span><br></pre></td></tr></table></figure><br><code>__Text __stubs</code></p>
+<p>对于<code>__Data __objc_var</code><br>搜索 0x100036F60 可以找到如下信息<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/var.png" alt=""></p>
+<p>我们在每次编译过后，生成的 dsym 中，就存储了16进制的函数地址映射。可以通过 MachoView 查看 SymbolString。SymbolString包含了方法段的启始地址。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/symbolString.png" alt=""><br><code>_DWARF __debbug_line</code>中存储了行号信息<br><code>_DWARF __debbug_info</code> 和 <code>_DWARF __debbug_frame</code> dwarf-dump –lookup 就是通过 SymbolString 和  <code>__debbug_line</code> 和 <code>_DWARF __debbug_info</code>等信息来获取崩溃信息。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/dwarf_line.png" alt=""><br>实际测试还需要进一步对 DWARF 格式有更多的了解，后续再说。</p>
+<h4 id="dyld"><a href="#dyld" class="headerlink" title="dyld"></a>dyld</h4><p>App开始启动后，系统首先加载可执行文件 （所有 .o 文件集合）,然后加载动态链接库 dyld，dyld是一个专门用来加载动态链接库的库，递归加载所有的依赖动态链接库。<br>动态链接库包括：iOS 中用到的所有系统 framework，加载OC runtime方法的libobjc，系统级别的libSystem，CoreFoundation等。<br>系统使用动态链接的好处：</p>
+<ul>
+<li>代码共用：很多程序都动态链接了这些 lib，但它们在内存和磁盘中中只有一份，方便缓存。</li>
+<li>易于维护：由于被依赖的 lib 是程序执行时才链接的，所以这些 lib 很容易做更新<br>dyld(the dynamic link editor), Apple 的动态链接器，所有动态链接库和我们App中的静态库.a和所有类文件编译后的.o文件最终都是由dyld(the dynamic link editor)，Apple的动态链接器来加载到内存中。每个image都是由一个叫做ImageLoader的类来负责加载（一一对应）.</li>
+</ul>
+<p>dyld 加载动态链接库的流程有：</p>
+<ul>
+<li>load dylibs image 读取库镜像文件: 分析所依赖的动态库 -&gt; 找到动态库 MachO 文件 -&gt; 读取 MachO 文件 -&gt; 通过UUID验证文件- -&gt;注册文件签名 -&gt; 调用Segment<br>启动优化: <blockquote>
+<p>少非系统库的依赖<br>合并非系统库<br>使用静态库，比如把代码加入主程序</p>
+</blockquote>
+</li>
+<li>Rebase image &amp; Bind image： ASLR(address space layout randomization 地址空间随机化，每个macho都随机了一个slide)使得可执行文件和动态链接库在虚拟内存中的加载地址每次启动都不固定，之所以需要Rebase，是因为刚刚提到的 ASLR 使得地址随机化，导致起始地址不固定，另外由于Code Sign，导致不能直接修改Image。Rebase的时候只需要增加对应的偏移量即可。待Rebase的数据都存放在<code>__LINKEDIT</code> 中。可以通过MachOView查看：Dynamic Loader Info -&gt; Rebase Info<br>rebase修复的是指向当前镜像内部的资源指针； 而bind指向的是镜像外部的资源指针。  rebase步骤先进行，需要把镜像读入内存，并以page为单位进行加密验证，保证不会被篡改，所以这一步的瓶颈在IO。bind在其后进行，由于要查询符号表，来指向跨镜像的资源，加上在rebase阶段，镜像已被读入和加密验证，所以这一步的瓶颈在于CPU计算.<br>优化：<blockquote>
+<p>减少Objc类数量， 减少selector数量<br>减少C++虚函数数量<br>加载完macho和动态链接库和进行了地址修正之后,dyld所做的事情完成了大部分.</p>
+</blockquote>
+</li>
+<li>Objc setup : dyld 回调 Objc Runtime，执行Setup<blockquote>
+<p>从 <code>_DATA __objc_classlist</code> 段中获取类信息，注册Objc到一个全局的类的映射表中。<br>从 <code>_DATA __objc_protolist</code> 段中获取中获取Protocol、category等属性与类进行关联，把category的定义插入方法列表 (category registration)<br>保证每一个selector唯一 (selctor uniquing)</p>
+</blockquote>
+</li>
+<li><p>nitializers<br>以上三步属于静态调整(fix-up)，都是在修改__DATA segment中的内容，而这里则开始动态调整，开始在堆和堆栈中写入内容。 </p>
+<blockquote>
+<p>执行+load方法，循环类和类扩展列表调用+load方法<br>执行c/c++初始化构造器, 如attribute((constructor)) void SomeInitializationWork()<br>初始化全局静态变量,非基本类型的C++静态全局变量的创建(通常是类或结构体)(non-trivial initializer) 比如一个全局静态结构体的构建，如果在构造函数中有繁重的工作，那么会拖慢启动速度<br>优化：<br>不是必须在 +load方法中执行的任务放到initialize中<br>减少不必要的全局静态变量</p>
+</blockquote>
+</li>
+<li><p>通过可执行文件的 LC_MAIN ，拿到entryoff 再加上MachO的首地址（内核传来的slide偏移）就得到了main函数地址。</p>
+</li>
+</ul>
+<p>主要流程总结</p>
+<blockquote>
+<p>dyld 开始将程序二进制文件初始化<br>交由 ImageLoader 读取 image，其中包含了我们的类、方法等各种符号<br>由于 runtime 向 dyld 绑定了回调，当 image 加载到内存后，dyld 会通知 runtime 进行处理<br>runtime 接手后调用 mapimages 做解析和处理，接下来 loadimages 中调用 callloadmethods 方法，遍历所有加载进来的 Class，按继承层级依次调用 Class 的 +load 方法和其 Category 的 +load 方法<br>至此，可执行文件中和动态库所有的符号(Class，Protocol，Selector，IMP，…)都已经按格式成功加载到内存中，被 runtime 所管理，再这之后，runtime 的那些方法(动态添加 Class、swizzle 等等才能生效)。整个事件由 dyld 主导，完成运行环境的初始化后，配合 ImageLoader 将二进制文件按格式加载到内存， 动态链接依赖库，并由 runtime 负责加载成 objc 定义的结构，所有初始化工作结束后，dyld 调用真正的 main 函数。</p>
+</blockquote>
+<p>参考文章:<br><a href="https://techblog.toutiao.com/2018/05/29/untitled-24/?from=singlemessage&amp;isappinstalled=0" target="_blank" rel="noopener">【性能优化】iOS客户端启动速度优化</a><br><a href="https://blog.csdn.net/Hello_Hwc/article/details/78317863" target="_blank" rel="noopener">深入理解iOS App的启动过程</a><br><a href="https://blog.cnbluebox.com/blog/2017/06/20/dyldyu-objc/" target="_blank" rel="noopener">dyld与ObjC</a> </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/24/macho-analysis/" rel="next" title="MachO 文件结构分析">
+                <i class="fa fa-chevron-left"></i> MachO 文件结构分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/26/mvvm【译】/" rel="prev" title="【译】A taste of MVVM and Reactive paradigm">
+                【译】A taste of MVVM and Reactive paradigm <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#MachO-可执行文件类型"><span class="nav-number">1.</span> <span class="nav-text">MachO 可执行文件类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#link-map"><span class="nav-number">2.</span> <span class="nav-text">link map</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Object-files"><span class="nav-number">2.1.</span> <span class="nav-text">Object files</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Sections"><span class="nav-number">2.2.</span> <span class="nav-text">Sections</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Symbols"><span class="nav-number">2.3.</span> <span class="nav-text">Symbols</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dyld"><span class="nav-number">3.</span> <span class="nav-text">dyld</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">59.9k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

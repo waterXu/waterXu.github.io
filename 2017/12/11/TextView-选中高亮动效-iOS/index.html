@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。解决步骤：  1：覆盖一个一模一样的textView、相同的frame、font。2：设置textView的selectedRange3：拿到textView的selectedTextRange4：根据selectedTextRange通过selectionRectsForRange方">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TextView 选中高亮动效---iOS">
+<meta property="og:url" content="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。解决步骤：  1：覆盖一个一模一样的textView、相同的frame、font。2：设置textView的selectedRange3：拿到textView的selectedTextRange4：根据selectedTextRange通过selectionRectsForRange方">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/API.png">
+<meta property="og:updated_time" content="2019-02-15T09:52:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TextView 选中高亮动效---iOS">
+<meta name="twitter:description" content="最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。解决步骤：  1：覆盖一个一模一样的textView、相同的frame、font。2：设置textView的selectedRange3：拿到textView的selectedTextRange4：根据selectedTextRange通过selectionRectsForRange方">
+<meta name="twitter:image" content="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/API.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/">
+
+
+
+
+
+  <title>TextView 选中高亮动效---iOS | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/TextView-选中高亮动效-iOS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TextView 选中高亮动效---iOS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T07:05:16+08:00">
+                2017-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  749
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近有个需求，TextView显示从录音转出的文字，在播放时，播放一段文字时需要高亮选中动效（刷色+透明度变换）。<br>解决步骤：</p>
+<blockquote>
+<p>1：覆盖一个一模一样的textView、相同的frame、font。<br>2：设置textView的selectedRange<br>3：拿到textView的selectedTextRange<br>4：根据selectedTextRange通过selectionRectsForRange方法拿到选中的UITextSelectionRect数组，UITextSelectionRect中包含选中的rect信息，选中的首尾位置。<br>5：分析UITextSelectionRect数组给textView的layer添加CABasicAnimation的相关path和opacity等动效</p>
+</blockquote>
+<p>代码很简单：<br>新建一个同样的textView<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//额外添加一个用来做高亮的textview</span><br><span class="line">   _maskTextview = [UITextView new];</span><br><span class="line">   _maskTextview.text = testString;</span><br><span class="line">   _maskTextview.textColor = [UIColor redColor];//你要高亮的颜色</span><br><span class="line">   _maskTextview.font = [UIFont systemFontOfSize:20];</span><br><span class="line">   _maskTextview.frame = textView.frame;</span><br><span class="line">   </span><br><span class="line">   [self.view addSubview:_maskTextview];</span><br><span class="line">   </span><br><span class="line">   _layer = [CAShapeLayer layer];</span><br><span class="line">   _layer.frame = _maskTextview.bounds;</span><br><span class="line">   _layer.fillColor = [UIColor blackColor].CGColor;//本来textview的颜色</span><br><span class="line">   [_maskTextview.layer setMask:_layer];</span><br></pre></td></tr></table></figure><br><a id="more"></a><br>选中一段文字<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> NSRange range = NSMakeRange(30, 31);</span><br><span class="line">//设置选中文字</span><br><span class="line"> _maskTextview.selectedRange = range;</span><br><span class="line"> UITextRange *textRange = _maskTextview.selectedTextRange;</span><br><span class="line">//获取选中的UITextSelectionRect数组</span><br><span class="line"> NSArray *arrays =  [_maskTextview selectionRectsForRange:textRange];</span><br></pre></td></tr></table></figure><br><img src="/2017/12/11/TextView-选中高亮动效-iOS/API.png" title="UITextSelectionRect"></p>
+<p>选中的UITextSelectionRect数组分析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">for (UITextSelectionRect *rect in arrays) &#123;</span><br><span class="line">       //选中的rect 项可能包含多行，每一行做动效的可以通过containsStart 和 containsEnd 的height定位每行的位置</span><br><span class="line">       NSLog(@&quot;rectX is :%f&quot;,rect.rect.origin.x);</span><br><span class="line">       NSLog(@&quot;rectY is :%f&quot;,rect.rect.origin.y);</span><br><span class="line">       NSLog(@&quot;rectW is :%f&quot;,rect.rect.size.width);</span><br><span class="line">       NSLog(@&quot;rectH is :%f&quot;,rect.rect.size.height);</span><br><span class="line">       </span><br><span class="line">       NSLog(@&quot;rect.containsStart is :%hhd&quot;,rect.containsStart);</span><br><span class="line">       NSLog(@&quot;rect.containsEnd is :%hhd&quot;,rect.containsEnd);</span><br><span class="line">       NSLog(@&quot;rect.isVertical is :%hhd&quot;,rect.isVertical);</span><br><span class="line">       //NSLog(@&quot;rect.writingDirection is :%d&quot;,rect.writingDirection);</span><br><span class="line">       if(rect.containsEnd || rect.containsStart) &#123;</span><br><span class="line">           continue;</span><br><span class="line">       &#125;</span><br><span class="line">       int line = rect.rect.size.height / lineHeight;</span><br><span class="line">       for (int i = 0; i &lt; line; i++)</span><br><span class="line">       &#123;</span><br><span class="line">           CGFloat y = rect.rect.origin.y + (rect.rect.size.height/line) * i;</span><br><span class="line">           CGRect layerRect = CGRectMake(rect.rect.origin.x, y, rect.rect.size.width, rect.rect.size.height/line);</span><br><span class="line">           [self addSelectedLayerWithRect:layerRect];</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure><br>添加一个path效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (void)addSelectedLayerWithRect:(CGRect)rect</span><br><span class="line">&#123;</span><br><span class="line">    //添加一个上下的高亮效果的layer</span><br><span class="line">    //如果是左右的动效的则需要把初始位置和最后的位置取出进行排序后再添加</span><br><span class="line">    CAShapeLayer *layer = [CAShapeLayer layer];</span><br><span class="line">    layer.frame = _maskTextview.bounds;</span><br><span class="line">    layer.fillColor = [UIColor blackColor].CGColor;</span><br><span class="line">    [_layer addSublayer:layer];</span><br><span class="line">    </span><br><span class="line">    UIBezierPath *fromPath = [UIBezierPath bezierPathWithRect:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, 0)];</span><br><span class="line">    UIBezierPath *toPath = [UIBezierPath bezierPathWithRect:rect];</span><br><span class="line">    CABasicAnimation *basicAnimation = [CABasicAnimation animationWithKeyPath:@&quot;path&quot;];</span><br><span class="line">    basicAnimation.duration = 5;</span><br><span class="line">    basicAnimation.repeatCount = 1;</span><br><span class="line">    basicAnimation.fromValue = (__bridge id)fromPath.CGPath;</span><br><span class="line">    basicAnimation.toValue = (__bridge id)toPath.CGPath;</span><br><span class="line">    [layer addAnimation:basicAnimation forKey:@&quot;path&quot;];</span><br><span class="line">    layer.path = toPath.CGPath;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>透明效果啥的自己加吧……ƪ(˘⌣˘)┐ ƪ(˘⌣˘)ʃ ┌(˘⌣˘)ʃ</p>
+<p><a href="https://waterxu.github.io/2017/12/11/TextView-选中高亮动效-iOS/ViewController.m" target="_blank" rel="noopener">点击下载demo文件</a></p>
+<p>后续：<br>发现直接在上面盖一个textView不满足能够滚动的case。滚动时，覆盖在上层的textView位置不动，监听scroll事件会闪烁，怎么办呢？</p>
+<blockquote>
+<p>1：让覆盖的textView一起滚动，直接把覆盖的textView设置成另一个textview的子view<br>2：主textView的contentSize变化时更新覆盖的textView的宽高为contentSize的宽高。</p>
+</blockquote>
+<p>关键代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (void)commonInit &#123;</span><br><span class="line">    self.contentSize = CGSizeZero;</span><br><span class="line">    self.userInteractionEnabled = YES;</span><br><span class="line">    self.textColor = kLayerFillColor;</span><br><span class="line">    _maskTextView = [UITextView new];</span><br><span class="line">    _maskTextView.textColor = kHighlightColor;</span><br><span class="line">    _maskTextView.userInteractionEnabled = NO;</span><br><span class="line">    _maskTextView.backgroundColor = [UIColor clearColor];</span><br><span class="line">    [self addSubview:_maskTextView];</span><br><span class="line">    _highlightLayer = [CAShapeLayer layer];</span><br><span class="line">    _highlightLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);</span><br><span class="line">    _highlightLayer.fillColor = kLayerFillColor.CGColor;//本来textview的颜色</span><br><span class="line">    [_maskTextView.layer setMask:_highlightLayer];</span><br><span class="line">&#125;</span><br><span class="line">- (void)setContentSize:(CGSize)contentSize &#123;</span><br><span class="line">    [super setContentSize:contentSize];</span><br><span class="line">    _maskTextView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);</span><br><span class="line">    _highlightLayer.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><a href="https://github.com/waterXu/textAnimationDemo" target="_blank" rel="noopener">github demo地址</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/18/2017国庆稻城亚丁之旅/" rel="next" title="2017国庆稻城亚丁之旅">
+                <i class="fa fa-chevron-left"></i> 2017国庆稻城亚丁之旅
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/30/2017-2018/" rel="prev" title="2017-2018">
+                2017-2018 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">59.9k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
