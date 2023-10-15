@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="iOS,">
 
 
 
@@ -82,6 +82,7 @@
 
 
 <meta name="description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="app 加载过程 &amp; 启动速度优化">
 <meta property="og:url" content="http://yoursite.com/2019/02/26/app-加载过程/index.html">
@@ -93,7 +94,7 @@
 <meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/var.png">
 <meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/symbolString.png">
 <meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/app-%e5%8a%a0%e8%bd%bd%e8%bf%87%e7%a8%8b/dwarf_line.png">
-<meta property="og:updated_time" content="2022-02-27T03:57:36.242Z">
+<meta property="og:updated_time" content="2023-10-08T07:19:21.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="app 加载过程 &amp; 启动速度优化">
 <meta name="twitter:description" content="上篇文章介绍了 MachO 文件的结构，你可能注意到其中的 LC_LOAD_DYLINKER 是 dyld， LC_MAIN 加载命令就是加载程序的主入口。这篇文章就详细讲讲 App 的加载过程。 MachO 可执行文件类型Xcode build 出的 .app 包中可以看到一个 exec 可执行文件（所有 .o文件集合），同样是一个 MachO 文件，filetype 就是 MH_EXECUTE">
@@ -300,6 +301,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -417,6 +440,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
 
       
       
@@ -522,7 +551,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -533,7 +562,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -544,7 +573,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -641,7 +670,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">59.9k</span>
+    <span title="Site words total count">61.8k</span>
   
 </div>
 <div>
