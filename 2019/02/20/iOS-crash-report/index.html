@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="【译】Symbolicating an iOS Crash Report 通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。 在这种情况下，您必须通过将回溯堆栈地址">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何自建 Crash 平台">
+<meta property="og:url" content="http://yoursite.com/2019/02/20/iOS-crash-report/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="【译】Symbolicating an iOS Crash Report 通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。 在这种情况下，您必须通过将回溯堆栈地址">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/symbollist.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/dsym.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/find.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/ubantu.png">
+<meta property="og:updated_time" content="2023-10-08T07:17:36.971Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何自建 Crash 平台">
+<meta name="twitter:description" content="【译】Symbolicating an iOS Crash Report 通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。 在这种情况下，您必须通过将回溯堆栈地址">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/symbollist.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/20/iOS-crash-report/">
+
+
+
+
+
+  <title>如何自建 Crash 平台 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/iOS-crash-report/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何自建 Crash 平台</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-20T22:54:15+08:00">
+                2019-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  22
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>【译】<a href="https://www.apteligent.com/technical-resource/symbolicating-an-ios-crash-report/?partner_code=GDC_so_symbolicateios" target="_blank" rel="noopener">Symbolicating an iOS Crash Report</a></p>
+<p>通常，当您收到来自iTunes连接的崩溃报告或提供移动崩溃收集和报告的第三方服务（如Apteligent）时，该服务将负责为您提供符号化后的崩溃。如果你没有上传符号，你可能会发现自己有一个非符号化的崩溃，没有别的东西可以继续。这样的崩溃文件对于调试可能影响大量用户的问题并不是非常有用。</p>
+<p>在这种情况下，您必须通过将回溯堆栈地址解析为符号来对崩溃报告进行符号化，以获取有关崩溃的有用信息。</p>
+<p>幸运的是，完全有可能手动符号化崩溃报告。本文将概述您需要的信息，向您展示如何解释崩溃报告，并查看OSX和XCode上可用的一些工具来符号化崩溃。</p>
+<p>崩溃报告中只有两个部分与符号化异常跟踪相关。第一个是 Exception Backtrace 部分。这显示了崩溃时应用程序的调用堆栈。此特定崩溃日志片段显示了我们的 ApteligentExampleApp 应用程序内部崩溃的回溯。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Last Exception Backtrace:</span><br><span class="line">0   CoreFoundation 0x000000018708b100 0x186f80000 + 1093888</span><br><span class="line">1   libobjc.A.dylib            0x00000001939441fc 0x19393c000 + 33276</span><br><span class="line">2   CoreFoundation 0x000000018708b040 0x186f80000 + 1093696</span><br><span class="line">3   ApteligentExampleApp 0x000000010003acc4 0x10002c000 + 60612</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>第二部分是崩溃报告底部的 Binary Images 部分，它为您提供了更多有用的信息。 本节列出了崩溃时加载的二进制文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x10002c000 - 0x1000dffff ApteligentExampleApp arm64  &lt;3759a98e880336108b1a799afa3c1adc&gt; /var/mobile/Applications/46FB38F8-0E69-459F-B96A-CEEA21B77D55/ApteligentExampleApp.app/ApteligentExampleApp</span><br></pre></td></tr></table></figure></p>
+<p>不幸的是，这个崩溃报告是未符号化的。 我们可以看到我们的应用程序崩溃的点（异常回溯中的第3行），但它缺少有助于开发人员调试问题的函数名称，函数参数和行号等详细信息。 为了将崩溃报告中的各种地址转换为可读的地址，我们需要将这些地址映射到符号。 为此，我们需要调试符号（dSYM文件）和符号化工具以及从崩溃报告本身收集的信息。</p>
+<h3 id="收集所需信息"><a href="#收集所需信息" class="headerlink" title="收集所需信息"></a>收集所需信息</h3><p>这是一个需要符号化的示例行。 我们知道这是程序失败的重点，但地址本身并没有告诉我们任何有用的东西。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 ApteligentExampleApp 0x000000010003acc4  0x10002c000 + 60612</span><br></pre></td></tr></table></figure></p>
+<p>异常回溯中的这一行为您提供堆栈地址，应用程序虚拟内存中的二进制加载地址以及偏移量。 最后一个值只是堆栈地址和加载地址之间的差异。<br>更靠近崩溃报告的底部，您将看到 Binary Images 部分。 通常，崩溃的应用程序将位于列表的顶部。 此条目将为您提供加载地址（再次），此崩溃的dSYM UUID以及应用程序崩溃的系统体系结构。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x10002c000 - 0x1000dffff +ApteligentExampleApp arm64 &lt;3759a98e880336108b1a799afa3c1adc&gt;</span><br></pre></td></tr></table></figure>
+<p>现在我们可以收集所有需要的东西来符号化这一行。 使用此数据，您可以符号化特定崩溃中的任何堆栈地址。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/symbollist.png" alt=""></p>
+<h3 id="验证符号文件"><a href="#验证符号文件" class="headerlink" title="验证符号文件"></a>验证符号文件</h3><p>dSYM 文件是一个 ELF 文件，其中包含应用程序的 DWARF 调试信息（以及其他内容）。 如果在XCode中设置了“带有 dSYM 文件的 DWARF ”选项，则编译器会生成 dSYM 文件，并将其存储在您的构建中。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/dsym.png" alt=""></p>
+<p>如果要表示特定的崩溃，则需要找到匹配的 dSYM 文件。 最好使用某种归档机制将每个版本的 dSYM 和应用程序二进制文件存储到应用商店，因为将崩溃的 dSYM UUID 与正确的 dSYM 文件进行匹配非常重要。 如果 UUID 不完全匹配，则符号化结果不可靠。 崩溃报告将告诉您符号化所需的 dSYM。 如果您不确定您的 dSYM 是否与崩溃匹配，您可以使用 dwarfdump 检查 UUID。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dwarfdump -u ApteligentExampleApp.dSYM</span><br><span class="line">UUID: 3759A98E-8803-3610-8B1A-799AFA3C1ADC (arm64) </span><br><span class="line">ApteligentExampleApp.dSYM</span><br></pre></td></tr></table></figure>
+<h3 id="获取偏移量"><a href="#获取偏移量" class="headerlink" title="获取偏移量"></a>获取偏移量</h3><p>对于某些工具，您可能需要提供偏移量而不是加载地址。 如果给它一个加载地址（0x10002c000）和一个堆栈地址（0x10003acc4），ATOS 将为你处理偏移计算。 但是，dwarfdump 和 lldb 采用文件地址（0x10000ECC4），因此您需要考虑为这些工具设置偏移量。<br>从 dSYM 获取偏移量的一种方法是使用“otool”，它可以与 OSX 上的 XCode 开发人员工具一起使用。<br>您需要查找 LC_SEGMENT_64（arm64）或 LC_SEGMENT（armv7，armv7s）段和“vmaddr”条目。 对于iOS，对于32位通常为0x4000，对于64位架构通常为0x100000000，但这可能会发生变化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -l ApteligentExampleApp.dSYM &gt; ApteligentExampleApp.otool.output</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Load command 3</span><br><span class="line">cmd LC_SEGMENT_64</span><br><span class="line">cmdsize 1032</span><br><span class="line">segname __TEXT</span><br><span class="line">vmaddr 0x0000000100000000</span><br></pre></td></tr></table></figure>
+<p>现在我们已经编译好了所有需要的信息，可以开始符号化堆栈了.</p>
+<h3 id="符号化崩溃报告"><a href="#符号化崩溃报告" class="headerlink" title="符号化崩溃报告"></a>符号化崩溃报告</h3><h4 id="使用-ATOS-符号化。"><a href="#使用-ATOS-符号化。" class="headerlink" title="使用 ATOS 符号化。"></a>使用 ATOS 符号化。</h4><p>ATOS是Apple的控制台符号工具。 它将数字地址转换为二进制图像中的符号化字符串。</p>
+<p>这是用于在OSX上快速获取符号化输出的最简单工具。 现在您已经从崩溃文件中收集了所有信息，您只需要插入地址并构建信息，您就应该获得符号化的行。 ATOS可以一次处理多个地址，因此如果您愿意，可以从堆栈跟踪中输入每个堆栈地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; -l &lt;load address&gt; &lt;stack address 1&gt; &lt;stack address 2&gt; ...</span><br><span class="line">对应</span><br><span class="line">atos -arch arm64 -o ApteligentExampleApp.dSYM -l 0x10002c000 0x000000010003acc4</span><br><span class="line">-[ApteligentExampleClass buggyFunction] (in ApteligentExampleApp.dSYM) (ApteligentExampleClass.m:181)</span><br></pre></td></tr></table></figure></p>
+<h4 id="使用-lldb-符号化"><a href="#使用-lldb-符号化" class="headerlink" title="使用 lldb 符号化"></a>使用 lldb 符号化</h4><p>lldb 是 OSX 上 XCode 中的默认调试器，可用于表示崩溃中的行。 lldb 再次包含在 OSX 的XCode 中，还有适用于 Linux，FreeBSD 和 Windows 的端口。 您可以从 <a href="http://lldb.llvm.org/download.html" target="_blank" rel="noopener">llvm 项目站点</a> 获取它。</p>
+<p>如果您想了解有关lldb可以执行的操作的更多信息，<a href="http://lldb.llvm.org/symbolication.html" target="_blank" rel="noopener">可以点击此处阅读</a>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(lldb) target create --arch arm64 ApteligentExampleApp.dSYM</span><br><span class="line">Current executable set to ApteligentExampleApp.dSYM&apos; (arm64).</span><br><span class="line">(lldb) image lookup --address 0x10000ECC4</span><br><span class="line">Address: ApteligentExampleApp.dSYM[0x000000010000ecc4] (ApteligentExampleApp.dSYM.__TEXT.__text + 29916)</span><br><span class="line">Summary: ApteligentExampleApp.dSYM`-[ApteligentExampleClass buggyFunction] + 68 at ApteligentExampleClass.m:181</span><br></pre></td></tr></table></figure>
+<h4 id="使用-Dwarfdump-符号化"><a href="#使用-Dwarfdump-符号化" class="headerlink" title="使用 Dwarfdump 符号化"></a>使用 Dwarfdump 符号化</h4><p>Dwarfdump 是一个从 EL F对象转储 DWARF 调试信息的实用程序 - 对于 iOS，这通常是一个dSYM 文件。 Dwarfdump 是一个非常冗长的工具，通常用于调试 DWARF 调试信息生成器（如XCode 中的编译器）或验证符号化工具（如 ATOS）的输出。为了简单地表示崩溃转储，使用此工具是完全矫枉过正的，但有时您可能想要进一步深入了解DWARF调试信息。<br>Dwarfdump 使用文件地址（File Address 0x10000ECC4）来定位匹配的子程序“Debug Information Entry”。此条目具有 DWARF 属性，可为您提供有关子程序的信息。对于 Objective C，此子程序条目通常表示类中的函数，您可以获取行号，文件名以及类/函数名称等信息。<br>Dwarfdump 的一个版本随 XCode 开发人员工具一起提供，但您也可以从 <a href="https://www.prevanders.net/dwarf.html" target="_blank" rel="noopener">libdwarf 项目页面</a> 获取它.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">dwarfdump --lookup 0x10000ECC4 --arch arm64 ApteligentExampleApp.dSYM</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">File: ApteligentExampleApp.dSYM (arm64)</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">Looking up address: 0x000000010000ecc4 in .debug_info... found!</span><br><span class="line"></span><br><span class="line">0x000516d2: Compile Unit: length = 0x00000e9f  version = 0x0002  abbr_offset = 0x00000000  addr_size = 0x08  (next CU at 0x00052575)</span><br><span class="line"></span><br><span class="line">0x000516dd: TAG_compile_unit [99] *</span><br><span class="line">AT_producer( &quot;Apple LLVM version 7.0.2 (clang-700.1.81)&quot; )</span><br><span class="line">AT_language( DW_LANG_ObjC )</span><br><span class="line">AT_name( &quot;/Users/kcrawford/src/apteligent-example-apps/ios/ApteligentExampleApp/ApteligentExampleClass.m&quot; )</span><br><span class="line">AT_stmt_list( 0x00008e5a )</span><br><span class="line">AT_comp_dir( &quot;/Users/kcrawford/src/apteligent-example-apps/ios&quot; )</span><br><span class="line">AT_APPLE_major_runtime_vers( 0x02 )</span><br><span class="line">AT_low_pc( 0x000000010000d704 )</span><br><span class="line">AT_high_pc( 0x000000010000f234 )</span><br><span class="line"></span><br><span class="line">0x00051cbd:     TAG_subprogram [116] *</span><br><span class="line">AT_low_pc( 0x000000010000ec80 )</span><br><span class="line">AT_high_pc( 0x000000010000ecd0 )</span><br><span class="line">AT_frame_base( reg29 )</span><br><span class="line">AT_object_pointer( &#123;0x00051cdb&#125; )</span><br><span class="line">AT_name( &quot;-[ApteligentExampleClass buggyFunction]&quot; )</span><br><span class="line">AT_decl_file( &quot;/Users/kcrawford/src/apteligent-example-apps/ios/ApteligentExampleApp/ApteligentExampleClass.m&quot; )</span><br><span class="line">AT_decl_line( 179 )</span><br><span class="line">AT_prototyped( 0x01 )</span><br><span class="line">Line table dir : &apos;/Users/kcrawford/src/apteligent-example-apps/ios/ApteligentExampleApp&apos;</span><br><span class="line">Line table file: &apos;ApteligentExampleClass.m&apos; line 181, column 1 with start address 0x000000010000ecc4</span><br><span class="line">Looking up address: 0x000000010000ecc4 in .debug_frame... not found.</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>注意：Xcode 10.2 之后不能指定架构，否则输出为空信息。如果发现输出为空，使用<br>dwarfdump –lookup 0x10000ECC4  ApteligentExampleApp.dSYM 。然后再从输出中找到你要的架构下的信息。</p>
+<h4 id="symbolicatecrash"><a href="#symbolicatecrash" class="headerlink" title="symbolicatecrash"></a>symbolicatecrash</h4><p>到目前为止，我们已经研究了在崩溃中表示特定地址的工具，或者至多是 ATOS 中的一系列地址。 为了简化此过程，Apple 发布了一个带有 XCode 的脚本，可以完整地加速崩溃报告的符号化过程。 如果您有 dSYM，app 二进制文件和崩溃报告，这可能是最简单的符号化方法。 您不必担心任何地址 - 此脚本将解析整个故障转储文件并使用 ATOS 将所有地址解析为符号。</p>
+<ul>
+<li><p>定位系统中的 “symbolicatecrash”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /Applications/Xcode.app</span><br><span class="line">find . -name symbolicatecrash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果不存在则导出 DEVELOPER_DIR 环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export DEVELOPER_DIR=&quot;/Applications/Xcode.app/Contents/Developer&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拷贝 .app二进制文件、crash 报告、.dSYM 文件到临时文件(ex. ~/tmp)</p>
+</li>
+<li>执行如下脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework/Versions/A/Resources/symbolicatecrash -v ApteligentExampleApp.crash ApteligentExampleApp.app.dSYM/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果一切顺利，脚本应该符号化整个崩溃文件并将结果输出到终端窗口。 此脚本不会执行任何您无法使用 ATOS 或其他工具手动执行的操作，但它可以更快地为您提供所需的内容。</p>
+<h3 id="开始实现自己的符号化平台"><a href="#开始实现自己的符号化平台" class="headerlink" title="开始实现自己的符号化平台"></a>开始实现自己的符号化平台</h3><h4 id="使用脚本批量处理，使用dwarfdump符号化自己App的-崩溃"><a href="#使用脚本批量处理，使用dwarfdump符号化自己App的-崩溃" class="headerlink" title="使用脚本批量处理，使用dwarfdump符号化自己App的 崩溃"></a>使用脚本批量处理，使用dwarfdump符号化自己App的 崩溃</h4><p><a href="http://qiniu.xuyanlan.com/test.zip" target="_blank" rel="noopener">下载测试脚本</a>后 cd 到 test 目录执行命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sym.py BICrashAnalyzeDemo.crash  BICrashAnalyzeDemo.app.dSYM</span><br></pre></td></tr></table></figure></p>
+<p>如果使用 dwarfdump 或者 lldb 命令，计算出来的File Address 地址为 0x0000000100006734 (stack address - load address + Slide Value（0x0000000100000000))。<br>Slide Value（32位虚拟地址）: 0x00004000<br>Slide Value（64位虚拟地址）: 0x0000000100000000 test中使用这个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dwarfdump --lookup 0x0000000100006734  --arch arm64 BICrashAnalyzeDemo.app.dSYM/Contents/Resources/DWARF/BICrashAnalyzeDemo </span><br><span class="line"></span><br><span class="line">--arch arm64可省略</span><br></pre></td></tr></table></figure></p>
+<p>cd 到 test 目录执行如下命令，导出foo.crash中可看到符号化的非系统崩溃<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python analysis.py BICrashAnalyzeDemo.crash</span><br></pre></td></tr></table></figure></p>
+<h4 id="使用atosl符号化系统的崩溃"><a href="#使用atosl符号化系统的崩溃" class="headerlink" title="使用atosl符号化系统的崩溃"></a>使用atosl符号化系统的崩溃</h4><p>系统崩溃需要找出崩溃设备所对应的系统库文件。<br>参考文章:</p>
+<ul>
+<li><a href="https://juejin.im/post/5ab7dece6fb9a028ba1f7218" target="_blank" rel="noopener">iOS Crash日志分析必备：符号化系统库方法</a></li>
+<li><a href="http://turingh.github.io/2016/05/24/nlist-Mach-O%E6%96%87%E4%BB%B6%E9%87%8D%E5%AE%9A%E5%90%91%E4%BF%A1%E6%81%AF%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">nlist-Mach-O文件重定向信息数据结构分析</a></li>
+<li><a href="https://www.jianshu.com/p/54d842db3f69" target="_blank" rel="noopener">趣探 Mach-O：文件格式分析</a></li>
+</ul>
+<p>但是 dwarfdump 是基于 debug_info和 debug_frame解析，而系统库是没有这些的，可以使用 atosl，不过 facebook  的atosl 有些 bug，可能都安装不了，我自己实现了一个。</p>
+<h4 id="实现自己的-macho-解析工具"><a href="#实现自己的-macho-解析工具" class="headerlink" title="实现自己的 macho 解析工具"></a>实现自己的 macho 解析工具</h4><p><a href="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/atosl.zip" target="_blank" rel="noopener">demo 地址</a></p>
+<p>如下部分代码：是分析 macho 文件的代码，得到解析后的结构。根据 loadadress(crash 中的) -  vmaddress(segment vmaddr)得到 slide，再使用 stackadress - slide 可以得到文件地址，再从解析出来 symbol table string 中找到地址所在的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br></pre></td><td class="code"><pre><span class="line">int parse_load_command(char *data, long *offset, struct load_command *lc, struct thin_macho *tm, uint32_t magic_number)&#123;</span><br><span class="line">    int result = 0;</span><br><span class="line">    switch (lc-&gt;cmd)&#123;</span><br><span class="line">        case LC_UUID:</span><br><span class="line">        &#123;</span><br><span class="line">            struct uuid_command command = &#123;0&#125;;</span><br><span class="line">            memcpy(&amp;command, data + *offset, sizeof(struct uuid_command));</span><br><span class="line">            int i = 0;</span><br><span class="line">            </span><br><span class="line">            FilePrint( &quot;-LC-UUID :&quot;);</span><br><span class="line">            while(i &lt; 16)&#123;</span><br><span class="line">                tm-&gt;uuid[i] = command.uuid[i];</span><br><span class="line">                FilePrint( &quot;%u&quot;,tm-&gt;uuid[i]);</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            FilePrint( &quot;\n&quot;);</span><br><span class="line">            debug(&quot;uuid cmdsize = %u,  lc cmdsize = %u&quot;,command.cmdsize,lc-&gt;cmdsize);</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case LC_SEGMENT:</span><br><span class="line">        &#123;</span><br><span class="line">            struct segment_command command = &#123;0&#125;;</span><br><span class="line">            memcpy(&amp;command, data + *offset, sizeof(struct segment_command));</span><br><span class="line">            if(strcmp(command.segname, &quot;__DWARF&quot;) == 0)&#123;//暂时不处理app 代码 crash</span><br><span class="line">                debug(&quot; is __DWARF skip &quot;);</span><br><span class="line">//                *offset += lc-&gt;cmdsize;</span><br><span class="line">//                return 0;</span><br><span class="line">            &#125;</span><br><span class="line">            if (strcmp(command.segname, &quot;__TEXT&quot;) == 0) &#123;</span><br><span class="line">                tm-&gt;vmaddr32 = command.vmaddr;</span><br><span class="line">            &#125;</span><br><span class="line">            int sectionOff = sizeof(struct segment_command);</span><br><span class="line">            for (int i = 0; i&lt;command.nsects; i++) &#123;</span><br><span class="line">                struct dwarf_section_t *dwarf_s = &#123;0&#125;;</span><br><span class="line">                dwarf_s = malloc(sizeof(struct dwarf_section_t));</span><br><span class="line">                if (dwarf_s == NULL)&#123;</span><br><span class="line">                    printf( &quot;Can not malloc dwarf_s&quot;);</span><br><span class="line">                    return -1;</span><br><span class="line">                &#125;</span><br><span class="line">                memset(dwarf_s, 0, sizeof(struct dwarf_section_t));</span><br><span class="line">                memcpy(&amp;dwarf_s-&gt;mach_section, data + *offset + sectionOff, sizeof(dwarf_s-&gt;mach_section));</span><br><span class="line">                sectionOff += sizeof(dwarf_s-&gt;mach_section);</span><br><span class="line">               </span><br><span class="line">                struct dwarf_section_t *dwarf_sec = tm-&gt;dwarf_section;</span><br><span class="line">                if(!dwarf_sec) &#123;</span><br><span class="line">                    tm-&gt;dwarf_section = dwarf_s;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    while (dwarf_sec) &#123;</span><br><span class="line">                        if(dwarf_sec-&gt;next == NULL) &#123;</span><br><span class="line">                            dwarf_sec-&gt;next = dwarf_s;</span><br><span class="line">                            break;</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                            dwarf_sec = dwarf_sec-&gt;next;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                tm-&gt;section_count ++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case LC_SEGMENT_64:</span><br><span class="line">        &#123;</span><br><span class="line">            struct segment_command_64 command = &#123;0&#125;;</span><br><span class="line">            memcpy(&amp;command, data + *offset, sizeof(struct segment_command_64));</span><br><span class="line">            if(strcmp(command.segname, &quot;__DWARF&quot;) == 0)&#123;//暂时不处理app 代码 crash</span><br><span class="line">                debug(&quot; is __DWARF skip &quot;);</span><br><span class="line">//                *offset += lc-&gt;cmdsize;</span><br><span class="line">//                return 0;</span><br><span class="line">            &#125;</span><br><span class="line">            if (strcmp(command.segname, &quot;__TEXT&quot;) == 0) &#123;</span><br><span class="line">                tm-&gt;vmaddr64 = command.vmaddr;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            int sectionOff = sizeof(struct segment_command_64);</span><br><span class="line">            for (int i = 0; i&lt;command.nsects; i++) &#123;</span><br><span class="line">                struct dwarf_section_64_t *dwarf_s = &#123;0&#125;;</span><br><span class="line">                dwarf_s = malloc(sizeof(struct dwarf_section_64_t));</span><br><span class="line">                if(dwarf_s == NULL) &#123;</span><br><span class="line">                    printf(&quot;no memory malloc dwarf_s \n&quot;);</span><br><span class="line">                    return -1;</span><br><span class="line">                &#125;</span><br><span class="line">                memset(dwarf_s, 0, sizeof(struct dwarf_section_64_t));</span><br><span class="line">                memcpy(&amp;dwarf_s-&gt;mach_section, data + *offset + sectionOff, sizeof(dwarf_s-&gt;mach_section));</span><br><span class="line">                sectionOff += sizeof(dwarf_s-&gt;mach_section);</span><br><span class="line">                struct dwarf_section_64_t *dwarf_sec = tm-&gt;dwarf_section_64;</span><br><span class="line">                if(!dwarf_sec) &#123;</span><br><span class="line">                    tm-&gt;dwarf_section_64 = dwarf_s;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    while (dwarf_sec) &#123;</span><br><span class="line">                        if(dwarf_sec-&gt;next == NULL) &#123;</span><br><span class="line">                            dwarf_sec-&gt;next = dwarf_s;</span><br><span class="line">                            break;</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                            dwarf_sec = dwarf_sec-&gt;next;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                tm-&gt;section_count ++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case LC_SYMTAB:</span><br><span class="line">        &#123;</span><br><span class="line">            struct symtab_command command = &#123;0&#125;;</span><br><span class="line">            memcpy(&amp;command, data + *offset, sizeof(struct symtab_command));</span><br><span class="line">            tm-&gt;nsyms = command.nsyms;</span><br><span class="line">            tm-&gt;strsize = command.strsize;</span><br><span class="line">            tm-&gt;stroff = command.stroff;</span><br><span class="line">            tm-&gt;strings = data + command.stroff;</span><br><span class="line">            if(magic_number == MH_MAGIC_64)&#123;</span><br><span class="line">                tm-&gt;symbollist = malloc(command.nsyms * sizeof(struct symbol_t));</span><br><span class="line">                if(tm-&gt;symbollist == NULL) &#123;</span><br><span class="line">                    printf( &quot;no memory symbollist \n&quot;);</span><br><span class="line">                    return -1;</span><br><span class="line">                &#125;</span><br><span class="line">                memset(tm-&gt;symbollist, &apos;\0&apos;, command.nsyms * sizeof(struct symbol_t));</span><br><span class="line">                struct symbol_t *current = tm-&gt;symbollist;</span><br><span class="line">                int i = 0;</span><br><span class="line">                uint32_t listOffset = 0;</span><br><span class="line">                for (; i &lt; command.nsyms; i++) &#123;</span><br><span class="line">                    memcpy(&amp;current-&gt;sym.sym64, data + command.symoff + listOffset, sizeof(struct nlist_64));</span><br><span class="line">                    uint32_t n_strx = current-&gt;sym.sym64.n_un.n_strx;</span><br><span class="line">                    if(n_strx &lt; 0)&#123;</span><br><span class="line">                        current-&gt;name = &quot;&quot;;</span><br><span class="line">                    &#125;else if(n_strx &gt; command.strsize)&#123;</span><br><span class="line">                        current-&gt;name = &quot;bad string index&quot;;</span><br><span class="line">                    &#125;else &#123;</span><br><span class="line">                        current-&gt;name = tm-&gt;strings + n_strx;</span><br><span class="line">                    &#125;</span><br><span class="line">                   </span><br><span class="line">                    listOffset += sizeof(struct nlist_64);</span><br><span class="line">                    current++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                uint32_t listOffset = 0;</span><br><span class="line">                tm-&gt;symbollist = malloc(command.nsyms * sizeof(struct symbol_t));</span><br><span class="line">                if(tm-&gt;symbollist == NULL)&#123;</span><br><span class="line">                    printf( &quot;no memory symbollist \n&quot;);</span><br><span class="line">                    return -1;</span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">                memset(tm-&gt;symbollist, &apos;\0&apos;, command.nsyms * sizeof(struct symbol_t));</span><br><span class="line">                struct symbol_t *current = tm-&gt;symbollist;</span><br><span class="line">                int i = 0;</span><br><span class="line">                for (i = 0; i &lt; command.nsyms; i++) &#123;</span><br><span class="line">                    memcpy(&amp;current-&gt;sym.sym32, data + command.symoff + listOffset, sizeof(struct nlist));</span><br><span class="line">                    if(current-&gt;sym.sym32.n_un.n_strx &lt; 0)&#123;</span><br><span class="line">                        current-&gt;name = &quot;&quot;;</span><br><span class="line">                    &#125;else if(current-&gt;sym.sym32.n_un.n_strx &gt; command.strsize)&#123;</span><br><span class="line">                        current-&gt;name = &quot;bad string index&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                    else &#123;</span><br><span class="line">                        current-&gt;name = tm-&gt;strings + current-&gt;sym.sym32.n_un.n_strx;</span><br><span class="line">                    &#125;</span><br><span class="line">                    listOffset += sizeof(struct nlist);</span><br><span class="line">                    current++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            result = 0;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    *offset += lc-&gt;cmdsize;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">//parse</span><br><span class="line">int parse_macho(struct thin_macho *tm) &#123;</span><br><span class="line">    char *macho_str = tm-&gt;data;</span><br><span class="line">    int num_load_cmds = 0;</span><br><span class="line">    long offset = 0;</span><br><span class="line">    size_t header_size = 0;</span><br><span class="line">    uint32_t magic_number = 0;</span><br><span class="line">    memcpy(&amp;magic_number, macho_str, sizeof(uint32_t));</span><br><span class="line">    switch (magic_number) &#123;</span><br><span class="line">        case MH_MAGIC:</span><br><span class="line">        &#123;</span><br><span class="line">            struct mach_header mh = &#123;0&#125;;</span><br><span class="line">            header_size = sizeof(struct mach_header);</span><br><span class="line">            memcpy(&amp;mh, macho_str + offset, header_size);</span><br><span class="line">            num_load_cmds = mh.ncmds;</span><br><span class="line">            tm-&gt;cputype = mh.cputype;</span><br><span class="line">            tm-&gt;cpusubtype = mh.cpusubtype;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case MH_MAGIC_64:</span><br><span class="line">        &#123;</span><br><span class="line">            struct mach_header_64 mh64 = &#123;0&#125;;</span><br><span class="line">            header_size = sizeof(struct mach_header_64);</span><br><span class="line">            memcpy(&amp;mh64, macho_str + offset, header_size);</span><br><span class="line">            num_load_cmds = mh64.ncmds;</span><br><span class="line">            tm-&gt;cputype = mh64.cputype;</span><br><span class="line">            if(tm-&gt;cputype == CPU_TYPE_ARM64 &amp;&amp; tm-&gt;cpusubtype == CPU_SUBTYPE_ARM64_ALL) &#123;</span><br><span class="line">                tm-&gt;is_64 = 1;</span><br><span class="line">            &#125;</span><br><span class="line">            tm-&gt;cpusubtype = mh64.cpusubtype;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case MH_CIGAM:</span><br><span class="line">            printf(&quot;TODO: MH_CIGAM\n&quot;);</span><br><span class="line">            break;</span><br><span class="line">        case MH_CIGAM_64:</span><br><span class="line">            printf(&quot;TODO: MH_CIGAM_64\n&quot;);</span><br><span class="line">            break;</span><br><span class="line">        case FAT_MAGIC:</span><br><span class="line">        case FAT_CIGAM:</span><br><span class="line">            printf( &quot;fat in fat?\n&quot;);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            debug(&quot;not found magic_num = %u&quot;,magic_number);</span><br><span class="line">            printf( &quot;magic_number invalid.&quot;);</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    offset += header_size;</span><br><span class="line">    struct load_command lc = &#123;0&#125;;</span><br><span class="line">    int i = 0;</span><br><span class="line">    </span><br><span class="line">    while (i &lt; num_load_cmds) &#123;</span><br><span class="line">        memcpy(&amp;lc, macho_str + offset, sizeof(struct load_command));</span><br><span class="line">        int lc_result = parse_load_command(macho_str, &amp;offset, &amp;lc, tm, magic_number);</span><br><span class="line">        if(lc_result == -1) &#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">//    sortSymbolAddr(tm);print part</span><br><span class="line">    InsertSort(tm-&gt;symbollist,tm-&gt;nsyms, tm-&gt;is_64);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int parse_thin(FILE *fp,uint32_t magic_num, struct target_file *tf) &#123;</span><br><span class="line">    tf-&gt;numofarchs = 1;</span><br><span class="line">    tf-&gt;thin_machos = malloc(1 * sizeof(struct thin_macho*));</span><br><span class="line">    if (tf-&gt;thin_machos == NULL)&#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    memset(tf-&gt;thin_machos, &apos;\0&apos;, 1 * sizeof(struct thin_macho*));</span><br><span class="line">    fseek(fp, 0L, SEEK_END);</span><br><span class="line">    long int size = ftell(fp);</span><br><span class="line">    fseek(fp, 0L, SEEK_SET);</span><br><span class="line">    tf-&gt;thin_machos[0] = malloc(sizeof(struct thin_macho));</span><br><span class="line">    if(tf-&gt;thin_machos[0] == NULL) &#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    memset(tf-&gt;thin_machos[0], &apos;\0&apos;, sizeof(struct thin_macho));</span><br><span class="line">    tf-&gt;thin_machos[0]-&gt;data = malloc(size);</span><br><span class="line">    if(tf-&gt;thin_machos[0]-&gt;data == NULL)&#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    memset(tf-&gt;thin_machos[0]-&gt;data, &apos;\0&apos;, size);</span><br><span class="line">    long numofbytes = 0;</span><br><span class="line">    numofbytes = fread(tf-&gt;thin_machos[0]-&gt;data, sizeof(char), size, fp);</span><br><span class="line">    assert(numofbytes == size);</span><br><span class="line">    if(numofbytes == size)&#123;</span><br><span class="line">        int result = parse_macho(tf-&gt;thin_machos[0]);</span><br><span class="line">        if(result == -1) &#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int parse_fat(FILE *fp,uint32_t magic_num, struct target_file *tf) &#123;</span><br><span class="line">    long rc = 0;</span><br><span class="line">    struct fat_header fh = &#123;0&#125;;</span><br><span class="line">    uint32_t nfat_arch = 0;</span><br><span class="line">    debug(&quot;sizeof(struct fat_header) is = %lu&quot;,sizeof(struct fat_header));</span><br><span class="line">    if((rc = fread(&amp;fh, sizeof(struct fat_header), 1, fp)) != 0) &#123;</span><br><span class="line">        if(magic_num == FAT_CIGAM)&#123;</span><br><span class="line">            FilePrint(&quot;-magic_num :  FAT_CIGAM\n&quot;);</span><br><span class="line">            uint32_endian_convert(&amp;fh.nfat_arch);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            FilePrint(&quot;-magic_num :  FAT_MAGIC\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        nfat_arch = fh.nfat_arch;</span><br><span class="line">        FilePrint(&quot;-arch count : %u \n&quot;,nfat_arch);</span><br><span class="line">    &#125;</span><br><span class="line">    tf-&gt;numofarchs = nfat_arch;</span><br><span class="line">    tf-&gt;thin_machos = malloc(sizeof(struct thin_macho *));</span><br><span class="line">    if(tf-&gt;thin_machos == NULL) &#123;</span><br><span class="line">        printf( &quot;parse_fat Can not malloc thin_machos*&quot;);</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    memset(tf-&gt;thin_machos, &apos;\0&apos;, nfat_arch * sizeof(struct thin_macho *));</span><br><span class="line">    uint32_t i = 0;</span><br><span class="line">    struct fat_arch fa = &#123;0&#125;;</span><br><span class="line">    while (i &lt; nfat_arch) &#123;</span><br><span class="line">        tf-&gt;thin_machos[i] = malloc(sizeof(struct thin_macho));</span><br><span class="line">        if(tf-&gt;thin_machos[i] == NULL) &#123;</span><br><span class="line">            printf( &quot;parse_fat Can not malloc thin_machos[%d]&quot;,i);</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        memset(tf-&gt;thin_machos[i], &apos;\0&apos;, sizeof(struct thin_macho));</span><br><span class="line">        debug(&quot;sizeof(struct fat_arch) is = %lu  \n sizeof(char) = %lu&quot;,sizeof(struct fat_arch),sizeof(char));</span><br><span class="line">        if((rc = fread(&amp;fa, sizeof(struct fat_arch), 1, fp)) == 1) &#123;</span><br><span class="line">            if(magic_num == FAT_CIGAM)&#123;</span><br><span class="line">                integer_t_endian_convert(&amp;fa.cputype);</span><br><span class="line">                integer_t_endian_convert(&amp;fa.cpusubtype);</span><br><span class="line">                uint32_endian_convert(&amp;fa.offset);</span><br><span class="line">                uint32_endian_convert(&amp;fa.size);</span><br><span class="line">                uint32_endian_convert(&amp;fa.align);</span><br><span class="line">            &#125;</span><br><span class="line">            tf-&gt;thin_machos[i]-&gt;data = malloc(fa.size);</span><br><span class="line">            if (tf-&gt;thin_machos[i]-&gt;data == NULL)&#123;</span><br><span class="line">                printf( &quot;Can not malloc data&quot;);</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">            memset(tf-&gt;thin_machos[i]-&gt;data, &apos;\0&apos;, fa.size);</span><br><span class="line">            long cur_pos = ftell(fp);</span><br><span class="line">            fseek(fp, fa.offset, SEEK_SET);</span><br><span class="line">            long numofbytes = 0;</span><br><span class="line">            numofbytes = fread(tf-&gt;thin_machos[i]-&gt;data, sizeof(char), fa.size, fp);</span><br><span class="line">            if(numofbytes != fa.size) &#123;</span><br><span class="line">                printf( &quot;parse_fat read macho data error. i = %u \n&quot;,i);</span><br><span class="line">                return -1;</span><br><span class="line">            &#125;</span><br><span class="line">            fseek(fp, cur_pos, SEEK_SET);//获取完 data。回到原处</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            printf( &quot;read fat arch error\n&quot;);</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        int result = parse_macho(tf-&gt;thin_machos[i]);</span><br><span class="line">        if(result == -1)&#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct target_file *parse_file(const char *filename)&#123;</span><br><span class="line">    FILE *fp = fopen(filename, &quot;rb&quot;);</span><br><span class="line">    if (fp == NULL)&#123;</span><br><span class="line">        printf( &quot;Can not open file %s for read.\n&quot;, filename);</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    struct target_file *tf = malloc(sizeof(struct target_file));</span><br><span class="line">    if (tf == NULL)&#123;</span><br><span class="line">        printf( &quot;Can not malloc target_file&quot;);</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    //申请内存</span><br><span class="line">    memset(tf, &apos;\0&apos;, sizeof(struct target_file));</span><br><span class="line">    long rc = 0;</span><br><span class="line">    uint32_t magic_num = 0;</span><br><span class="line">    int parse_result = -1;</span><br><span class="line">    //前四字节为魔数</span><br><span class="line">    if((rc = fread(&amp;magic_num, sizeof(uint32_t), 1, fp)) != 0)</span><br><span class="line">    &#123;</span><br><span class="line">        fseek(fp, 0L, SEEK_SET);</span><br><span class="line">        switch (magic_num) &#123;</span><br><span class="line">            case MH_MAGIC:</span><br><span class="line">                debug(&quot;MH_MAGIC&quot;);</span><br><span class="line">                parse_result = parse_thin(fp,MH_MAGIC,tf);</span><br><span class="line">                break;</span><br><span class="line">            case MH_MAGIC_64:</span><br><span class="line">                debug(&quot;MH_MAGIC_64&quot;);</span><br><span class="line">                parse_result = parse_thin(fp,MH_MAGIC_64,tf);</span><br><span class="line">                break;</span><br><span class="line">            case MH_CIGAM_64://macho 和 平台编码不一致</span><br><span class="line">                debug(&quot;MH_CIGAM_64&quot;);</span><br><span class="line">                printf(&quot;MH_CIGAM_64: %x\n&quot;, MH_CIGAM_64);</span><br><span class="line">                break;</span><br><span class="line">            case FAT_MAGIC://大端序</span><br><span class="line">                debug(&quot;FAT_MAGIC&quot;);</span><br><span class="line">                parse_result = parse_fat(fp,FAT_MAGIC,tf);</span><br><span class="line">                break;</span><br><span class="line">            case FAT_CIGAM:</span><br><span class="line">                debug(&quot;FAT_CIGAM&quot;);</span><br><span class="line">                parse_result = parse_fat(fp,FAT_CIGAM,tf);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                debug(&quot;not found magic_num = %u&quot;,magic_num);</span><br><span class="line">                printf( &quot;magic_number invalid.&quot;);</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    fclose(fp);</span><br><span class="line">    if(parse_result == -1)&#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    return tf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int symbolicate(const char* arch, const char *executable, const char *loadAddr, char *addresses[])&#123;</span><br><span class="line">    char *filename = strrchr(executable, &apos;/&apos;);</span><br><span class="line">    if(filename == NULL)&#123;</span><br><span class="line">        filename = (char *)executable;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        filename = filename + 1;</span><br><span class="line">    &#125;</span><br><span class="line">    //开始读取二进制文件</span><br><span class="line">    debug(&quot;about to analysis file.&quot;);</span><br><span class="line">    struct target_file *tf = parse_file(executable);</span><br><span class="line">    int result = findAddressInMacho(tf, arch,loadAddr, addresses);</span><br><span class="line">    free_target_file(tf);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>请自行替换文件地址再运行。可以从 result.txt 中看到解析后的结构。可以看到和 machoview 解析出来的结构一致。</p>
+<p>接下来：<br>1：对 symbol table string 列表的 value 排序，symbol table string中包含方法名。<br>2：使用上面提到的文件地址去排好序的 value 中查找，查找到小于 value 的 index，则崩溃的方法名存在于 index-1 项。<br>可以看到，找到的系统崩溃和 symbolicatecrash 符号化出来的 output.crash 中一致。<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/find.png" alt=""></p>
+<h4 id="后续：自建crash-分析平台"><a href="#后续：自建crash-分析平台" class="headerlink" title="后续：自建crash 分析平台"></a>后续：自建crash 分析平台</h4><p>自建 crash 分析平台的路还有很长，目前我也刚走到第三步。分为：<br>OS 平台：Ubuntu<br>1：安装 Ubuntu 虚拟机18.04LTS版本，只有这个版本才支持 dwarfdump。apt-get 安装 llvm-dwarfdump<br>使用命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">llvm-dwarfdump -lookup 0x0000000100006734   BICrashAnalyzeDemo.app.dSYM/Contents/Resources/DWARF/BICrashAnalyzeDemo</span><br></pre></td></tr></table></figure><br>结果<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/%E5%88%9B%E5%BB%BAcrash%E5%B9%B3%E5%8F%B0/ubantu.png" alt=""><br>可以看到和 macox 上 dwarfdump 结果差不多，上面的脚本改改能继续用来符号化 AppName 的崩溃。</p>
+<p>2：安装自己实现的 atosl，符号化系统崩溃。<br>3：脚本批量符号化 crash 文件。<br>4：crash 分类<br>5：crash 额外信息添加</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/11/block/" rel="next" title="block 探索">
+                <i class="fa fa-chevron-left"></i> block 探索
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/24/macho-analysis/" rel="prev" title="MachO 文件结构分析">
+                MachO 文件结构分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#收集所需信息"><span class="nav-number">1.</span> <span class="nav-text">收集所需信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证符号文件"><span class="nav-number">2.</span> <span class="nav-text">验证符号文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取偏移量"><span class="nav-number">3.</span> <span class="nav-text">获取偏移量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#符号化崩溃报告"><span class="nav-number">4.</span> <span class="nav-text">符号化崩溃报告</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-ATOS-符号化。"><span class="nav-number">4.1.</span> <span class="nav-text">使用 ATOS 符号化。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-lldb-符号化"><span class="nav-number">4.2.</span> <span class="nav-text">使用 lldb 符号化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Dwarfdump-符号化"><span class="nav-number">4.3.</span> <span class="nav-text">使用 Dwarfdump 符号化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#symbolicatecrash"><span class="nav-number">4.4.</span> <span class="nav-text">symbolicatecrash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始实现自己的符号化平台"><span class="nav-number">5.</span> <span class="nav-text">开始实现自己的符号化平台</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用脚本批量处理，使用dwarfdump符号化自己App的-崩溃"><span class="nav-number">5.1.</span> <span class="nav-text">使用脚本批量处理，使用dwarfdump符号化自己App的 崩溃</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用atosl符号化系统的崩溃"><span class="nav-number">5.2.</span> <span class="nav-text">使用atosl符号化系统的崩溃</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现自己的-macho-解析工具"><span class="nav-number">5.3.</span> <span class="nav-text">实现自己的 macho 解析工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后续：自建crash-分析平台"><span class="nav-number">5.4.</span> <span class="nav-text">后续：自建crash 分析平台</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">61.8k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
