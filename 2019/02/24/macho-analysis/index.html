@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。 iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。 MachO 二">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MachO 文件结构分析">
+<meta property="og:url" content="http://yoursite.com/2019/02/24/macho-analysis/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。 iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。 MachO 二">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/fat.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/thin.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/macho.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/header.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/headercode.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/flags.jpg">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/dyld-info.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/section_use.png">
+<meta property="og:updated_time" content="2023-10-08T07:17:49.258Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MachO 文件结构分析">
+<meta name="twitter:description" content="上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。 iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。 MachO 二">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/fat.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/24/macho-analysis/">
+
+
+
+
+
+  <title>MachO 文件结构分析 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/24/macho-analysis/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MachO 文件结构分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-24T01:53:35+08:00">
+                2019-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  16
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇文章中提到了如何自建一个 Crash 平台，其中通过对系统库 (MachO) 的结构解析来寻找崩溃符号。这篇文章就具体讲讲 MachO 文件的结构分析。</p>
+<p>iOS中，我们平时看见的 MachO 文件你肯定不陌生，包括静态库(.a)、dSym (yourAppName.dSym)、系统动态库 (/usr/lib/libobjc.A.dylib)、可执行文件等。具体类型下面会讲到。</p>
+<p>MachO 二进制文件可以根据前四字节的magic_num来判断是不是 Fat (包含一个或多个架构，有 Fat_Header), 每个架构同样是的 MachO文件。可以这样比喻，相当于对一个或多个文件用文件夹压缩了下。zip 包相当于 Fat，文件是 Thin。每个文件的内部结构式一致的。</p>
+<h4 id="Fat"><a href="#Fat" class="headerlink" title="Fat"></a>Fat</h4><p><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/fat.png" alt=""><br>可以看到 Fat 多了 Fat_Header信息, 信息中包含架构数，每个架构的基本信息。<br>Fat 可以通过lipo -thin 命令分解出 thin。 thin 也可以合并成 Fat。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//分解</span><br><span class="line">lipo BICrashAnalyzeDemo -thin arm64 -output crashAnalyzeDemoARM64</span><br><span class="line">lipo BICrashAnalyzeDemo -thin armv7 -output crashAnalyzeDemoARMV7</span><br><span class="line">//合并</span><br><span class="line">lipo crashAnalyzeDemoARM64 crashAnalyzeDemoARMV7 -create -output BICrashAnalyzeDemo</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="Thin"><a href="#Thin" class="headerlink" title="Thin"></a>Thin</h4><p><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/thin.png" alt=""><br>所以我们只需要了解Thin的 MachO 文件内部结构。<br>macho大致结构如下:<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/macho.jpg" alt=""></p>
+<h4 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h4><p>macho 文件的大致信息，包含文件类型、32位还是64（MH_MAGIC_64）、架构、lc 个数，lc 大小<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/header.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct mach_header &#123;</span><br><span class="line">	uint32_t	magic;		/* mach magic number identifier */</span><br><span class="line">	cpu_type_t	cputype;	/* cpu specifier */</span><br><span class="line">	cpu_subtype_t	cpusubtype;	/* machine specifier */</span><br><span class="line">	uint32_t	filetype;	/* type of file */</span><br><span class="line">	uint32_t	ncmds;		/* number of load commands */</span><br><span class="line">	uint32_t	sizeofcmds;	/* the size of all the load commands */</span><br><span class="line">	uint32_t	flags;		/* flags */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/headercode.png" alt=""></p>
+<ul>
+<li>magic：MachO文件的魔数，用来确定其属于64位（0xfeedfacf/MH_MAGIC_64）还是32位（0xfeedface/MH_MAGIC），分别对应的是arm64和 armv7的Header。</li>
+<li>cputype和cupsubtype代表的是cpu的类型和其子类型，定义如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#define CPU_TYPE_ARM ((cpu_type_t)12)</span><br><span class="line">#define CPU_SUBTYPE_ARM_V6 ((cpu_subtype_t)6)</span><br><span class="line">#define CPU_SUBTYPE_ARM_V7 ((cpu_subtype_t)9)</span><br><span class="line">#define CPU_SUBTYPE_ARM_V7S ((cpu_subtype_t)11)</span><br><span class="line"></span><br><span class="line">#define CPU_TYPE_ARM64 ((cpu_type_t)16777228)</span><br><span class="line">#define CPU_SUBTYPE_ARM64_ALL ((cpu_subtype_t)0)</span><br><span class="line"></span><br><span class="line">#define CPU_TYPE_I386 ((cpu_type_t)7)</span><br><span class="line">#define CPU_SUBTYPE_X86_ALL ((cpu_subtype_t)3)</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>filetype 上面提到的 filetype，例子中为 dSym<br>可以看到苹果源文件中包含的所有类型。类型包含在 MachO 的 mach_header(_64) 的filetype字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> *</span><br><span class="line"> * Constants for the filetype field of the mach_header</span><br><span class="line"> */</span><br><span class="line">#define	MH_OBJECT	0x1		/* relocatable object file */可重定位的目标文件，编译器对源代码编译得到的中间结果。如gcc-c生成的</span><br><span class="line">#define	MH_EXECUTE	0x2		/* demand paged executable file */ 可执行文件(应用程序生成的二进制文件)，</span><br><span class="line">#define	MH_FVMLIB	0x3		/* fixed VM shared library file */</span><br><span class="line">#define	MH_CORE		0x4		/* core file */</span><br><span class="line">#define	MH_PRELOAD	0x5		/* preloaded executable file */</span><br><span class="line">#define	MH_DYLIB	0x6		/* dynamically bound shared library */ 动态库</span><br><span class="line">#define	MH_DYLINKER	0x7		/* dynamic link editor */ 动态链接库</span><br><span class="line">#define	MH_BUNDLE	0x8		/* dynamically bound bundle file */</span><br><span class="line">#define	MH_DYLIB_STUB	0x9		/* shared library stub for static */ </span><br><span class="line">					/*  linking only, no section contents */</span><br><span class="line">#define	MH_DSYM		0xa		/* companion file with only debug */ dSym 文件 gcc-g生成</span><br><span class="line">					/*  sections */</span><br><span class="line">#define	MH_KEXT_BUNDLE	0xb		/* x86_64 kexts */ 64位内核扩展</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ncmds  load command 个数</p>
+</li>
+<li>sizeofcmds 所有 load command 大小</li>
+<li>flags 执行相关的一些设置，用途如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">#define	MH_NOUNDEFS	0x1		/* the object file has no undefined</span><br><span class="line">					   references */</span><br><span class="line">#define	MH_INCRLINK	0x2		/* the object file is the output of an</span><br><span class="line">					   incremental link against a base file</span><br><span class="line">					   and can&apos;t be link edited again */</span><br><span class="line">#define MH_DYLDLINK	0x4		/* the object file is input for the</span><br><span class="line">					   dynamic linker and can&apos;t be staticly</span><br><span class="line">					   link edited again */</span><br><span class="line">#define MH_BINDATLOAD	0x8		/* the object file&apos;s undefined</span><br><span class="line">					   references are bound by the dynamic</span><br><span class="line">					   linker when loaded. */</span><br><span class="line">#define MH_PREBOUND	0x10		/* the file has its dynamic undefined</span><br><span class="line">					   references prebound. */</span><br><span class="line">#define MH_SPLIT_SEGS	0x20		/* the file has its read-only and</span><br><span class="line">					   read-write segments split */</span><br><span class="line">#define MH_LAZY_INIT	0x40		/* the shared library init routine is</span><br><span class="line">					   to be run lazily via catching memory</span><br><span class="line">					   faults to its writeable segments</span><br><span class="line">					   (obsolete) */</span><br><span class="line">#define MH_TWOLEVEL	0x80		/* the image is using two-level name</span><br><span class="line">					   space bindings */</span><br><span class="line">#define MH_FORCE_FLAT	0x100		/* the executable is forcing all images</span><br><span class="line">					   to use flat name space bindings */</span><br><span class="line">#define MH_NOMULTIDEFS	0x200		/* this umbrella guarantees no multiple</span><br><span class="line">					   defintions of symbols in its</span><br><span class="line">					   sub-images so the two-level namespace</span><br><span class="line">					   hints can always be used. */</span><br><span class="line">#define MH_NOFIXPREBINDING 0x400	/* do not have dyld notify the</span><br><span class="line">					   prebinding agent about this</span><br><span class="line">					   executable */</span><br><span class="line">#define MH_PREBINDABLE  0x800           /* the binary is not prebound but can</span><br><span class="line">					   have its prebinding redone. only used</span><br><span class="line">                                           when MH_PREBOUND is not set. */</span><br><span class="line">#define MH_ALLMODSBOUND 0x1000		/* indicates that this binary binds to</span><br><span class="line">                                           all two-level namespace modules of</span><br><span class="line">					   its dependent libraries. only used</span><br><span class="line">					   when MH_PREBINDABLE and MH_TWOLEVEL</span><br><span class="line">					   are both set. */ </span><br><span class="line">#define MH_SUBSECTIONS_VIA_SYMBOLS 0x2000/* safe to divide up the sections into</span><br><span class="line">					    sub-sections via symbols for dead</span><br><span class="line">					    code stripping */</span><br><span class="line">#define MH_CANONICAL    0x4000		/* the binary has been canonicalized</span><br><span class="line">					   via the unprebind operation */</span><br><span class="line">#define MH_WEAK_DEFINES	0x8000		/* the final linked image contains</span><br><span class="line">					   external weak symbols */</span><br><span class="line">#define MH_BINDS_TO_WEAK 0x10000	/* the final linked image uses</span><br><span class="line">					   weak symbols */</span><br><span class="line"></span><br><span class="line">#define MH_ALLOW_STACK_EXECUTION 0x20000/* When this bit is set, all stacks </span><br><span class="line">					   in the task will be given stack</span><br><span class="line">					   execution privilege.  Only used in</span><br><span class="line">					   MH_EXECUTE filetypes. */</span><br><span class="line">#define MH_ROOT_SAFE 0x40000           /* When this bit is set, the binary </span><br><span class="line">					  declares it is safe for use in</span><br><span class="line">					  processes with uid zero */</span><br><span class="line">                                         </span><br><span class="line">#define MH_SETUID_SAFE 0x80000         /* When this bit is set, the binary </span><br><span class="line">					  declares it is safe for use in</span><br><span class="line">					  processes when issetugid() is true */</span><br><span class="line"></span><br><span class="line">#define MH_NO_REEXPORTED_DYLIBS 0x100000 /* When this bit is set on a dylib, </span><br><span class="line">					  the static linker does not need to</span><br><span class="line">					  examine dependent dylibs to see</span><br><span class="line">					  if any are re-exported */</span><br><span class="line">#define	MH_PIE 0x200000			/* When this bit is set, the OS will</span><br><span class="line">					   load the main executable at a</span><br><span class="line">					   random address.  Only used in</span><br><span class="line">					   MH_EXECUTE filetypes. */</span><br><span class="line">#define	MH_DEAD_STRIPPABLE_DYLIB 0x400000 /* Only for use on dylibs.  When</span><br><span class="line">					     linking against a dylib that</span><br><span class="line">					     has this bit set, the static linker</span><br><span class="line">					     will automatically not create a</span><br><span class="line">					     LC_LOAD_DYLIB load command to the</span><br><span class="line">					     dylib if no symbols are being</span><br><span class="line">					     referenced from the dylib. */</span><br><span class="line">#define MH_HAS_TLV_DESCRIPTORS 0x800000 /* Contains a section of type </span><br><span class="line">					    S_THREAD_LOCAL_VARIABLES */</span><br><span class="line"></span><br><span class="line">#define MH_NO_HEAP_EXECUTION 0x1000000	/* When this bit is set, the OS will</span><br><span class="line">					   run the main executable with</span><br><span class="line">					   a non-executable heap even on</span><br><span class="line">					   platforms (e.g. i386) that don&apos;t</span><br><span class="line">					   require it. Only used in MH_EXECUTE</span><br><span class="line">					   filetypes. */</span><br></pre></td></tr></table></figure>
+用途<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/flags.jpg" alt=""></li>
+</ul>
+<h4 id="Load-Commands"><a href="#Load-Commands" class="headerlink" title="Load Commands"></a>Load Commands</h4><p>用于告诉loader如何设置并加载二进制数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//基本信息</span><br><span class="line">struct load_command &#123;</span><br><span class="line">	uint32_t cmd;		/* type of load command */</span><br><span class="line">	uint32_t cmdsize;	/* total size of command in bytes */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br>cmd类型有很多，查看 loader.h中的定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * After MacOS X 10.1 when a new load command is added that is required to be</span><br><span class="line"> * understood by the dynamic linker for the image to execute properly the</span><br><span class="line"> * LC_REQ_DYLD bit will be or&apos;ed into the load command constant.  If the dynamic</span><br><span class="line"> * linker sees such a load command it it does not understand will issue a</span><br><span class="line"> * &quot;unknown load command required for execution&quot; error and refuse to use the</span><br><span class="line"> * image.  Other load commands without this bit that are not understood will</span><br><span class="line"> * simply be ignored.</span><br><span class="line"> */</span><br><span class="line">#define LC_REQ_DYLD 0x80000000</span><br><span class="line"></span><br><span class="line">/* Constants for the cmd field of all load commands, the type */</span><br><span class="line">#define	LC_SEGMENT	0x1	/* segment of this file to be mapped */ </span><br><span class="line">#define	LC_SYMTAB	0x2	/* link-edit stab symbol table info */</span><br><span class="line">#define	LC_SYMSEG	0x3	/* link-edit gdb symbol table info (obsolete) */</span><br><span class="line">#define	LC_THREAD	0x4	/* thread */</span><br><span class="line">#define	LC_UNIXTHREAD	0x5	/* unix thread (includes a stack) */</span><br><span class="line">#define	LC_LOADFVMLIB	0x6	/* load a specified fixed VM shared library */</span><br><span class="line">#define	LC_IDFVMLIB	0x7	/* fixed VM shared library identification */</span><br><span class="line">#define	LC_IDENT	0x8	/* object identification info (obsolete) */</span><br><span class="line">#define LC_FVMFILE	0x9	/* fixed VM file inclusion (internal use) */</span><br><span class="line">#define LC_PREPAGE      0xa     /* prepage command (internal use) */</span><br><span class="line">#define	LC_DYSYMTAB	0xb	/* dynamic link-edit symbol table info */</span><br><span class="line">#define	LC_LOAD_DYLIB	0xc	/* load a dynamically linked shared library */</span><br><span class="line">#define	LC_ID_DYLIB	0xd	/* dynamically linked shared lib ident */</span><br><span class="line">#define LC_LOAD_DYLINKER 0xe	/* load a dynamic linker */</span><br><span class="line">#define LC_ID_DYLINKER	0xf	/* dynamic linker identification */</span><br><span class="line">#define	LC_PREBOUND_DYLIB 0x10	/* modules prebound for a dynamically */</span><br><span class="line">				/*  linked shared library */</span><br><span class="line">#define	LC_ROUTINES	0x11	/* image routines */</span><br><span class="line">#define	LC_SUB_FRAMEWORK 0x12	/* sub framework */</span><br><span class="line">#define	LC_SUB_UMBRELLA 0x13	/* sub umbrella */</span><br><span class="line">#define	LC_SUB_CLIENT	0x14	/* sub client */</span><br><span class="line">#define	LC_SUB_LIBRARY  0x15	/* sub library */</span><br><span class="line">#define	LC_TWOLEVEL_HINTS 0x16	/* two-level namespace lookup hints */</span><br><span class="line">#define	LC_PREBIND_CKSUM  0x17	/* prebind checksum */</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * load a dynamically linked shared library that is allowed to be missing</span><br><span class="line"> * (all symbols are weak imported).</span><br><span class="line"> */</span><br><span class="line">#define	LC_LOAD_WEAK_DYLIB (0x18 | LC_REQ_DYLD)</span><br><span class="line"></span><br><span class="line">#define	LC_SEGMENT_64	0x19	/* 64-bit segment of this file to be</span><br><span class="line">				   mapped */</span><br><span class="line">#define	LC_ROUTINES_64	0x1a	/* 64-bit image routines */</span><br><span class="line">#define LC_UUID		0x1b	/* the uuid */</span><br><span class="line">#define LC_RPATH       (0x1c | LC_REQ_DYLD)    /* runpath additions */</span><br><span class="line">#define LC_CODE_SIGNATURE 0x1d	/* local of code signature */</span><br><span class="line">#define LC_SEGMENT_SPLIT_INFO 0x1e /* local of info to split segments */</span><br><span class="line">#define LC_REEXPORT_DYLIB (0x1f | LC_REQ_DYLD) /* load and re-export dylib */</span><br><span class="line">#define	LC_LAZY_LOAD_DYLIB 0x20	/* delay load of dylib until first use */</span><br><span class="line">#define	LC_ENCRYPTION_INFO 0x21	/* encrypted segment information */</span><br><span class="line">#define	LC_DYLD_INFO 	0x22	/* compressed dyld information */</span><br><span class="line">#define	LC_DYLD_INFO_ONLY (0x22|LC_REQ_DYLD)	/* compressed dyld information only */</span><br><span class="line">#define	LC_LOAD_UPWARD_DYLIB (0x23 | LC_REQ_DYLD) /* load upward dylib */</span><br><span class="line">#define LC_VERSION_MIN_MACOSX 0x24   /* build for MacOSX min OS version */</span><br><span class="line">#define LC_VERSION_MIN_IPHONEOS 0x25 /* build for iPhoneOS min OS version */</span><br><span class="line">#define LC_FUNCTION_STARTS 0x26 /* compressed table of function start addresses */</span><br><span class="line">#define LC_DYLD_ENVIRONMENT 0x27 /* string for dyld to treat</span><br><span class="line">				    like environment variable */</span><br><span class="line">#define LC_MAIN (0x28|LC_REQ_DYLD) /* replacement for LC_UNIXTHREAD */</span><br><span class="line">#define LC_DATA_IN_CODE 0x29 /* table of non-instructions in __text */</span><br><span class="line">#define LC_SOURCE_VERSION 0x2A /* source version used to build binary */</span><br><span class="line">#define LC_DYLIB_CODE_SIGN_DRS 0x2B /* Code signing DRs copied from linked dylibs */</span><br></pre></td></tr></table></figure><br>常用的有<br>LC_UUID：确定文件的唯一标识，crash reporter 中的 Images 中也会有这个，去检测 dsym 文件和 crash 文件是否匹配，系统库是否找的正确。<br>LC_SEGMENT_64： 将该段(64位)映射到进程地址空间中<br>LC_SEGMENT： 将该段(32位)映射到进程地址空间中<br>LC_SYMTAB：载入符号表地址,可以通过崩溃地址找到崩溃符号（方法）。<br>LC_DYSYMTAB：载入动态符号表地址<br>LC_LOAD_DYLINKER：load_dylinker, 调用dyld（usr/lib/dyld） 动态连接器加载动态库<br>LC_VERSION_MIN_MACOSX/LC_VERSION_MIN_IPHONEOS：确定二进制文件要求的最低操作系统版本<br>LC_SOURCE_VERSION：构建该二进制文件使用的源代码版本<br>LC_MAIN：设置程序主线程的入口地址和栈大小, 在可执行文件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * The entry_point_command is a replacement for thread_command.</span><br><span class="line"> * It is used for main executables to specify the location (file offset)</span><br><span class="line"> * of main().  If -stack_size was used at link time, the stacksize</span><br><span class="line"> * field will contain the stack size need for the main thread.</span><br><span class="line"> */</span><br><span class="line">struct entry_point_command &#123;</span><br><span class="line">    uint32_t  cmd;	/* LC_MAIN only used in MH_EXECUTE filetypes */</span><br><span class="line">    uint32_t  cmdsize;	/* 24 */</span><br><span class="line">    uint64_t  entryoff;	/* file (__TEXT) offset of main() */</span><br><span class="line">    uint64_t  stacksize;/* if not zero, initial stack size */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br>LC_ENCRYPTION_INFO_64：获取加密信息<br>LC_LOAD_DYLIB：加载额外的动态库路径，包含三方库<br>LC_FUNCTION_STARTS：定义一个函数起始地址表,使调试器和其他程序易于看到一个地址是否在函数内<br>LC_DATA_IN_CODE：定义在代码段内的非指令的表<br>LC_ID_DYLIB：只在 dylib 中加载，指定了 dylib的ID，版本和兼容版本<br>LC_CODE_SIGNATURE：获取应用签名信息<br>LC_DYLD_INFO_ONLY：加载动态链接库信息（重定向地址、弱引用绑定、懒加载绑定、开放函数等的偏移值等信息）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * The dyld_info_command contains the file offsets and sizes of </span><br><span class="line"> * the new compressed form of the information dyld needs to </span><br><span class="line"> * load the image.  This information is used by dyld on Mac OS X</span><br><span class="line"> * 10.6 and later.  All information pointed to by this command</span><br><span class="line"> * is encoded using byte streams, so no endian swapping is needed</span><br><span class="line"> * to interpret it. </span><br><span class="line"> */</span><br><span class="line">struct dyld_info_command &#123;</span><br><span class="line">   uint32_t   cmd;		/* LC_DYLD_INFO or LC_DYLD_INFO_ONLY */</span><br><span class="line">   uint32_t   cmdsize;		/* sizeof(struct dyld_info_command) */</span><br><span class="line"></span><br><span class="line">    uint32_t   rebase_off;	/* file offset to rebase info  */</span><br><span class="line">    uint32_t   rebase_size;	/* size of rebase info   */</span><br><span class="line">   </span><br><span class="line">    uint32_t   bind_off;	/* file offset to binding info   */</span><br><span class="line">    uint32_t   bind_size;	/* size of binding info  */</span><br><span class="line">    </span><br><span class="line">    uint32_t   weak_bind_off;	/* file offset to weak binding info   */</span><br><span class="line">    uint32_t   weak_bind_size;  /* size of weak binding info  */</span><br><span class="line">    </span><br><span class="line">    uint32_t   lazy_bind_off;	/* file offset to lazy binding info */</span><br><span class="line">    uint32_t   lazy_bind_size;  /* size of lazy binding infs */</span><br><span class="line">    </span><br><span class="line">    uint32_t   export_off;	/* file offset to lazy binding info */</span><br><span class="line">    uint32_t   export_size;	/* size of lazy binding infs */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/dyld-info.png" alt=""></p>
+<h4 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h4><p>这个区域提供了各个段（Segment）和节（Section）在可执行文件中的位置和大小。这个区域完整的描述克可执行文件中的全部内容。</p>
+<blockquote>
+<p>存放数据：代码、字符常量、类、方法等<br>可以拥有多个segment，每个segment可以有零到多个section。每个段都有一段虚拟地址映射到进程的地址空间</p>
+</blockquote>
+<p>segment</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * The segment load command indicates that a part of this file is to be</span><br><span class="line"> * mapped into the task&apos;s address space.  The size of this segment in memory,</span><br><span class="line"> * vmsize, maybe equal to or larger than the amount to map from this file,</span><br><span class="line"> * filesize.  The file is mapped starting at fileoff to the beginning of</span><br><span class="line"> * the segment in memory, vmaddr.  The rest of the memory of the segment,</span><br><span class="line"> * if any, is allocated zero fill on demand.  The segment&apos;s maximum virtual</span><br><span class="line"> * memory protection and initial virtual memory protection are specified</span><br><span class="line"> * by the maxprot and initprot fields.  If the segment has sections then the</span><br><span class="line"> * section structures directly follow the segment command and their size is</span><br><span class="line"> * reflected in cmdsize.</span><br><span class="line"> */</span><br><span class="line">struct segment_command &#123; /* for 32-bit architectures */</span><br><span class="line">	uint32_t	cmd;		/* LC_SEGMENT */</span><br><span class="line">	uint32_t	cmdsize;	/* includes sizeof section structs */</span><br><span class="line">	char		segname[16];	/* segment name */</span><br><span class="line">	uint32_t	vmaddr;		/* memory address of this segment */</span><br><span class="line">	uint32_t	vmsize;		/* memory size of this segment */</span><br><span class="line">	uint32_t	fileoff;	/* file offset of this segment */</span><br><span class="line">	uint32_t	filesize;	/* amount to map from the file */</span><br><span class="line">	vm_prot_t	maxprot;	/* maximum VM protection */</span><br><span class="line">	vm_prot_t	initprot;	/* initial VM protection */</span><br><span class="line">	uint32_t	nsects;		/* number of sections in segment */</span><br><span class="line">	uint32_t	flags;		/* flags */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * The 64-bit segment load command indicates that a part of this file is to be</span><br><span class="line"> * mapped into a 64-bit task&apos;s address space.  If the 64-bit segment has</span><br><span class="line"> * sections then section_64 structures directly follow the 64-bit segment</span><br><span class="line"> * command and their size is reflected in cmdsize.</span><br><span class="line"> */</span><br><span class="line">struct segment_command_64 &#123; /* for 64-bit architectures */</span><br><span class="line">	uint32_t	cmd;		/* LC_SEGMENT_64 */</span><br><span class="line">	uint32_t	cmdsize;	/* includes sizeof section_64 structs */</span><br><span class="line">	char		segname[16];	/* segment name */</span><br><span class="line">	uint64_t	vmaddr;		/* memory address of this segment */ 段的虚拟内存地址</span><br><span class="line">	uint64_t	vmsize;		/* memory size of this segment */ 为这个段分配的虚拟内存大小</span><br><span class="line">	uint64_t	fileoff;	/* file offset of this segment */ 段在文件中起始地址</span><br><span class="line">	uint64_t	filesize;	/* amount to map from the file */ 段大小</span><br><span class="line">	vm_prot_t	maxprot;	/* maximum VM protection */</span><br><span class="line">	vm_prot_t	initprot;	/* initial VM protection */</span><br><span class="line">	uint32_t	nsects;		/* number of sections in segment */ section个数</span><br><span class="line">	uint32_t	flags;		/* flags */ 标志位</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对于每一个段，将文件中相对应的内容加载到内存中：从偏移量为fileoff处加载filesize字节到虚拟内存地址vmaddr处的vmsize字节。每一个段的页面都根据initprot进行初始化，initprot指定了如何通过读／写／执行位初始化页面保护级别。段的保护设置可以动态改变，但是不能超过maxprot中指定的值（iOS中，+x 和+w 是互斥的）。</p>
+<p>section<br>section分为两种</p>
+<blockquote>
+<p><strong>TEXT 代码段
+</strong>DATA 数据段</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * A segment is made up of zero or more sections. </span><br><span class="line"> */</span><br><span class="line">struct section &#123; /* for 32-bit architectures */</span><br><span class="line">	char		sectname[16];	/* name of this section */</span><br><span class="line">	char		segname[16];	/* segment this section goes in */</span><br><span class="line">	uint32_t	addr;		/* memory address of this section */</span><br><span class="line">	uint32_t	size;		/* size in bytes of this section */</span><br><span class="line">	uint32_t	offset;		/* file offset of this section */</span><br><span class="line">	uint32_t	align;		/* section alignment (power of 2) */</span><br><span class="line">	uint32_t	reloff;		/* file offset of relocation entries */</span><br><span class="line">	uint32_t	nreloc;		/* number of relocation entries */</span><br><span class="line">	uint32_t	flags;		/* flags (section type and attributes)*/</span><br><span class="line">	uint32_t	reserved1;	/* reserved (for offset or index) */</span><br><span class="line">	uint32_t	reserved2;	/* reserved (for count or sizeof) */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct section_64 &#123; /* for 64-bit architectures */</span><br><span class="line">	char		sectname[16];	/* name of this section */</span><br><span class="line">	char		segname[16];	/* segment this section goes in */</span><br><span class="line">	uint64_t	addr;		/* memory address of this section */</span><br><span class="line">	uint64_t	size;		/* size in bytes of this section */</span><br><span class="line">	uint32_t	offset;		/* file offset of this section */</span><br><span class="line">	uint32_t	align;		/* section alignment (power of 2) */</span><br><span class="line">	uint32_t	reloff;		/* file offset of relocation entries */</span><br><span class="line">	uint32_t	nreloc;		/* number of relocation entries */</span><br><span class="line">	uint32_t	flags;		/* flags (section type and attributes)*/</span><br><span class="line">	uint32_t	reserved1;	/* reserved (for offset or index) */</span><br><span class="line">	uint32_t	reserved2;	/* reserved (for count or sizeof) */</span><br><span class="line">	uint32_t	reserved3;	/* reserved */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>常见section作用<br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/macho-analysis/section_use.png" alt=""></p>
+<ul>
+<li>每个 section 的起始位置 + 大小就是下个 section 的启始位置</li>
+<li>cstring 包含了所有OC的硬编码字符串，nslog 中的字符串也在cstring中，但是不包含含中文的字符串，这些字符串显示的存储在数据段中。不过同样的字符只会存储一次。</li>
+<li>ustring 中包含了带中文的硬编码字符串，其他同cstring。</li>
+<li><code>__stubs</code>会到 <code>__DATA</code> 段的<code>__la_symbol_ptr</code>中找到函数的入口地址。</li>
+</ul>
+<h4 id="Loader-Info-（链接信息）"><a href="#Loader-Info-（链接信息）" class="headerlink" title="Loader Info （链接信息）"></a>Loader Info （链接信息）</h4><p>一个完整的用户级 MachO 文件的末端是一系列链接信息。其中包含了动态加载器用来链接可执行文件或者依赖所需使用的符号表、字符串表、dynamic loader info（地址修正，bind）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/20/iOS-crash-report/" rel="next" title="如何自建 Crash 平台">
+                <i class="fa fa-chevron-left"></i> 如何自建 Crash 平台
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/26/app-加载过程/" rel="prev" title="app 加载过程 & 启动速度优化">
+                app 加载过程 & 启动速度优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Fat"><span class="nav-number">1.</span> <span class="nav-text">Fat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thin"><span class="nav-number">2.</span> <span class="nav-text">Thin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Header"><span class="nav-number">3.</span> <span class="nav-text">Header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Load-Commands"><span class="nav-number">4.</span> <span class="nav-text">Load Commands</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data"><span class="nav-number">5.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Loader-Info-（链接信息）"><span class="nav-number">6.</span> <span class="nav-text">Loader Info （链接信息）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">66.5k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
