@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="如何使用Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！iOS 崩溃统计工具-Crashlytics了解crash收集：漫谈iOS Crash收集框架 customKey 和 customLogcustomKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Twitter Crashlytics-iOS">
+<meta property="og:url" content="http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="如何使用Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！iOS 崩溃统计工具-Crashlytics了解crash收集：漫谈iOS Crash收集框架 customKey 和 customLogcustomKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/customKey.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/customLog.png">
+<meta property="og:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/preview.png">
+<meta property="og:updated_time" content="2022-02-27T04:35:44.562Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Twitter Crashlytics-iOS">
+<meta name="twitter:description" content="如何使用Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！iOS 崩溃统计工具-Crashlytics了解crash收集：漫谈iOS Crash收集框架 customKey 和 customLogcustomKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到">
+<meta name="twitter:image" content="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/customKey.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/">
+
+
+
+
+
+  <title>Twitter Crashlytics-iOS | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/08/Twitter-Crashlytics-iOS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Twitter Crashlytics-iOS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T01:29:17+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术调研/" itemprop="url" rel="index">
+                    <span itemprop="name">技术调研</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  441
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>Twitter的Crashlytics SDK接口做的非常简洁，后台也是非常友好，关于如何使用，在这里贴下别的同学的链接，不再赘述啦！<br><a href="https://www.jianshu.com/p/0a2ff9cd5c23" target="_blank" rel="noopener">iOS 崩溃统计工具-Crashlytics</a><br>了解crash收集：<a href="https://nianxi.net/ios/ios-crash-reporter.html" target="_blank" rel="noopener">漫谈iOS Crash收集框架</a></p>
+<h3 id="customKey-和-customLog"><a href="#customKey-和-customLog" class="headerlink" title="customKey 和 customLog"></a>customKey 和 customLog</h3><p>customKey 和 customLog非常有用，可以跟随crash的report一起上传到服务器上，可以记录从启动到崩溃过程中的用户行为路径，方便用户定位crash根源。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//customKey</span><br><span class="line">[CrashlyticsKit setUserIdentifier:@&quot;device&quot;];</span><br><span class="line">[CrashlyticsKit setUserEmail:@&quot;133@qq.com&quot;];</span><br><span class="line">[CrashlyticsKit setUserName:@&quot;xyl&quot;];</span><br><span class="line">[CrashlyticsKit setObjectValue:@&quot;testValue&quot; forKey:@&quot;testKey&quot;];</span><br><span class="line">NSDictionary *dict = @&#123;</span><br><span class="line">                       @&quot;key1&quot;:@&quot;key1&quot;,</span><br><span class="line">                       @&quot;key2&quot;:@&quot;key2&quot;</span><br><span class="line">                       &#125;;</span><br><span class="line">[CrashlyticsKit setObjectValue:dict forKey:@&quot;testKeyDict&quot;];</span><br></pre></td></tr></table></figure><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/customKey.png" alt=""><br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//customLog</span><br><span class="line">CLS_LOG(@&quot; testCrashButton3Tapped log1&quot;);</span><br><span class="line">CLS_LOG(@&quot; UncaughtExceptionHandler test&quot;);</span><br><span class="line">//.... more</span><br></pre></td></tr></table></figure><br><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/customLog.png" alt=""></p>
+<h3 id="和NSSetUncaughtExceptionHandler-amp-UncaughtExceptionHandler-不冲突"><a href="#和NSSetUncaughtExceptionHandler-amp-UncaughtExceptionHandler-不冲突" class="headerlink" title="和NSSetUncaughtExceptionHandler (&amp;UncaughtExceptionHandler)不冲突"></a>和NSSetUncaughtExceptionHandler (&amp;UncaughtExceptionHandler)不冲突</h3><p>在监听中使用customKey和customLog添加一些自己想放到崩溃信息中的重要信息，比如当前显示的view之类的。</p>
+<h3 id="Unix信号捕获和crashlytics冲突问题"><a href="#Unix信号捕获和crashlytics冲突问题" class="headerlink" title="Unix信号捕获和crashlytics冲突问题"></a>Unix信号捕获和crashlytics冲突问题</h3><p>如上如果我想在Mach异常崩溃的时候添加一些log信息，这个时候会有些问题了，如signal(SIGABRT, signalHandler)的捕获，在crashlytics前设置会被crashlytics覆盖导致signalHandler不被调用，在crashlytics后调用会导致crashlytics捕获unix信号的handler不被调用，这都不是我们想看到的，解决办法是想办法保存crashlytics的signalHandler，在crashlytics初始化后调用。解决办法请参考<a href="https://www.jianshu.com/p/29051908c74b" target="_blank" rel="noopener">iOS Crash 捕获及堆栈符号化思路剖析</a>;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//提供一个SIGABRT类型的异常</span><br><span class="line">typedef struct Test</span><br><span class="line">&#123;</span><br><span class="line">    int a;</span><br><span class="line">    int b;</span><br><span class="line">&#125;Test;</span><br><span class="line">Test *pTest = &#123;1,2&#125;;</span><br><span class="line">free(pTest);//导致SIGABRT的错误，因为内存中根本就没有这个空间，哪来的free，就在栈中的对象而已</span><br><span class="line">pTest-&gt;a = 5;</span><br></pre></td></tr></table></figure></p>
+<h3 id="crashlytics的崩溃信息收集、上传流程图"><a href="#crashlytics的崩溃信息收集、上传流程图" class="headerlink" title="crashlytics的崩溃信息收集、上传流程图"></a>crashlytics的崩溃信息收集、上传流程图</h3><p><img src="https://xylbolg-1256213633.cos.ap-shanghai.myqcloud.com/cell/preview.png" alt=""></p>
+<p><a href="https://mermaidjs.github.io/mermaid-live-editor/#/view/c2VxdWVuY2VEaWFncmFtCiAgcGFydGljaXBhbnQgQ3Jhc2hseXRpY3MKICBwYXJ0aWNpcGFudCBQcm9jZXNzaW5nCiAgcGFydGljaXBhbnQgU2Vzc2lvbklECiAgcGFydGljaXBhbnQgdXBsb2FkCiAgcGFydGljaXBhbnQgRW50ZXJCYWNrZ3JvdW5kCiAgcGFydGljaXBhbnQgRW50ZXJGb3JlZ3JvdW5kCiAgcGFydGljaXBhbnQgRXhjZXB0aW9uQ3Jhc2gKICBwYXJ0aWNpcGFudCBTaWduYWxDcmFzaAoKCiAgQ3Jhc2hseXRpY3MtLT4-Q3Jhc2hseXRpY3M6IHN0YXJ0IQoKICBDcmFzaGx5dGljcy0tPlNlc3Npb25JRDogbmV3CiAgTm90ZSBvdmVyIFNlc3Npb25JRDrpmo_mnLrnlJ_miJDkuIDkuKoIc2Vzc2lvbl9pZAogIFNlc3Npb25JRC0tPkNyYXNobHl0aWNzOiBiYWNrIHNlc3Npb25JRAogICBOb3RlIG92ZXIgQ3Jhc2hseXRpY3M6c3RlcDI65LiL6Z2i6K-055qE5paH5Lu26YO95piv5ZyoL0xpYnJhcnkvQ2FjaGVzL2NvbS5jcmFzaGx5dGljcy5kYXRhLwh7YnVuZGxlSUR9L-S4iwogICBOb3RlIG92ZXIgQ3Jhc2hseXRpY3M6c3RlcDI65ZyoVjMvYWN0aXZl5paH5Lu25aS55LiL5paw5bu65LiA5LiqCOS7peivpUlE5Li6bmFtZeeahOaWh-S7tuWkue-8jOeUn-aIkOm7mOiupOaWh-S7tuWIsOaWh-S7tuWkueS4iwogIENyYXNobHl0aWNzLS0-PkNyYXNobHl0aWNzOiByZWFkCiAgTm90ZSBvdmVyIENyYXNobHl0aWNzOnN0ZXAxOumBjeWOhuivu-WPllYzL2FjdGl2ZeaWh-S7tuWkueS4i-eahOaWh-S7tuWkue-8iOmZpOS6huS7peS4iuaPkOWIsOeahOWImm5ld-eahOaWh-S7tuWkue-8ie-8jOWIpOaWreivpeaWh-S7tuWkueS4i-aYr-WQpuaciWV4Y2VwdGlvbi5jbHNyZWNvcmTmlofku7bmiJbogIVzaWduYWwuY2xzcmVjb3Jk5paH5Lu2CiAgYWx0IOaciWV4Y2VwdGlvbi5jbHNyZWNvcmTmlofku7YKICBOb3RlIG92ZXIgQ3Jhc2hseXRpY3M65Y-R6YCBY3Jhc2hseXRpY3NEaWREZXRlY3RSZXBvcnRGb3JMYXN0RXhlY3V0aW9uOmNvbXBsZXRpb25IYW5kbGVyIGRlbGVnYXRlCiAgQ3Jhc2hseXRpY3MtLT4-UHJvY2Vzc2luZzrmlofku7blpITnkIZwcm9jZXNzaW5nCiAgIE5vdGUgb3ZlciBQcm9jZXNzaW5nOnYzL3Byb2Nlc3NpbmfkuIvnlJ_miJDkuIDkuKpyZXBvcnRfaWTmlofku7blpLks5aSN5Yi25omA5pyJ5paH5Lu25YiwdjMvcHJvY2Vzc2luZ-S4i-W5tueUn-aIkOS4gOS4qmV4Y2VwdGlvbi5jbHNyZWNvcmQuc3ltYm9saWNhdGVk5paH5Lu277yM54S25ZCO5Yig6Zmkc2Vzc2lvbl9pZOaWh-S7tuWkuQogIE5vdGUgb3ZlciBQcm9jZXNzaW5nOiAI5omT5YyFZXhjZXB0aW9u5paH5Lu25ZKMbG9n5paH5Lu2562J77yM55Sf5oiQ5om56YeP5LiK5Lyg5paH5Lu255qE5LiA5p2hcG9zdOS_oeaBr-aWh-S7tuWIsAh2My9wcmVwYXJlZOaWh-S7tuWkueS4i--8jOeEtuWQjuWIoOmZpOivpeaWh-S7tuWkuQogIGVsc2Ug5rKh5pyJ5pyJZXhjZXB0aW9uLmNsc3JlY29yZOaWh-S7tgogIE5vdGUgb3ZlciBDcmFzaGx5dGljczrliKDpmaTor6Xmlofku7blpLkKICBlbmQKCiAgTm90ZSBvdmVyIENyYXNobHl0aWNzOmFuYWx5dGljcy92Mi9jcmFzaF9tZXRhZGF0YeabtOaWsAogIE5vdGUgb3ZlciBDcmFzaGx5dGljczrlj5HpgIFjcmFzaGx5dGljc0RpZERldGVjdFJlcG9ydEZvckxhc3RFeGVjdXRpb24gZGVsZWdhdCAKCiAgTm90ZSBvdmVyIENyYXNobHl0aWNzOnVwbG9hZCByZXBvcnQKICBDcmFzaGx5dGljcy0-PnVwbG9hZDogc3RhcnQgdXBsb2FkCiAgTm90ZSBvdmVyIHVwbG9hZDog6YGN5Y6GdjMvcHJlcGFyZWTmlofku7blpLnkuIvnmoRwb3N05L-h5oGv5paH5Lu277yM5L6d5qyh5LiK5LygCiAgYWx0IHVwbG9hZCAIc3VjYyAKICBOb3RlIG92ZXIgdXBsb2FkOiDliKDpmaRWMy9wcmVwYXJlZOaWh-S7tuWkueS4i-W3sue7j-S4iuS8oOaIkOWKn-eahHJlcG9ydOaWh-S7tuWkuQogIGVsc2UgdXBsb2FkIGZhaWwKICBOb3RlIG92ZXIgdXBsb2FkOuS4jeWIoOmZpHBvc3Tkv6Hmga_mlofku7bvvIzph43or5XkuIrkvKAKICBlbmQKCgogIE5vdGUgb3ZlciBFbnRlckJhY2tncm91bmQ6YW5hbHl0aWNzL3YyL2V2ZW50IOaWh-S7tuWkueS4i-S8mueUn-aIkC5sb2fmlofku7bvvIjljIXlkKthcHDln7rmnKzkv6Hmga_lkoxzZXNzc2lvbl9pZO-8ieetieS_oeaBr--8jOeUqOS6jue7n-iuoeOAguWPr-W_veeVpQogIE5vdGUgb3ZlciBFbnRlckZvcmVncm91bmQ6IOWIoOmZpOaWh-S7tuWkuWFuYWx5dGljcy92Mi9ldmVudOS4i-eahOaWh-S7tgoKICBFeGNlcHRpb25DcmFzaCAtLT4gRXhjZXB0aW9uQ3Jhc2g6RXhjZXB0aW9uIENyYXNoICAKICBOb3RlIG92ZXIgRXhjZXB0aW9uQ3Jhc2g65bSp5rqD5L-h5oGv5a2Y5YKo5ZyodjMvYWN0aXZlL3Nlc3Npb25faWTmlofku7blpLnkuItleGNlcHRpb24uY2xzcmVjb3Jk5paH5Lu25LitCgogIFNpZ25hbENyYXNoIC0tPiBTaWduYWxDcmFzaDpVbml4IENyYXNoICAKICBOb3RlIG92ZXIgU2lnbmFsQ3Jhc2g65bSp5rqD5L-h5oGv5a2Y5YKo5ZyodjMvYWN0aXZlL3Nlc3Npb25faWTmlofku7blpLnkuItzaWduYWwuY2xzcmVjb3Jk5paH5Lu25Lit" target="_blank" rel="noopener">crashlytics流程图详情</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/30/2017-2018/" rel="next" title="2017-2018">
+                <i class="fa fa-chevron-left"></i> 2017-2018
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/远征腾格里/" rel="prev" title="远征腾格里沙漠-五湖连穿">
+                远征腾格里沙漠-五湖连穿 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用"><span class="nav-number">1.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#customKey-和-customLog"><span class="nav-number">2.</span> <span class="nav-text">customKey 和 customLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和NSSetUncaughtExceptionHandler-amp-UncaughtExceptionHandler-不冲突"><span class="nav-number">3.</span> <span class="nav-text">和NSSetUncaughtExceptionHandler (&amp;UncaughtExceptionHandler)不冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unix信号捕获和crashlytics冲突问题"><span class="nav-number">4.</span> <span class="nav-text">Unix信号捕获和crashlytics冲突问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crashlytics的崩溃信息收集、上传流程图"><span class="nav-number">5.</span> <span class="nav-text">crashlytics的崩溃信息收集、上传流程图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">73.2k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

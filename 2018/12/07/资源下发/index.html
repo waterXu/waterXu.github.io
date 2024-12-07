@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="纳兰若水" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Apple On-Demand Resource Xcode 可以给资源打 tag，被打 tag 的资源在打包时不会打到包内。需要时下载，测试时可以使用自己的服务器，但是发布到 AppStore 时需要托管到苹果的服务器。苹果的 On-Demand Resource 文档   自建资源下发模块了解到了苹果 On-Demand Resource 机制，我们可以结合Resource Tags 下的资源">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="on-demand 资源下发">
+<meta property="og:url" content="http://yoursite.com/2018/12/07/资源下发/index.html">
+<meta property="og:site_name" content="纳兰若水">
+<meta property="og:description" content="Apple On-Demand Resource Xcode 可以给资源打 tag，被打 tag 的资源在打包时不会打到包内。需要时下载，测试时可以使用自己的服务器，但是发布到 AppStore 时需要托管到苹果的服务器。苹果的 On-Demand Resource 文档   自建资源下发模块了解到了苹果 On-Demand Resource 机制，我们可以结合Resource Tags 下的资源">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/资源下发/1.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/资源下发/2.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/资源下发/upload.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/资源下发/download.jpg">
+<meta property="og:updated_time" content="2023-10-08T07:19:22.901Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="on-demand 资源下发">
+<meta name="twitter:description" content="Apple On-Demand Resource Xcode 可以给资源打 tag，被打 tag 的资源在打包时不会打到包内。需要时下载，测试时可以使用自己的服务器，但是发布到 AppStore 时需要托管到苹果的服务器。苹果的 On-Demand Resource 文档   自建资源下发模块了解到了苹果 On-Demand Resource 机制，我们可以结合Resource Tags 下的资源">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/07/资源下发/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/07/资源下发/">
+
+
+
+
+
+  <title>on-demand 资源下发 | 纳兰若水</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">纳兰若水</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/资源下发/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="纳兰若水">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="纳兰若水">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">on-demand 资源下发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-07T04:44:10+08:00">
+                2018-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  576
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Apple-On-Demand-Resource"><a href="#Apple-On-Demand-Resource" class="headerlink" title="Apple On-Demand Resource"></a>Apple On-Demand Resource</h2><p> Xcode 可以给资源打 tag，被打 tag 的资源在打包时不会打到包内。需要时下载，测试时可以使用自己的服务器，但是发布到 AppStore 时需要托管到苹果的服务器。<br><a href="https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/On_Demand_Resources_Guide/index.html#//apple_ref/doc/uid/TP40015083-CH2-SW1" target="_blank" rel="noopener">苹果的 On-Demand Resource 文档</a></p>
+<img src="/2018/12/07/资源下发/1.png" title="Xcode 设置tag">
+<img src="/2018/12/07/资源下发/2.png" title="也可以直接点击资源设置 tag">
+<h2 id="自建资源下发模块"><a href="#自建资源下发模块" class="headerlink" title="自建资源下发模块"></a>自建资源下发模块</h2><p>了解到了苹果 On-Demand Resource 机制，我们可以结合Resource Tags 下的资源不会打包到 ipa 包的特性。设计一套自己的下发机制。<br><a id="more"></a></p>
+<h3 id="自动打包上传"><a href="#自动打包上传" class="headerlink" title="自动打包上传"></a>自动打包上传</h3><p>给需要下发的资源打上 tag 标签，xcode 打包时运行脚本上传 tag 包，生成 tag 配置信息 plist 文件，打包完成手动检查 md5 的一致性。<br><img src="/2018/12/07/资源下发/upload.jpg"></p>
+<h3 id="按需下载模块设计"><a href="#按需下载模块设计" class="headerlink" title="按需下载模块设计"></a>按需下载模块设计</h3><img src="/2018/12/07/资源下发/download.jpg">
+<p>接口和使用参照了苹果的 ondemand 相关接口</p>
+<p>上面其实是第一版…. 中间面临新的需求，比如需要保持一个下载进度，让 download view 能随时取到。</p>
+<h3 id="自动生成-plist"><a href="#自动生成-plist" class="headerlink" title="自动生成 plist"></a>自动生成 plist</h3><p>使用自带的 PlistBuddy 命令可以把 plist 更新<br><a href="http://www.mengyueping.com/2018/08/13/mac_PlistBuddy/" target="_blank" rel="noopener">PlistBuddy参考</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;start on-demand resource module&quot;</span><br><span class="line">GTagRootPath=&apos;./On-DemandResources&apos; //放 tag 资源包的路径，这里面我放的是已经打包好了 zip包，并标记为 tag resource</span><br><span class="line">echo On-DemandResources path = $GTagRootPath</span><br><span class="line">GTagPlistPath=&apos;./yourconfig.plist&apos; //plist 路径，先生成一个在工程里</span><br><span class="line">echo plist path = $&#123;GTagPlistPath&#125;</span><br><span class="line">GVerion=$(/usr/libexec/PlistBuddy -c &quot;Print CFBundleShortVersionString&quot; &quot;$INFOPLIST_FILE&quot;)</span><br><span class="line">echo version = $&#123;GVerion&#125;</span><br><span class="line">GbundleId=$&#123;PRODUCT_BUNDLE_IDENTIFIER&#125;</span><br><span class="line">echo bundleID = $&#123;GbundleId&#125;</span><br><span class="line"></span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Set :bundleID $GbundleId&quot; $GTagPlistPath</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Set :version $GVerion&quot; $GTagPlistPath</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Delete :tags&quot; $GTagPlistPath</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Add :tags array&quot; $GTagPlistPath</span><br><span class="line"></span><br><span class="line">index=0</span><br><span class="line">for file in $GTagRootPath/*</span><br><span class="line">do</span><br><span class="line">if test -f $file</span><br><span class="line">then</span><br><span class="line">echo $file 是文件</span><br><span class="line">md5String=$(md5 -q $file)</span><br><span class="line">name=$(basename $file .zip)</span><br><span class="line">size=$(ls -l $file | awk &apos;&#123;print $5&#125;&apos;)</span><br><span class="line">echo size is $size</span><br><span class="line">/usr/libexec/PlistBuddy -c &apos;Add :tags: dict&apos; test.plist</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Add :tags:$index:name string $name&quot; $GTagPlistPath</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Add :tags:$index:size integer $size&quot; $GTagPlistPath</span><br><span class="line">echo $md5String</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Add :tags:$index:md5 string $md5String&quot; $GTagPlistPath</span><br><span class="line">index=$((index+1))</span><br><span class="line">fi</span><br><span class="line">if test -d $file</span><br><span class="line">then</span><br><span class="line">echo $file 是目录</span><br><span class="line">fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h3 id="check-和-上传脚本"><a href="#check-和-上传脚本" class="headerlink" title="check 和 上传脚本"></a>check 和 上传脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;start ondemand resource archive ......&quot;</span><br><span class="line"># check resource getInfo</span><br><span class="line">echo start get resource info</span><br><span class="line">curl -X POST \</span><br><span class="line">http://your.com/xxx \</span><br><span class="line">-H &apos;Postman-Token: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW&apos; \</span><br><span class="line">-F version=1.0.0 \</span><br><span class="line">-F &apos;tagNames=[&quot;test&quot;]&apos;</span><br><span class="line"></span><br><span class="line">curl -X POST \</span><br><span class="line">http://your.com/xxxx \</span><br><span class="line">-H &apos;Content-Type:multipart/form-data; boundary=----ioqwiokjlfdlk198kdskl8oiidfn9mfdjmji9fd&apos; \</span><br><span class="line">-F version=1.0.0.10 \</span><br><span class="line">-F tagName=test \</span><br><span class="line">-F data=@/Users/xxx/test.zip</span><br><span class="line"></span><br><span class="line">echo &quot;end ondemand resource archive ......&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/30/xcodeproj/" rel="next" title="xcodeproj">
+                <i class="fa fa-chevron-left"></i> xcodeproj
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/01/wugongshan/" rel="prev" title="武功山游记">
+                武功山游记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDI4NC82ODM5"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="纳兰若水">
+            
+              <p class="site-author-name" itemprop="name">纳兰若水</p>
+              <p class="site-description motion-element" itemprop="description">随便写写读书笔记、技术学习、随想、生活、游记</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/waterXu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/xuyanlan" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Apple-On-Demand-Resource"><span class="nav-number">1.</span> <span class="nav-text">Apple On-Demand Resource</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自建资源下发模块"><span class="nav-number">2.</span> <span class="nav-text">自建资源下发模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动打包上传"><span class="nav-number">2.1.</span> <span class="nav-text">自动打包上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按需下载模块设计"><span class="nav-number">2.2.</span> <span class="nav-text">按需下载模块设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动生成-plist"><span class="nav-number">2.3.</span> <span class="nav-text">自动生成 plist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#check-和-上传脚本"><span class="nav-number">2.4.</span> <span class="nav-text">check 和 上传脚本</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">纳兰若水</span>
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备2021021008号-1</a>
+  </div>
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+
+    <span class="post-meta-item-text">Site words total count&#58;</span>
+    <span title="字数统计">
+     0 字
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">73.2k</span>
+  
+</div>
+<div>
+<span class="with-love">
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <style>
+        #taboola-livere { display: none;}
+    </style>
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
